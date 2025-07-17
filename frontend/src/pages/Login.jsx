@@ -75,9 +75,9 @@ const Login = () => {
             <div className="demo-account"><strong>Guest:</strong> guest@example.com / password123</div>
           </div>
         </div>
-      </div>
+  </div>
     </GuestRoute>
-  );
+);
 };
 
 export default Login; 

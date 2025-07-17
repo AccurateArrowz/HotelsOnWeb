@@ -20,12 +20,12 @@ import './pages/Home.css';
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <Layout>
-          <Routes>
+    <Router>
+      <Layout>
+        <Routes>
             {/* Public routes */}
-            <Route path="/" element={<Home />} />
-            <Route path="/hotels" element={<Hotels />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/hotels" element={<Hotels />} />
             <Route path="/hotels/:id" element={<HotelDetails />} />
             
             {/* Protected routes */}
@@ -144,9 +144,9 @@ function App() {
             
             {/* Fallback route */}
             <Route path="*" element={<div>Page not found</div>} />
-          </Routes>
-        </Layout>
-      </Router>
+        </Routes>
+      </Layout>
+    </Router>
     </AuthProvider>
   );
 }

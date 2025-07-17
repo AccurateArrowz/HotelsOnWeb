@@ -133,9 +133,9 @@ const Booking = () => {
             </div>
           </div>
         </div>
-      </div>
+  </div>
     </RequirePermission>
-  );
+);
 };
 
 export default Booking; 

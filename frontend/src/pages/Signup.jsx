@@ -99,9 +99,9 @@ const Signup = () => {
             <p>Already have an account? <a href="/login" className="text-blue-600 hover:underline">Login</a></p>
           </div>
         </div>
-      </div>
+  </div>
     </GuestRoute>
-  );
+);
 };
 
 export default Signup; 

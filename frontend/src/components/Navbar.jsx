@@ -22,11 +22,11 @@ const Navbar = () => {
           {/* Links for authenticated users */}
           <RequireAuth>
             <RequirePermission permission="book_hotels">
-              <Link to="/booking">Book</Link>
+          <Link to="/booking">Book</Link>
             </RequirePermission>
             
             <RequirePermission permission="view_bookings">
-              <Link to="/dashboard">Dashboard</Link>
+          <Link to="/dashboard">Dashboard</Link>
             </RequirePermission>
             
             {/* Admin panel link */}

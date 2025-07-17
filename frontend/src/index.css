@@ -103,7 +103,7 @@ button:focus-visible {
   text-decoration: none;
   font-weight: 500;
   transition: color 0.2s;
-}
+  }
 
 .nav-links a:hover {
   color: #667eea;
@@ -118,7 +118,7 @@ button:focus-visible {
 .user-name {
   font-size: 0.9rem;
   color: #666;
-}
+  }
 
 .logout-btn {
   background: #dc3545;
