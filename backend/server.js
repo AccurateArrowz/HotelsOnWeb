@@ -4,7 +4,11 @@ const sequelize = require('./src/config/database');
 require('./src/models');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5012;
+
+// Import routes
+const hotelRoutes = require('./src/routes/hotels');
+
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -15,6 +19,30 @@ app.get('/', (req, res) => {
   res.json({ message: 'HotelsOnWeb API is running!' });
 });
 
+// Test database connection
+app.get('/test-db', async (req, res) => {
+  try {
+    await sequelize.authenticate();
+    res.json({ message: 'Database connection successful!' });
+  } catch (error) {
+    res.status(500).json({ error: 'Database connection failed', details: error.message });
+  }
+});
+
+// Test hotel count
+app.get('/test-hotels', async (req, res) => {
+  try {
+    const Hotel = require('./src/models/Hotel');
+    const count = await Hotel.count();
+    res.json({ message: `Found ${count} hotels in database` });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to count hotels', details: error.message });
+  }
+});
+
+// API routes
+app.use('/api/hotels', hotelRoutes);
+
 // Initialize database and start server
 async function startServer() {
   try {
@@ -23,7 +51,7 @@ async function startServer() {
     console.log('Database connection established successfully.');
 
     // Sync all models with database (create tables)
-    await sequelize.sync({ force: false }); // Set force: true to drop and recreate tables
+    await sequelize.sync({ force: false }); // Set force: false to preserve existing data
     console.log('Database synchronized successfully.');
 
     // Start server

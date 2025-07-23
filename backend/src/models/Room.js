@@ -7,6 +7,11 @@ const Room = sequelize.define('Room', {
     primaryKey: true,
     autoIncrement: true
   },
+  roomId: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true
+  },
   hotelId: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -38,6 +43,15 @@ const Room = sequelize.define('Room', {
   isActive: {
     type: DataTypes.BOOLEAN,
     defaultValue: true
+  }
+}, {
+  hooks: {
+    beforeCreate: async (room) => {
+      if (!room.roomId) {
+        const randomNum = Math.floor(Math.random() * 9000) + 1000;
+        room.roomId = `ROOM-${room.hotelId}-${room.roomNumber}-${randomNum}`;
+      }
+    }
   }
 });
 

@@ -33,7 +33,7 @@ const User = sequelize.define('User', {
     allowNull: true
   },
   role: {
-    type: DataTypes.ENUM('guest', 'ser', 'hotel_owner', 'admin'),
+    type: DataTypes.ENUM('guest', 'user', 'hotelOwner', 'admin'),
     defaultValue: 'user'
   },
   isEmailVerified: {

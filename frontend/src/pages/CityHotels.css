@@ -1,0 +1,100 @@
+.city-hotels-page {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.city-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding: 2rem 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.city-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.city-header p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  margin: 0;
+}
+
+.loading {
+  text-align: center;
+  padding: 4rem;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.error {
+  text-align: center;
+  padding: 4rem;
+  color: #e74c3c;
+  font-size: 1.1rem;
+}
+
+.no-hotels {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 2px dashed #dee2e6;
+}
+
+.no-hotels h3 {
+  color: #495057;
+  margin-bottom: 1rem;
+}
+
+.no-hotels p {
+  color: #6c757d;
+  font-size: 1.1rem;
+}
+
+.hotels-grid {
+  display: grid;
+  gap: 2rem;
+}
+
+/* Hotel list loading and error states */
+.hotel-list .loading {
+  text-align: center;
+  padding: 3rem;
+  font-size: 1.1rem;
+  color: #666;
+  background: #f8f9fa;
+  border-radius: 8px;
+  margin: 1rem 0;
+}
+
+.hotel-list .no-hotels {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 2px dashed #dee2e6;
+  margin: 1rem 0;
+  color: #6c757d;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+  .city-hotels-page {
+    padding: 1rem;
+  }
+  
+  .city-header {
+    padding: 1.5rem 0;
+  }
+  
+  .city-header h1 {
+    font-size: 2rem;
+  }
+} 
