@@ -51,7 +51,7 @@ async function startServer() {
     console.log('Database connection established successfully.');
 
     // Sync all models with database (create tables)
-    await sequelize.sync({ force: false }); // Set force: false to preserve existing data
+    await sequelize.sync({ force: false , alter: false }); // Set force: false to preserve existing data
     console.log('Database synchronized successfully.');
 
     // Start server
@@ -64,3 +64,4 @@ async function startServer() {
 }
 
 startServer(); 
+

@@ -17,10 +17,6 @@ const HotelImage = sequelize.define('HotelImage', {
   },
   imageUrl: {
     type: DataTypes.STRING,
-    allowNull: false
-  },
-  caption: {
-    type: DataTypes.STRING,
     allowNull: true
   },
   isPrimary: {

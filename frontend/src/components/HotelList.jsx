@@ -52,12 +52,12 @@ const HotelList = ({ hotels: propHotels }) => {
   }
 
   return (
-    <div className="hotel-list">
-      {hotels.map(hotel => (
-        <HotelCard key={hotel.id} hotel={hotel} />
-      ))}
-    </div>
-  );
+  <div className="hotel-list">
+    {hotels.map(hotel => (
+      <HotelCard key={hotel.id} hotel={hotel} />
+    ))}
+  </div>
+);
 };
 
 export default HotelList; 

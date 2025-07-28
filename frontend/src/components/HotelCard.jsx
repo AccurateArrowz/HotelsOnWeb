@@ -11,17 +11,17 @@ const HotelCard = ({ hotel }) => {
   const hotelId = hotel.id || hotel.hotelId;
 
   return (
-    <div className="hotel-card">
+  <div className="hotel-card">
       <img src={hotelImage} alt={hotelName} className="hotel-image" />
-      <div className="hotel-info">
+    <div className="hotel-info">
         <h3>{hotelName}</h3>
         <p>{hotelLocation}</p>
         <p>From ${hotelPrice} / night</p>
         <p>Rating: {hotelRating} ⭐</p>
         <Link to={`/hotels/${hotelId}`} className="details-btn">View Details</Link>
-      </div>
     </div>
-  );
+  </div>
+);
 };
 
 export default HotelCard; 

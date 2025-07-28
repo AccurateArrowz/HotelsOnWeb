@@ -27,13 +27,26 @@ const RoomType = sequelize.define('RoomType', {
     type: DataTypes.DECIMAL(10, 2),
     allowNull: false
   },
-  capacity: {
+   // New columns for occupancy capacity
+   adults: {
     type: DataTypes.INTEGER,
     allowNull: false,
+    defaultValue: 2,
     validate: {
       min: 1,
-      max: 10
-    }
+      max: 10 // Adjust max value based on your hotel's largest room capacity
+    },
+    comment: 'Maximum number of adults the room can accommodate'
+  },
+  children: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 0,
+    validate: {
+      min: 0,
+      max: 8 // Adjust max value based on your hotel's policy
+    },
+    comment: 'Maximum number of children the room can accommodate'
   },
   amenities: {
     type: DataTypes.JSONB,

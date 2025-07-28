@@ -7,11 +7,6 @@ const Hotel = sequelize.define('Hotel', {
     primaryKey: true,
     autoIncrement: true
   },
-  hotelId: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: true
-  },
   name: {
     type: DataTypes.STRING,
     allowNull: false
@@ -37,28 +32,9 @@ const Hotel = sequelize.define('Hotel', {
     allowNull: true,
     defaultValue: []
   },
-  rating: {
-    type: DataTypes.DECIMAL(2, 1),
-    allowNull: true,
-    validate: {
-      min: 0,
-      max:5
-    }
-  },
   isActive: {
     type: DataTypes.BOOLEAN,
     defaultValue: true
-  }
-}, {
-  hooks: {
-    beforeCreate: async (hotel) => {
-      // Generate custom hotel ID if not provided
-      if (!hotel.hotelId) {
-        const acronym = hotel.name.split(' ').map(word => word[0]).join('').toUpperCase();
-        const randomNum = Math.floor(Math.random() * 900000) + 100000; // Ensure it's a 6-digit number
-        hotel.hotelId = `${acronym}-${randomNum}`;
-      }
-    }
   }
 });
 
