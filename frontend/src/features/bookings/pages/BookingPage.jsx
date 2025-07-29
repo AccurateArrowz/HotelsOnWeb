@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
-import { RequirePermission } from '../components/RoleBasedComponents';
-import { hotels } from '../mockData';
+import { useAuth } from '../../auth/AuthContext';
+import { RequirePermission } from '../../auth/components/RoleBasedComponents';
+import { hotels } from '../../../mockData';
 
 const Booking = () => {
   const { user, hasPermission } = useAuth();

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import HotelList from '../components/HotelList';
-import CityCard from '../components/CityCard';
+import HotelList from '../features/hotels/components/HotelList';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import CityCard from '../CityCard';
 import './Home.css';
 
 const Home = () => {

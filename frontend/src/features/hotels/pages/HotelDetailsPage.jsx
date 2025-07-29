@@ -1,8 +1,8 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import { RequirePermission, RequireRole } from '../components/RoleBasedComponents';
-import { hotels } from '../mockData';
+import { useAuth } from '../../auth/AuthContext';
+import { RequirePermission, RequireRole } from '../../auth/components/RoleBasedComponents';
+import { hotels } from '../../../mockData';
 
 const HotelDetails = () => {
   const { id } = useParams();

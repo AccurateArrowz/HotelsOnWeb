@@ -1,7 +1,7 @@
 import React from 'react';
-import { useAuth } from '../contexts/AuthContext';
-import { RequireAuth, RequirePermission, RequireRole, RoleBasedRender } from '../components/RoleBasedComponents';
-import { ProtectedRoute } from '../components/ProtectedRoute';
+import { useAuth } from '../../auth/AuthContext';
+import { RequireAuth, RequirePermission, RequireRole, RoleBasedRender } from '../../auth/components/RoleBasedComponents';
+import { ProtectedRoute } from '../../auth/components/ProtectedRoute';
 import './Dashboard.css';
 
 const Dashboard = () => {
