@@ -2,11 +2,41 @@ import React, { useState } from 'react';
 import HotelList from '../features/hotels/components/HotelList';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import CityCard from '../CityCard';
+import CityCard from './CityCard';
 import './Home.css';
 
+import { kathmandu as kathmanduImg, bhaktapur as bhaktapurImg, pokhara1 as pokharaImg, ilam as ilamImg, chitwan1 as chitwanImg, lumbini as lumbiniImg } from '../assets';
+
+
 const Home = () => {
-  const [search, setSearch] = useState({ location: '', guests: 1 });
+  const [search, setSearch] = useState({ 
+    location: '',
+    adults: 2,
+    children: 0
+  });
+  const [showGuestSelector, setShowGuestSelector] = useState(false);
+  const guestSelectorRef = React.useRef(null);
+
+  React.useEffect(() => {
+    function handleClickOutside(event) {
+      if (guestSelectorRef.current && !guestSelectorRef.current.contains(event.target)) {
+        setShowGuestSelector(false);
+      }
+    }
+    if (showGuestSelector) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showGuestSelector]);
+
+  const getGuestSelectorLabel = () => {
+    const { adults, children } = search;
+    let label = `${adults} Adult${adults > 1 ? 's' : ''}`;
+    if (children > 0) label += `, ${children} Child${children > 1 ? 'ren' : ''}`;
+    return label;
+  };
   const [checkin, setCheckin] = useState(null);
   const [checkout, setCheckout] = useState(null);
 
@@ -14,44 +44,71 @@ const Home = () => {
   const popularCities = [
     {
       name: 'Kathmandu',
-      image: 'https://images.unsplash.com/photo-1548013146-72479768bada?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      image: kathmanduImg,
       hotelCount: 45
     },
     {
-      name: 'Patan',
-      image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      name: 'Bhaktapur',
+      image: bhaktapurImg,
       hotelCount: 12
     },
     {
       name: 'Pokhara',
-      image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      image: pokharaImg,
       hotelCount: 28
     },
     {
-      name: 'Bhaktapur',
-      image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      name: 'Ilam',
+      image: ilamImg,
       hotelCount: 8
     },
     {
       name: 'Chitwan',
-      image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      image: chitwanImg,
       hotelCount: 15
     },
     {
       name: 'Lumbini',
-      image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      image: lumbiniImg,
       hotelCount: 6
     }
   ];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setSearch((prev) => ({ ...prev, [name]: value }));
+    setSearch(prev => ({
+      ...prev,
+      [name]: parseInt(value, 10)
+    }));
+  };
+
+  const incrementGuests = (type) => {
+    setSearch(prev => ({
+      ...prev,
+      [type]: Math.min(prev[type] + 1, type === 'adults' ? 30 : 10)
+    }));
+  };
+
+  const decrementGuests = (type) => {
+    setSearch(prev => ({
+      ...prev,
+      [type]: Math.max(prev[type] - 1, type === 'adults' ? 1 : 0)
+    }));
+  };
+
+  const getTotalGuests = () => {
+    return search.adults + search.children;
+  };
+
+  const handleGuestSelectorClick = (e) => {
+    e.preventDefault();
+    setShowGuestSelector(!showGuestSelector);
   };
 
   const handleSearch = (e) => {
     e.preventDefault();
-    alert(`Searching hotels in ${search.location} for ${search.guests} guest(s) from ${checkin ? checkin.toLocaleDateString() : ''} to ${checkout ? checkout.toLocaleDateString() : ''}`);
+    setShowGuestSelector(false);
+    alert(`Searching hotels in ${search.location} for ${getTotalGuests()} guests (${search.adults} adults, ${search.children} children) from ${checkin ? checkin.toLocaleDateString() : ''} to ${checkout ? checkout.toLocaleDateString() : ''}`);
   };
 
   return (
@@ -91,18 +148,73 @@ const Home = () => {
               className="datepicker-input"
               required
             />
-            <input
-              type="number"
-              name="guests"
-              min="1"
-              max="10"
-              value={search.guests}
-              onChange={handleChange}
-              required
-              className="guests-input"
-            />
+            <div className="guest-selector-container" ref={guestSelectorRef}>
+              <button 
+                type="button" 
+                className={`guest-selector-trigger${showGuestSelector ? ' open' : ''}`}
+                onClick={handleGuestSelectorClick}
+                aria-haspopup="listbox"
+                aria-expanded={showGuestSelector}
+              >
+                {getGuestSelectorLabel()}
+                <span className="dropdown-arrow">▼</span>
+              </button>
+              {showGuestSelector && (
+                <div className="guest-selector-dropdown">
+                  <div className="guest-option">
+                    <div className="guest-type">
+                      <span className="guest-label">Adults</span>
+                      <span className="guest-age">Ages 13+</span>
+                    </div>
+                    <div className="guest-counter">
+                      <button 
+                        type="button" 
+                        className="counter-btn"
+                        onClick={() => decrementGuests('adults')}
+                        disabled={search.adults <= 1}
+                      >
+                        -
+                      </button>
+                      <span className="guest-count">{search.adults}</span>
+                      <button 
+                        type="button" 
+                        className="counter-btn"
+                        onClick={() => incrementGuests('adults')}
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+                  <div className="guest-option">
+                    <div className="guest-type">
+                      <span className="guest-label">Children</span>
+                      <span className="guest-age">Ages 2-12</span>
+                    </div>
+                    <div className="guest-counter">
+                      <button 
+                        type="button" 
+                        className="counter-btn"
+                        onClick={() => decrementGuests('children')}
+                        disabled={search.children <= 0}
+                      >
+                        -
+                      </button>
+                      <span className="guest-count">{search.children}</span>
+                      <button 
+                        type="button" 
+                        className="counter-btn"
+                        onClick={() => incrementGuests('children')}
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
             <button type="submit" className="search-btn">Search</button>
           </form>
+          
         </div>
       </section>
 

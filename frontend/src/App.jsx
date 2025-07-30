@@ -1,12 +1,13 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './features/auth/AuthContext';
 
-import Home from './pages/Home';
+import Home from './public/Home';
 import HotelsPage from './features/hotels/pages/HotelsPage';
 import HotelDetailsPage from './features/hotels/pages/HotelDetailsPage';
 import BookingPage from './features/bookings/pages/BookingPage';
 import DashboardPage from './features/user/pages/DashboardPage';
 import { AuthButton } from './features/auth/components/AuthButton';
+import ListYourProperty from './public/ListYourProperty';
 import Navbar from './components/Navbar';
 import { RequireAuth } from './features/auth/components/RoleBasedComponents'; // Protects authenticated routes
 
@@ -31,6 +32,7 @@ function App() {
                 <DashboardPage />
               </RequireAuth>
             } />
+            <Route path="/list-property" element={<ListYourProperty />} />
             <Route path="*" element={<div>Page not found</div>} />
           </Routes>
         </main>

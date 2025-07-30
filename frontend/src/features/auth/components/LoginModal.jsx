@@ -24,36 +24,53 @@ export const LoginModal = ({ open, onClose, onSwitchToSignup }) => {
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <h2>Sign In</h2>
-        
-        {error && <p className="error-text">{error}</p>}
-        
-        <form onSubmit={handleSubmit}>
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          
-          <button type="submit">Sign In</button>
+      <div className="modal-content auth-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-header">
+          <h2>Sign In</h2>
+          <button className="close-button" onClick={onClose}>&times;</button>
+        </div>
+
+        {error && <div className="error-message">{error}</div>}
+
+        <form onSubmit={handleSubmit} className="auth-form">
+          <div className="form-group">
+            <label htmlFor="login-email">Email Address</label>
+            <input
+              id="login-email"
+              type="email"
+              placeholder="Enter your email address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              aria-required="true"
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="login-password">Password</label>
+            <input
+              id="login-password"
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              aria-required="true"
+            />
+          </div>
+
+          <div className="form-actions">
+            <button type="submit" className="primary-button">Sign In</button>
+          </div>
         </form>
-        
-        <div className="divider">OR</div>
-        
-        <button onClick={onSwitchToSignup} className="secondary">
-          Create New Account
-        </button>
+
+        <div className="auth-footer">
+          <p>Don't have an account?
+            <button onClick={onSwitchToSignup} className="text-button">
+              Create New Account
+            </button>
+          </p>
+        </div>
       </div>
     </div>
   );

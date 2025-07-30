@@ -14,7 +14,16 @@ const CityCard = ({ city }) => {
       onClick={handleClick}
     >
       <div className="city-image">
-        <img src={city.image} alt={city.name} />
+        <img 
+          src={city.image} 
+          alt={city.name} 
+          style={{ 
+            objectFit: 'cover', 
+            width: '100%', 
+            height: '100%', 
+            // objectPosition: city.name === 'Lumbini' ? 'center' : 'center'
+          }}
+        />
         <div className="city-overlay">
           <h3 className="city-name">{city.name}</h3>
           <p className="hotel-count">{city.hotelCount} Hotels</p>

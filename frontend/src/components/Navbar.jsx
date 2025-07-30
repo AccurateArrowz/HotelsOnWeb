@@ -12,7 +12,7 @@ const Navbar = () => {
         <Link to="/" className="nav-logo">HotelBooker</Link>
         
         <div className="nav-links">
-          <Link to="/hotels">Hotels</Link>
+          <Link to="/list-property">List your Property</Link>
           
           {user && (
             <>

@@ -34,8 +34,11 @@ export const AuthButton = () => {
 
   return (
     <>
-      <button onClick={() => setLoginOpen(true)} className="signin-btn">
-        Sign In
+      <button onClick={() => setLoginOpen(true)} className="login-btn">
+        Login
+      </button>
+      <button onClick={() => setSignupOpen(true)} className="signup-btn" style={{ marginLeft: '8px' }}>
+        Signup
       </button>
       
       <LoginModal
