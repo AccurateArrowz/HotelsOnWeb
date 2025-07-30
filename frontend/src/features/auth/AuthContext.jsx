@@ -41,8 +41,19 @@ export const AuthProvider = ({ children }) => {
       // setUser(userData);
       // return userData;
       
-      // Mock login for now
-      const mockUser = { id: '1', email, name: 'Test User' };
+      // Mock login for now -- add permissions and role for demo
+      const mockUser = {
+        id: '1',
+        email,
+        name: 'Test User',
+        role: 'admin', // Change as needed for demo
+        permissions: [
+          'book_hotels',
+          'view_bookings',
+          'manage_users',
+          'delete_hotels',
+        ],
+      };
       setUser(mockUser);
       localStorage.setItem('user', JSON.stringify(mockUser));
       return mockUser;

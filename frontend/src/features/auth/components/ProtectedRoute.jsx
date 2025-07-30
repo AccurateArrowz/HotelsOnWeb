@@ -158,18 +158,3 @@ export const AnyRoleRoute = ({
   return children;
 };
 
-// Route that only allows unauthenticated users (for login/signup pages)
-export const GuestRoute = ({ children, redirectTo = '/dashboard' }) => {
-  const { user, loading } = useAuth();
-  const location = useLocation();
-
-  if (loading) {
-    return <div className="loading">Loading...</div>;
-  }
-
-  if (user) {
-    return <Navigate to={redirectTo} state={{ from: location }} replace />;
-  }
-
-  return children;
-}; 

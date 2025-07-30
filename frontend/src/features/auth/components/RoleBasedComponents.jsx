@@ -21,6 +21,12 @@ export const RequireAuth = ({ children, redirectTo = '/login' }) => {
   return children;
 };
 
+//this component is specifically made for Navbar, where we don't want to redirect if they dont have permission,and simply hide the content/children
+export const ShowIfPermission = ({ permission, children }) => {
+  const { hasPermission } = useAuth();
+  return hasPermission(permission) ? children : null;
+};
+
 /**
  * Component that renders children only if the user has the specified permission.
  * Otherwise, shows fallback or redirects.
@@ -29,13 +35,13 @@ export const RequirePermission = ({
   children,
   permission,
   redirectTo = '/unauthorized',
-  fallback = null,
+  fallback ,  
 }) => {
   const { hasPermission } = useAuth();
   const location = useLocation();
 
   if (!hasPermission(permission)) {
-    if (fallback) {
+    if (fallback !== undefined) {  //if fallback is null then, it will return null
       return fallback;
     }
     return <Navigate to={redirectTo} state={{ from: location }} replace />;
@@ -52,13 +58,13 @@ export const RequireAnyPermission = ({
   children,
   permissions = [],
   redirectTo = '/unauthorized',
-  fallback = null,
+  fallback,
 }) => {
   const { hasAnyPermission } = useAuth();
   const location = useLocation();
 
   if (!hasAnyPermission(permissions)) {
-    if (fallback) {
+    if (fallback !== undefined) {
       return fallback;
     }
     return <Navigate to={redirectTo} state={{ from: location }} replace />;
@@ -75,13 +81,13 @@ export const RequireRole = ({
   children,
   role,
   redirectTo = '/unauthorized',
-  fallback = null,
+  fallback,
 }) => {
   const { user } = useAuth();
   const location = useLocation();
 
   if (user?.role !== role) {
-    if (fallback) {
+    if (fallback !== undefined) {
       return fallback;
     }
     return <Navigate to={redirectTo} state={{ from: location }} replace />;
@@ -98,13 +104,13 @@ export const RequireAnyRole = ({
   children,
   roles = [],
   redirectTo = '/unauthorized',
-  fallback = null,
+  fallback,
 }) => {
   const { user } = useAuth();
   const location = useLocation();
 
   if (!user || !roles.includes(user.role)) {
-    if (fallback) {
+    if (fallback !== undefined) {
       return fallback;
     }
     return <Navigate to={redirectTo} state={{ from: location }} replace />;
