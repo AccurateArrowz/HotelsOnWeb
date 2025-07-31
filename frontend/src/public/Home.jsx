@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import HotelList from '../features/hotels/components/HotelList';
+import HotelList from './hotels/components/HotelList';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import CityCard from './CityCard';

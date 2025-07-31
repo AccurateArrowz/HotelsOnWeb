@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../AuthContext';
-import '../../../styles/modal.css';
+import '../../styles/modal.css';
 
 export const SignupModal = ({ open, onClose, onSwitchToLogin }) => {
   const [formData, setFormData] = useState({

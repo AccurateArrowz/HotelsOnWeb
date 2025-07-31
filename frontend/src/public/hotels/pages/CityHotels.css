@@ -85,6 +85,13 @@
   font-size: 1.1rem;
 }
 
+.hotels-virtual-list {
+  height: 70vh;
+  min-height: 400px;
+  width: 100%;
+  position: relative;
+}
+
 @media (max-width: 768px) {
   .city-hotels-page {
     padding: 1rem;

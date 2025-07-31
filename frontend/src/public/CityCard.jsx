@@ -5,7 +5,7 @@ const CityCard = ({ city }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/${city.name.toLowerCase()}`);
+    navigate(`/hotels/${city.name.toLowerCase()}`);
   };
 
   return (
