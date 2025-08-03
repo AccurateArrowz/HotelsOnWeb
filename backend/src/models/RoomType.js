@@ -48,11 +48,6 @@ const RoomType = sequelize.define('RoomType', {
     },
     comment: 'Maximum number of children the room can accommodate'
   },
-  amenities: {
-    type: DataTypes.JSONB,
-    allowNull: true,
-    defaultValue: []
-  },
   isActive: {
     type: DataTypes.BOOLEAN,
     defaultValue: true

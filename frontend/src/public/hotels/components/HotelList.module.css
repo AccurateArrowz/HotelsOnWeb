@@ -1,7 +1,7 @@
 .hotelList {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.5rem;
   padding: 1.5rem 0;
   /* Modern spacing for clarity */
 }
@@ -13,7 +13,13 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.07);
   overflow: hidden;
   transition: box-shadow 0.2s;
-  min-height: 140px;
+  min-height: 200px;
+  align-items: stretch;
+  margin-bottom: 1.5rem;
+}
+
+.hotelCard:last-child {
+  margin-bottom: 0;
 }
 
 .hotelCard:hover {
@@ -21,62 +27,228 @@
 }
 
 .hotelImageWrapper {
-  flex: 0 0 260px;
-  max-width: 320px;
-  min-width: 200px;
+  flex: 0 0 300px;
+  max-width: 300px;
+  min-height: 200px;
   background: linear-gradient(135deg, #f7fafc 60%, #e6eaf0 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   border-right: 1px solid #e0e0e0;
-  /* Expanded image area for visual emphasis */
+  /* First column: Image */
+  position: relative;
+  overflow: hidden;
 }
 
 .hotelImage {
-  width: 90%;
-  height: 150px;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.09);
-  /* Larger, more prominent images */
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
-.hotelCardContent {
+.hotelMainInfo {
   flex: 1;
-  padding: 1rem 1.5rem;
+  padding: 0 2rem;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
+  border-right: 1px solid #e2e8f0;
+  padding-top: 1.5rem;
+  /* Second column: Hotel name and address */
 }
 
 .hotelName {
-  font-size: 1.3rem;
-  font-weight: 600;
-  margin-bottom: 0.3rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  margin-top: 0;
   color: #222;
+  line-height: 1.2;
 }
 
 .hotelAddress {
   font-size: 1rem;
   color: #666;
-  margin-bottom: 0.5rem;
+  line-height: 1.4;
 }
 
-.hotelInfoRow {
+.hotelDetails {
+  flex: 0 0 200px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  border-left: 1px solid #e2e8f0;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  /* Third column: Rating and Price */
+}
+
+.ratingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.starRating {
   display: flex;
   align-items: center;
-  gap: 1.2rem;
-  margin-top: 0.3rem;
+  gap: 0.2rem;
+  font-size: 1.2rem;
 }
 
-.hotelRating {
+.star {
+  color: #fbbf24;
+  font-size: 1.3rem;
+  text-shadow: 0 1px 2px rgba(251, 191, 36, 0.3);
+}
+
+.starHalf {
+  color: #fbbf24;
+  font-size: 1.3rem;
+  opacity: 0.7;
+}
+
+.starEmpty {
+  color: #d1d5db;
+  font-size: 1.3rem;
+}
+
+.ratingText {
+  margin-left: 0.5rem;
+  font-weight: 600;
+  color: #374151;
   font-size: 1rem;
-  color: #f5a623;
-  font-weight: 500;
+}
+
+.priceContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .hotelPrice {
-  font-size: 1rem;
-  color: #1a8917;
-  font-weight: 500;
+  display: flex;
+  align-items: center;
+  font-size: 1.3rem;
+  color: black;
+  font-weight: 700;
+  transition: all 0.2s ease;
+  width: 100%;
+  justify-content: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hotelCard {
+    flex-direction: column;
+    min-height: auto;
+  }
+
+  .hotelImageWrapper {
+    flex: none;
+    width: 100%;
+    max-width: 100%;
+    height: 220px;
+    border-right: none;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .hotelMainInfo {
+    padding: 1.25rem 1.5rem;
+    border-right: none;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .hotelDetails {
+    flex: none;
+    padding: 1.25rem 1.5rem;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .ratingContainer {
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+
+  .starRating {
+    font-size: 1rem;
+  }
+
+  .star, .starHalf, .starEmpty {
+    font-size: 1.1rem;
+  }
+
+  .priceContainer {
+    flex-direction: row;
+  }
+
+  .hotelName {
+    font-size: 1.3rem;
+  }
+
+  .hotelPrice {
+    font-size: 1.2rem;
+    padding: 0.6rem 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hotelList {
+    gap: 1.5rem;
+    padding: 1rem 0;
+  }
+
+  .hotelCard {
+    border-radius: 10px;
+  }
+
+  .hotelImageWrapper {
+    height: 180px;
+  }
+
+  .hotelMainInfo {
+    padding: 1rem;
+  }
+
+  .hotelDetails {
+    padding: 1rem;
+    gap: 0.75rem;
+  }
+
+  .ratingContainer {
+    gap: 0.25rem;
+  }
+
+  .starRating {
+    font-size: 0.9rem;
+  }
+
+  .star, .starHalf, .starEmpty {
+    font-size: 1rem;
+  }
+
+  .ratingText {
+    font-size: 0.9rem;
+  }
+
+  .hotelName {
+    font-size: 1.2rem;
+  }
+
+  .hotelAddress {
+    font-size: 0.9rem;
+  }
+
+  .hotelPrice {
+    font-size: 1.1rem;
+    padding: 0.5rem 1rem;
+  }
 }

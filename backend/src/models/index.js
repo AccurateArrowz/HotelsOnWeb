@@ -5,6 +5,8 @@ const RoomType = require('./RoomType');
 const Room = require('./Room');
 const Booking = require('./Booking');
 const BookingRoom = require('./BookingRoom');
+const HotelRequest = require('./HotelRequest');
+const HotelRequestImage = require('./HotelRequestImage');
 
 // User associations
 User.hasMany(Booking, { foreignKey: 'userId', as: 'bookings' });
@@ -40,6 +42,14 @@ BookingRoom.belongsTo(Booking, { foreignKey: 'bookingId', as: 'booking' });
 BookingRoom.belongsTo(Room, { foreignKey: 'roomId', as: 'room' });
 BookingRoom.belongsTo(RoomType, { foreignKey: 'roomTypeId', as: 'roomType' });
 
+// HotelRequest associations
+HotelRequest.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+User.hasMany(HotelRequest, { foreignKey: 'userId', as: 'hotelRequests' });
+
+// HotelRequestImage associations
+HotelRequestImage.belongsTo(HotelRequest, { foreignKey: 'hotelRequestId', as: 'hotelRequest' });
+HotelRequest.hasMany(HotelRequestImage, { foreignKey: 'hotelRequestId', as: 'images' });
+
 module.exports = {
   User,
   Hotel,
@@ -47,5 +57,7 @@ module.exports = {
   RoomType,
   Room,
   Booking,
-  BookingRoom
+  BookingRoom,
+  HotelRequest,
+  HotelRequestImage
 }; 

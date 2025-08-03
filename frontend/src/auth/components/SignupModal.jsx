@@ -28,6 +28,21 @@ export const SignupModal = ({ open, onClose, onSwitchToLogin }) => {
     e.preventDefault();
     setError('');
 
+    // Check all fields are filled
+    for (const [key, value] of Object.entries(formData)) {
+      if (!value || value.trim() === '') {
+        setError('All fields are required');
+        return;
+      }
+    }
+
+    // Email validation
+    const emailRegex = /^\S+@\S+\.\S+$/;
+    if (!emailRegex.test(formData.email)) {
+      setError('Please enter a valid email address');
+      return;
+    }
+
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords don't match");
       return;
@@ -57,15 +72,15 @@ export const SignupModal = ({ open, onClose, onSwitchToLogin }) => {
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content auth-modal" onClick={(e) => e.stopPropagation()}>
+      <div className="modal-content auth-modal signup-modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>Create Account</h2>
           <button className="close-button" onClick={onClose} aria-label="Close modal">&times;</button>
         </div>
         
-        {error && <div className="error-message">{error}</div>}
         
-        <form onSubmit={handleSubmit} className="auth-form">
+        
+        <form onSubmit={handleSubmit} className="signup-form">
           <div className="form-row">
             <div className="form-group">
               <label htmlFor="firstName">First Name</label>
@@ -186,7 +201,11 @@ export const SignupModal = ({ open, onClose, onSwitchToLogin }) => {
             Sign In
           </button></p>
         </div>
+              </div>
+        <div className="signup-modal-bottom">
+          {error && <div className="error-message error-bottom">{error}</div>}
+        </div>
       </div>
-    </div>
+    // </div>
   );
 };

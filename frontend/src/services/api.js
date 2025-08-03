@@ -6,6 +6,23 @@ import axios from 'axios';
 
 const BASE_URL = 'http://localhost:3001/api';
 
+// Create axios instance with auth interceptor
+const api = axios.create({
+  baseURL: BASE_URL,
+});
+
+// Add auth token to requests
+api.interceptors.request.use((config) => {
+  const user = localStorage.getItem('user');
+  if (user) {
+    const userData = JSON.parse(user);
+    if (userData.token) {
+      config.headers.Authorization = `Bearer ${userData.token}`;
+    }
+  }
+  return config;
+});
+
 /**
  * Fetch hotels by city with pagination
  * @param {Object} params
@@ -16,7 +33,7 @@ const BASE_URL = 'http://localhost:3001/api';
  */
 export async function fetchHotelsByCity({ city, page = 1, limit = 20 }) {
   try {
-    const response = await axios.get(`${BASE_URL}/hotels`, {
+    const response = await api.get('/hotels', {
       params: { city, page, limit },
     });
     return response.data;
@@ -33,10 +50,13 @@ export async function fetchHotelsByCity({ city, page = 1, limit = 20 }) {
  */
 export async function fetchHotelById(id) {
   try {
-    const response = await axios.get(`${BASE_URL}/hotels/${id}`);
+    const response = await api.get(`/hotels/${id}`);
     return response.data;
   } catch (error) {
     // Error should be handled by UI (e.g., show error and Try Again button)
     throw error;
   }
 }
+
+// Export the configured api instance for use by other services
+export { api, BASE_URL };

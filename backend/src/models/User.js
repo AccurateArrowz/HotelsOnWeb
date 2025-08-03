@@ -33,24 +33,7 @@ const User = sequelize.define('User', {
     allowNull: true
   },
   role: {
-    type: DataTypes.ENUM('guest', 'user', 'hotelOwner', 'admin'),
-    defaultValue: 'user'
-  },
-  isEmailVerified: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false
-  },
-  emailVerificationToken: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  resetPasswordToken: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  resetPasswordExpires: {
-    type: DataTypes.DATE,
-    allowNull: true
+    type: DataTypes.ENUM('customer', 'hotelOwner', 'admin'),
   }
 }, {
   hooks: {

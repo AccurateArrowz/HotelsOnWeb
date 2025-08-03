@@ -9,9 +9,10 @@
 .hero-section {
   position: relative;
   width: 100%;
-  min-height: 340px;
-  background: linear-gradient(rgba(44,62,80,0.7), rgba(44,62,80,0.7)), url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
-  display: flex;
+  min-height: 400px;
+  /* background: linear-gradient(rgba(44,62,80,0.7), rgba(44,62,80,0.7)), url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat; */
+  background: linear-gradient(rgba(44,62,80,0.7), rgba(44,62,80,0.7)), url('../assets/hotelInterior.jpg') center/cover no-repeat;
+display: flex;
   align-items: center;
   justify-content: center;
 }
@@ -234,7 +235,7 @@
 
 /* Popular Cities Section */
 .popular-cities-section {
-  padding: 4rem 1rem;
+  padding: 1rem 1rem 4rem 1rem;
   background: white;
   margin: 2rem 0;
 }

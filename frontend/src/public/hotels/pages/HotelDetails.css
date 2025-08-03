@@ -129,6 +129,123 @@
   box-shadow: 0 2px 8px rgba(44,123,229,0.16);
 }
 
+/* Image Gallery */
+.image-gallery {
+  margin-bottom: 2rem;
+}
+
+.primary-image {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.primary-image img {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  border-radius: 14px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.grid-image img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: transform 0.2s;
+}
+
+.grid-image img:hover {
+  transform: scale(1.02);
+}
+
+/* Hotel Info Section */
+.hotel-info-section {
+  margin-bottom: 2.5rem;
+}
+
+.hotel-info-section h1 {
+  margin: 0 0 0.5rem 0;
+  font-size: 2.3rem;
+  font-weight: 600;
+  color: #1a2540;
+}
+
+.location {
+  color: #6e7ca0;
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Description Section */
+.description-section {
+  margin-bottom: 2rem;
+}
+
+.description-section h2 {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+  color: #1a2540;
+}
+
+.description-section p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #333;
+  margin: 0;
+}
+
+/* Amenities Section */
+.amenities-section {
+  margin-bottom: 2.5rem;
+}
+
+.amenities-section h2 {
+  font-size: 1.4rem;
+  margin-bottom: 1.5rem;
+  color: #1a2540;
+}
+
+.amenities-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.amenity-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #f8fafc;
+  padding: 0.3rem 0.65rem;
+  border-radius: 8px;
+  border: 1px solid #e5e9f2;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.amenity-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.amenity-icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.amenity-name {
+  font-size: 0.93rem;
+  color: #333;
+  font-weight: 500;
+}
+
 /* Loading, error, not-found states */
 .loading, .error, .not-found {
   text-align: center;
@@ -153,6 +270,38 @@
 .try-again-btn:hover {
   background: #e74c3c;
   color: #fff;
+}
+
+@media (max-width: 768px) {
+  .image-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .primary-image img {
+    height: 300px;
+  }
+  
+  .amenities-grid {
+    flex-direction: column;
+  }
+  
+  .amenity-item {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .image-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .primary-image img {
+    height: 250px;
+  }
+  
+  .hotel-details-page {
+    padding: 1.5rem 1rem;
+  }
 }
 
 @media (max-width: 600px) {

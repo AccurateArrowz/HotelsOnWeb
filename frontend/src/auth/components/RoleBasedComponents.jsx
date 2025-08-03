@@ -6,7 +6,7 @@ import { useAuth } from '../../auth/AuthContext';
  * Component that renders children only if the user is authenticated.
  * Otherwise, redirects to the login page.
  */
-export const RequireAuth = ({ children, redirectTo = '/login' }) => {
+export const RequireAuth = ({ children, redirectTo = '/login', onRequireLogin }) => {
   const { user, loading } = useAuth();
   const location = useLocation();
 
@@ -15,6 +15,10 @@ export const RequireAuth = ({ children, redirectTo = '/login' }) => {
   }
 
   if (!user) {
+    if (typeof onRequireLogin === 'function') {
+      onRequireLogin();
+      return null;
+    }
     return <Navigate to={redirectTo} state={{ from: location }} replace />;
   }
 

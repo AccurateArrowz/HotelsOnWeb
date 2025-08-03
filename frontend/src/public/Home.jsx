@@ -78,14 +78,14 @@ const Home = () => {
     const { name, value } = e.target;
     setSearch(prev => ({
       ...prev,
-      [name]: parseInt(value, 10)
+      [name]: (name === 'adults' || name === 'children') ? parseInt(value, 10) : value
     }));
   };
 
   const incrementGuests = (type) => {
     setSearch(prev => ({
       ...prev,
-      [type]: Math.min(prev[type] + 1, type === 'adults' ? 30 : 10)
+      [type]: Math.min(prev[type] + 1, type === 'adults' ? 20 : 10)
     }));
   };
 
@@ -121,7 +121,7 @@ const Home = () => {
             <input
               type="text"
               name="location"
-              placeholder="Where to? (City, Hotel...)"
+              placeholder="Search by City or Hotel"
               value={search.location}
               onChange={handleChange}
               required
