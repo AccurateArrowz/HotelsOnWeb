@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import HotelList from './hotels/components/HotelList';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -9,6 +10,7 @@ import { kathmandu as kathmanduImg, bhaktapur as bhaktapurImg, pokhara1 as pokha
 
 
 const Home = () => {
+  const navigate = useNavigate();
   const [search, setSearch] = useState({ 
     location: '',
     adults: 2,
@@ -108,7 +110,19 @@ const Home = () => {
   const handleSearch = (e) => {
     e.preventDefault();
     setShowGuestSelector(false);
-    alert(`Searching hotels in ${search.location} for ${getTotalGuests()} guests (${search.adults} adults, ${search.children} children) from ${checkin ? checkin.toLocaleDateString() : ''} to ${checkout ? checkout.toLocaleDateString() : ''}`);
+
+    // Create a slug/encoded version of the city for the URL
+    const citySlug = search.location.trim().toLowerCase();
+    if (!citySlug) return;
+
+    // Navigate to the CityHotels page, passing extra search info via location state
+    navigate(`/hotels/${encodeURIComponent(citySlug)}`, {
+      state: {
+        ...search,
+        checkin,
+        checkout,
+      },
+    });
   };
 
   return (

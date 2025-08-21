@@ -7,12 +7,29 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Initialize auth state from persisted storage
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
     setLoading(false);
+  }, []);
+
+  // Keep auth state synced with localStorage changes (e.g. manual removal, other tabs)
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (e.key !== 'user') return;
+      if (!e.newValue) {
+        // User item removed – log out locally
+        setUser(null);
+      } else {
+        // User item updated – reflect latest value
+        setUser(JSON.parse(e.newValue));
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
   const login = async (email, password) => {
