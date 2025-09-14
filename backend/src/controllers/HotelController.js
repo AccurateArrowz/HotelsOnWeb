@@ -32,7 +32,7 @@ exports.getHotelById = async (req, res) => {
 
 exports.getAllHotelsByCity =  async (req, res) => {
     const city = req.query.city;
-    if (!city || typeof city !== 'string' || city.trim() === '') {
+    if (!city || city.trim() === '') {
       return res.status(400).json({ error: 'Missing or invalid city query parameter' });
     }
     try {
@@ -51,8 +51,9 @@ exports.getAllHotelsByCity =  async (req, res) => {
           attributes: ['id', 'imageUrl', 'isPrimary']
         }]
       });
+      // res.json(hotels);
   
-      // Attach primary image as hotelImg for client convenience
+      // if all imgs were fetched from cloud and only primary image is to be sent
       const hotelsWithPrimaryImg = hotels.map(hotel => {
         const hotelJson = hotel.toJSON();
         hotelJson.hotelImg = hotelJson.images && hotelJson.images.length > 0 ? hotelJson.images[0].imageUrl : null;
@@ -60,6 +61,7 @@ exports.getAllHotelsByCity =  async (req, res) => {
         return hotelJson;
       });
       res.json(hotelsWithPrimaryImg);
+
       console.log(`[HOTEL_CITY] Response sent for city: ${city}`);
     } catch (error) {
       console.error('Error fetching hotels by city:', error);
