@@ -1,8 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../auth/AuthContext';
-import { AuthButton } from '../auth/components/AuthButton';
-import ProfileModal from '../auth/components/ProfileModal';
+import { useAuth, AuthButton, ProfileModal } from '../../features/auth';
 import './Navbar.css';
 
 const Navbar = () => {

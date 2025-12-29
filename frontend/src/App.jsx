@@ -1,9 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './auth/AuthContext';
-import Navbar from './components/Navbar';
+import Navbar from './app/components/Navbar';
 import Footer from './public/Footer';
-import { RequireAuth, RequireRole } from './auth/components/RoleBasedComponents'; // Protects authenticated routes
-import { LoginModal } from './auth/components/LoginModal';
+import { RequireAuth, RequireRole, AuthProvider } from './features/auth'; // Protects authenticated routes
+import { LoginModal } from './features/auth';
 import { Suspense, lazy, useState } from 'react';
 
 // Lazy-loaded page components

@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { useAuth } from '../AuthContext';
+import { useAuth } from './AuthContext';
 import './auth.css';
-import { LoginModal } from './LoginModal';
-import { SignupModal } from './SignupModal';
+import  LoginModal  from './LoginModal';
+import  SignupModal  from './SignupModal';
 
-export const AuthButton = () => {
+const AuthButton = () => {
   const { user, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
@@ -61,3 +61,4 @@ export const AuthButton = () => {
     </>
   );
 };
+export default AuthButton;

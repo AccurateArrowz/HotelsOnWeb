@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { fetchHotelById } from '../../../services/api';
-import { useAuth } from '../../../auth/AuthContext';
-import { LoginModal } from '../../../auth/components/LoginModal';
-import { SignupModal } from '../../../auth/components/SignupModal';
+import { useAuth, LoginModal, SignupModal } from '@features/auth';
 import BookingModal from '../../../components/BookingModal';
 import './HotelDetails.css';
 import { MdPool, MdFamilyRestroom, MdLocalParking, MdSmokeFree, MdRestaurant, MdRoomService, MdLocalBar, MdFreeBreakfast, MdElevator, MdFitnessCenter, MdSpa, MdWifi } from 'react-icons/md';

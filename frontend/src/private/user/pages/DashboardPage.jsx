@@ -1,7 +1,6 @@
 import React from 'react';
-import { useAuth } from '../../auth/AuthContext';
-import { RequireAuth, RequirePermission, RequireRole, RoleBasedRender } from '../../auth/components/RoleBasedComponents';
-import { ProtectedRoute } from '../../auth/components/ProtectedRoute';
+import { useAuth, ProtectedRoute } from '@features/auth';
+import { RequirePermission, RequireRole, RoleBasedRender } from '@features/components/RoleBasedComponents';
 import './Dashboard.css';
 
 const Dashboard = () => {

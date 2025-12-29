@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { useAuth } from '../AuthContext';
+import { useAuth } from './AuthContext';
 import '../../styles/modal.css';
 
-export const SignupModal = ({ open, onClose, onSwitchToLogin }) => {
+const SignupModal = ({ open, onClose, onSwitchToLogin }) => {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -209,3 +209,4 @@ export const SignupModal = ({ open, onClose, onSwitchToLogin }) => {
     // </div>
   );
 };
+export default SignupModal;
