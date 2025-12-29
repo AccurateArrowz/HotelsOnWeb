@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { SignupModal } from '../SignupModal.jsx';
+import { SignupModal } from './SignupModal.jsx';
 
 // Mock useAuth to avoid actual API calls
 jest.mock('../../AuthContext', () => ({

@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { useAuth } from '../AuthContext';
+import  {useAuth}  from './AuthContext';
 import '../../styles/modal.css';
 
-export const LoginModal = ({ open, onClose, onSwitchToSignup }) => {
+const LoginModal = ({ open, onClose, onSwitchToSignup }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -75,3 +75,4 @@ export const LoginModal = ({ open, onClose, onSwitchToSignup }) => {
     </div>
   );
 };
+export default LoginModal;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAuth } from '../AuthContext';
+import { useAuth } from './AuthContext';
 import '../../styles/modal.css';
 
 const ProfileModal = ({ open, onClose }) => {
