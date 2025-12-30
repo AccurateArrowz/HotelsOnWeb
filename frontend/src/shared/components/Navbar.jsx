@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth, AuthButton, ProfileModal } from '../../features/auth';
+import { useAuth, AuthButton, ProfileModal } from '@features/auth';
 import './Navbar.css';
 
 const Navbar = () => {

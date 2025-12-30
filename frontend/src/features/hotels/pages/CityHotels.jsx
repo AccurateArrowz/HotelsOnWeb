@@ -2,8 +2,8 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FixedSizeList as List } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import HotelList from '../components/HotelList';
-import { fetchHotelsByCity } from '../../../services/api';
+import { HotelList } from '@features/hotels/components';
+import { fetchHotelsByCity } from '@services/api';
 import './CityHotels.css';
 
 const PAGE_SIZE = 20;

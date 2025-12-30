@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import HotelList from './hotels/components/HotelList';
+import { HotelList } from '@features/hotels/components';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import CityCard from './CityCard';
+import CityCard from '@shared/components/CityCard';
 import './Home.css';
 
-import { kathmandu as kathmanduImg, bhaktapur as bhaktapurImg, pokhara1 as pokharaImg, ilam as ilamImg, chitwan1 as chitwanImg, lumbini as lumbiniImg } from '../assets';
+import { kathmandu as kathmanduImg, bhaktapur as bhaktapurImg, pokhara1 as pokharaImg, ilam as ilamImg, chitwan1 as chitwanImg, lumbini as lumbiniImg } from '@assets';
 
 
 const Home = () => {

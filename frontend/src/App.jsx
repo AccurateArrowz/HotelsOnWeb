@@ -1,18 +1,18 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from './app/components/Navbar';
-import Footer from './public/Footer';
-import { RequireAuth, RequireRole, AuthProvider } from './features/auth'; // Protects authenticated routes
-import { LoginModal } from './features/auth';
+import Navbar from '@shared/components/Navbar';
+import Footer from '@shared/components/Footer';
+import { RequireAuth, RequireRole, AuthProvider } from '@features/auth'; // Protects authenticated routes
+import { LoginModal } from '@features/auth';
 import { Suspense, lazy, useState } from 'react';
 
 // Lazy-loaded page components
-const Home = lazy(() => import('./public/Home'));
-const CityHotels = lazy(() => import('./public/hotels/pages/CityHotels'));
-const HotelDetails = lazy(() => import('./public/hotels/pages/HotelDetails'));
-const DashboardPage = lazy(() => import('./private/user/DashboardPage'));
-const ListYourProperty = lazy(() => import('./public/ListYourProperty'));
-const Unauthorized = lazy(() => import('./public/Unauthorized'));
-const MyHotel = lazy(() => import('./pages/MyHotel'));
+const Home = lazy(() => import('@app/pages/Home'));
+const CityHotels = lazy(() => import('@features/hotels/pages/CityHotels'));
+const HotelDetails = lazy(() => import('@features/hotels/pages/HotelDetails'));
+const DashboardPage = lazy(() => import('./features/user/pages/DashboardPage'));
+const ListYourProperty = lazy(() => import('@features/owner/pages/ListYourProperty'));
+const Unauthorized = lazy(() => import('@app/pages/Unauthorized'));
+const MyHotel = lazy(() => import('@features/owner/MyHotel'));
 
 function App() {
   const [loginModalOpen, setLoginModalOpen] = useState(false);

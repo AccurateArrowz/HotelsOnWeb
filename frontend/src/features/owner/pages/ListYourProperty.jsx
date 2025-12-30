@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../auth/AuthContext';
-import { RequireAuth, RequireRole } from '../auth/components/RoleBasedComponents';
-import { LoginModal } from '../auth/components/LoginModal';
+import { useAuth, RequireAuth, RequireRole, LoginModal } from '../../auth';
   
 const ListYourProperty = () => {
   const { user, isAuthenticated } = useAuth();
