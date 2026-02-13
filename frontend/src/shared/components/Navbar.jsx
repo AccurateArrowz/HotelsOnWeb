@@ -10,7 +10,7 @@ const Navbar = () => {
   return (
     <header className="app-header">
       <nav className="navbar">
-        <Link to="/" className="nav-logo">Sujay</Link>
+        <Link to="/" className="nav-logo">HotelBooker</Link>
         
         <div className="nav-links">
           {/* Show only if not a plain user */}
