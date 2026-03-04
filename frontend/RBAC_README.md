@@ -188,7 +188,7 @@ import { PermissionRoute, RoleRoute } from '../components/ProtectedRoute';
   />
 </Routes>
 ```
-
+w
 ### 4. Higher-Order Components
 
 ```jsx

@@ -23,6 +23,29 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Handle responses and errors globally
+api.interceptors.response.use(
+  (response) => {
+    // Handle successful responses (2xx status codes)
+    return response;
+  },
+  (error) => {
+    // Handle error responses (4xx, 5xx status codes)
+    if (error.response?.status === 401) {
+      // Token expired or invalid - clear user data and redirect to login
+      localStorage.removeItem('user');
+      window.location.href = '/login';
+    } else if (error.response?.status === 403) {
+      // Forbidden access
+      console.error('Access forbidden');
+    } else if (error.response?.status >= 500) {
+      // Server errors
+      console.error('Server error:', error.response.data);
+    }
+    return Promise.reject(error);
+  }
+);
+
 /**
  * Fetch hotels by city with pagination
  * @param {Object} params

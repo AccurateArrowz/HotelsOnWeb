@@ -5,12 +5,13 @@ import { RequireAuth, RequireRole } from '@features/auth/RoleBasedComponents';
 import { AuthProvider } from '@features/auth/AuthProvider';
 import { LoginModal } from '@features/auth';
 import { Suspense, lazy, useState } from 'react';
- 
+import OwnerDashboard from '@features/owner/pages/OwnerDashbaord';
+
 // Lazy-loaded page components
 const Home = lazy(() => import('@app/pages/Home'));
 const CityHotels = lazy(() => import('@features/hotels/pages/CityHotels'));
 const HotelDetails = lazy(() => import('@features/hotels/pages/HotelDetails'));
-const DashboardPage = lazy(() => import('./features/user/pages/DashboardPage'));
+const DashboardPage = lazy(() => import('@features/user/pages/DashboardPage'));
 const ListYourProperty = lazy(() => import('@features/owner/pages/ListYourProperty'));
 const Unauthorized = lazy(() => import('@app/pages/Unauthorized'));
 const MyHotel = lazy(() => import('@features/owner/MyHotel'));

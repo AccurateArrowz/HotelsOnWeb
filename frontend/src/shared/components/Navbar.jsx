@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth, AuthButton, ProfileModal } from '@features/auth';
+import { AuthButton, ProfileModal, useAuth } from '@features/auth';
 import './Navbar.css';
 
 const Navbar = () => {
@@ -22,9 +22,9 @@ const Navbar = () => {
             <>
               {user.role === 'hotelOwner' ? (
                 <Link to="/my-hotel">My Hotel</Link>
-              ) : (
+              ) : user.role === 'customer' ? (
                 <Link to="/dashboard">My Bookings</Link>
-              )}
+              ) : <Link to="/dashboard">Admin Dashboard</Link>}
             </>
           )}
           

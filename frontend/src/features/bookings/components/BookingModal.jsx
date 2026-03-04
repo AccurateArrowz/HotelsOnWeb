@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import bookingService from '../services/bookingService';
-import '../styles/modal.css';
-import '../styles/bookingModal.css';
+import bookingService from '../../../services/bookingService';
+import '../../../styles/modal.css';
+import '../../../styles/bookingModal.css';
 
 const BookingModal = ({ open, onClose, hotel, roomType }) => {
   const [formData, setFormData] = useState({

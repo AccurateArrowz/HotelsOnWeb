@@ -1,4 +1,4 @@
-import { api, BASE_URL } from './api.js';
+import { api } from './api.js';
 
 const register = (userData) => {
   return api.post('/auth/register', userData);
@@ -7,6 +7,7 @@ const register = (userData) => {
 const login = (userData) => {
   return api.post('/auth/login', userData);
 };
+
 
 const logout = () => {
   localStorage.removeItem('user');

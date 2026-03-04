@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { useAuth } from '@features/auth';
+import { useAuth } from './useAuth';
 
 /**
  * Component that renders children only if the user is authenticated.

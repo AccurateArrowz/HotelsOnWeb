@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useAuth } from './AuthContext';
+import { useAuth } from './useAuth';
 import '../../styles/modal.css';
 
 const SignupModal = ({ open, onClose, onSwitchToLogin }) => {

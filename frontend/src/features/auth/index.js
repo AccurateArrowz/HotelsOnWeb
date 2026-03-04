@@ -1,5 +1,6 @@
 // Auth context and hook
-export { AuthProvider, useAuth } from './AuthContext';
+export { AuthProvider } from './AuthProvider';
+export { useAuth } from './useAuth';
 
 // Auth components
 export { default as AuthButton } from './AuthButton';
