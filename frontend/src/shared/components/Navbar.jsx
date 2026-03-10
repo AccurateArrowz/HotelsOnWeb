@@ -14,7 +14,7 @@ const Navbar = () => {
         
         <div className="nav-links">
           {/* Show only if not a plain user */}
-          {(!user || user.role !== 'customer') && (
+          {(!user || (user.role === 'owner')) && (
             <Link to="/list-property">List your Property</Link>
           )}
           

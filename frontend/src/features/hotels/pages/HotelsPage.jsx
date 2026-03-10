@@ -3,14 +3,14 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { FixedSizeList as List } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { HotelList } from '@features/hotels/components';
-import { fetchHotelsByCity } from '@services/api';
-import './CityHotels.css';
+import { fetchHotels } from '@services/api';
+import './HotelsPage.css';
 
 const PAGE_SIZE = 20;
 const ITEM_HEIGHT = 225; // Updated height: 200px card + 25px gap
 
-const CityHotels = () => {
-  const { cityName } = useParams();
+const HotelsPage = () => {
+  const { query } = useParams();
   const navigate = useNavigate();
   const [hotels, setHotels] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -21,13 +21,13 @@ const CityHotels = () => {
   const listRef = useRef();
   const [sortBy, setSortBy] = useState('name-asc'); // Default sort
 
-  // Fetch hotels for the current city/page
+  // Fetch hotels for the current query/page
   const fetchMoreHotels = useCallback(async (IsInitialLoad = false) => {
     try {
       setLoading(true);
       setError(null);
       const nextPage = IsInitialLoad ? 1 : page;
-      const hotelResponse = await fetchHotelsByCity({ city: cityName});
+      const hotelResponse = await fetchHotels({ q: query});
       // console.log("API response:", hotelResponse);
       if (IsInitialLoad) {
         setHotels(Array.isArray(hotelResponse) ? hotelResponse : []);
@@ -41,7 +41,7 @@ const CityHotels = () => {
     } finally {
       setLoading(false);
     }
-  }, [cityName, page]);
+  }, [query, page]);
 
   // Initial load or city change
   useEffect(() => {
@@ -50,7 +50,7 @@ const CityHotels = () => {
     setHasMore(true);
     fetchMoreHotels(true);
     // eslint-disable-next-line
-  }, [cityName, retryCount]);
+  }, [query, retryCount]);
 
   // Virtualized row renderer
   const Row = ({ index, style }) => {
@@ -88,7 +88,7 @@ const CityHotels = () => {
     }
   };
 
-  const formatCityName = name => name.charAt(0).toUpperCase() + name.slice(1);
+  const formatQueryName = name => name.charAt(0).toUpperCase() + name.slice(1);
 
   // Sort hotels based on the current sort order
   const sortedHotels = [...hotels].sort((a, b) => {
@@ -116,7 +116,7 @@ const CityHotels = () => {
   return (
     <div className="city-hotels-page">
       <div className="city-header">
-        <h1>Hotels in {formatCityName(cityName)}</h1>
+        <h1>Hotels for "{formatQueryName(query)}"</h1>
         <p>{hotels.length} hotels found</p>
       </div>
       <div className="sort-options">
@@ -130,7 +130,7 @@ const CityHotels = () => {
         </select>
       </div>
       {loading && hotels.length === 0 && (
-        <div className="loading">Loading hotels in {formatCityName(cityName)}...</div>
+        <div className="loading">Loading hotels for "{formatQueryName(query)}"...</div>
       )}
       {error && (
         <div className="error">
@@ -142,8 +142,8 @@ const CityHotels = () => {
       )}
       {!loading && !error && hotels.length === 0 && (
         <div className="no-hotels">
-          <h3>No hotels found in {formatCityName(cityName)}</h3>
-          <p>Try searching for a different city or check back later.</p>
+          <h3>No hotels found for "{formatQueryName(query)}"</h3>
+          <p>Try searching for a different city, hotel name, or check back later.</p>
         </div>
       )}
       {!error && hotels.length > 0 && (
@@ -169,4 +169,4 @@ const CityHotels = () => {
   );
 };
 
-export default CityHotels;
+export default HotelsPage;

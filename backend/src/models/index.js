@@ -17,6 +17,10 @@ Hotel.hasMany(HotelImage, { foreignKey: 'hotelId', as: 'images' });
 Hotel.hasMany(RoomType, { foreignKey: 'hotelId', as: 'roomTypes' });
 Hotel.hasMany(Room, { foreignKey: 'hotelId', as: 'rooms' });
 Hotel.hasMany(Booking, { foreignKey: 'hotelId', as: 'bookings' });
+Hotel.belongsTo(User, { foreignKey: 'hotelOwnerId', as: 'hotelOwner' });
+
+// User associations for hotel ownership
+User.hasMany(Hotel, { foreignKey: 'hotelOwnerId', as: 'ownedHotels' });
 
 // HotelImage associations
 HotelImage.belongsTo(Hotel, { foreignKey: 'hotelId', as: 'hotel' });

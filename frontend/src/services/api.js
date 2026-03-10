@@ -47,17 +47,17 @@ api.interceptors.response.use(
 );
 
 /**
- * Fetch hotels by city with pagination
+ * Fetch hotels by search query (city or hotel name) with pagination
  * @param {Object} params
- * @param {string} params.city - City name
+ * @param {string} params.q - Search query (city name or hotel name)
  * @param {number} params.page - Page number (1-based)
  * @param {number} params.limit - Items per page
  * @returns {Promise<{hotels: Array, total: number, page: number, limit: number}>}
  */
-export async function fetchHotelsByCity({ city, page = 1, limit = 20 }) {
+export async function fetchHotels({ q, page = 1, limit = 20 }) {
   try {
     const response = await api.get('/hotels', {
-      params: { city, page, limit },
+      params: { q, page, limit },
     });
     return response.data;
   } catch (error) {

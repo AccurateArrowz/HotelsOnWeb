@@ -1,0 +1,27 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": "your_password",
+    "database": "hotelsonweb_dev",
+    "host": "localhost",
+    "dialect": "postgres",
+    "logging": true
+  },
+  "test": {
+    "username": "postgres",
+    "password": "your_password",
+    "database": "hotelsonweb_test",
+    "host": "localhost",
+    "dialect": "postgres",
+    "logging": false
+  },
+  "production": {
+    "username": "${DB_USERNAME}",
+    "password": "${DB_PASSWORD}",
+    "database": "${DB_NAME}",
+    "host": "${DB_HOST}",
+    "dialect": "postgres",
+    "logging": false,
+    "ssl": true
+  }
+}

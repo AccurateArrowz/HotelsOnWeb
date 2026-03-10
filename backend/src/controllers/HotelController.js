@@ -31,16 +31,19 @@ exports.getHotelById = async (req, res) => {
 };
 
 exports.getAllHotelsByCity =  async (req, res) => {
-    const city = req.query.city;
-    if (!city || city.trim() === '') {
-      return res.status(400).json({ error: 'Missing or invalid city query parameter' });
+    const query = req.query.q;
+    if (!query || query.trim() === '') {
+      return res.status(400).json({ error: 'Missing or invalid search query parameter' });
     }
     try {
       const { Op } = require('sequelize');
-      // Fetch hotels with their primary image only
+      // Fetch hotels with their primary image only, searching by both city and hotel name
       const hotels = await Hotel.findAll({
         where: {
-          city: { [Op.iLike]: `%${city}%` },
+          [Op.or]: [
+            { city: { [Op.iLike]: `%${query}%` } },
+            { name: { [Op.iLike]: `%${query}%` } }
+          ],
           isActive: true
         },
         include: [{
@@ -62,9 +65,9 @@ exports.getAllHotelsByCity =  async (req, res) => {
       });
       res.json(hotelsWithPrimaryImg);
 
-      console.log(`[HOTEL_CITY] Response sent for city: ${city}`);
+      console.log(`[HOTEL_SEARCH] Response sent for query: ${query}`);
     } catch (error) {
-      console.error('Error fetching hotels by city:', error);
-      res.status(500).json({ error: 'Failed to fetch hotels by city' });
+      console.error('Error fetching hotels by query:', error);
+      res.status(500).json({ error: 'Failed to fetch hotels by query' });
     }
   };

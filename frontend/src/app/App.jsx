@@ -9,7 +9,7 @@ import OwnerDashboard from '@features/owner/pages/OwnerDashbaord';
 
 // Lazy-loaded page components
 const Home = lazy(() => import('@app/pages/Home'));
-const CityHotels = lazy(() => import('@features/hotels/pages/CityHotels'));
+const HotelsPage = lazy(() => import('@features/hotels/pages/HotelsPage'));
 const HotelDetails = lazy(() => import('@features/hotels/pages/HotelDetails'));
 const DashboardPage = lazy(() => import('@features/user/pages/DashboardPage'));
 const ListYourProperty = lazy(() => import('@features/owner/pages/ListYourProperty'));
@@ -27,9 +27,9 @@ function App() {
         <Suspense fallback={<div>Loading...</div>}>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="hotels/:cityName" element={<CityHotels />} />
+            <Route path="hotels/:query" element={<HotelsPage />} />
             <Route path="/hotels/id/:id" element={<HotelDetails />} />
-            {/* Booking and Dashboard require authentication */}
+            {/*The following routes require authentication */}
             <Route path="/booking/:id" element={
               <RequireAuth onRequireLogin={handleRequireLogin}>
                 {/* Place booking component here */}

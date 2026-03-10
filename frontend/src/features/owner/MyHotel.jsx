@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../features/auth/useAuth';
-import '../styles/MyHotel.css';
+import { useAuth } from '@features/auth/useAuth';
+import '@/styles/MyHotel.css';
 
 const MyHotel = () => {
   const { user } = useAuth();

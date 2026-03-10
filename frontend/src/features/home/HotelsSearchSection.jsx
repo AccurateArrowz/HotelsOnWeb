@@ -6,12 +6,14 @@ import 'react-datepicker/dist/react-datepicker.css';
 export default function HotelsSearchSection() {
       const navigate = useNavigate();
       const [search, setSearch] = useState({ 
-        location: '',
+        query: '',
         adults: 2,
         children: 0
       });
       const [showGuestSelector, setShowGuestSelector] = useState(false);
       const guestSelectorRef = useRef(null);
+      const [checkin, setCheckin] = useState(null);
+      const [checkout, setCheckout] = useState(null);
     
     useEffect(() => {
         function handleClickOutside(event) {
@@ -33,8 +35,6 @@ export default function HotelsSearchSection() {
         if (children > 0) label += `, ${children} Child${children > 1 ? 'ren' : ''}`;
         return label;
       };
-      const [checkin, setCheckin] = useState(null);
-      const [checkout, setCheckout] = useState(null);
     
       
       const handleChange = (e) => {
@@ -72,12 +72,13 @@ export default function HotelsSearchSection() {
         e.preventDefault();
         setShowGuestSelector(false);
     
-        // Create a slug/encoded version of the city for the URL
-        const citySlug = search.location.trim().toLowerCase();
-        if (!citySlug) return;
+        // Create a slug/encoded version of the query for the URL
+        const querySlug = search.query.trim().toLowerCase();
+        if (!querySlug ) return;
+        
     
-        // Navigate to the CityHotels page, passing extra search info via location state
-        navigate(`/hotels/${encodeURIComponent(citySlug)}`, {
+        // Navigate to the HotelsPage page, passing extra search info via location state
+        navigate(`/hotels/${encodeURIComponent(querySlug)}`, {
           state: {
             ...search,
             checkin,
@@ -94,9 +95,9 @@ export default function HotelsSearchSection() {
           <form className="search-bar" onSubmit={handleSearch}>
             <input
               type="text"
-              name="location"
+              name="query"
               placeholder="Search by City or Hotel"
-              value={search.location}
+              value={search.query}
               onChange={handleChange}
               required
             />
