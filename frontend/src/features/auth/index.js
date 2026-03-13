@@ -2,21 +2,22 @@
 export { AuthProvider } from './AuthProvider';
 export { useAuth } from './useAuth';
 
-// Auth components
+// // Auth components
 export { default as AuthButton } from './AuthButton';
 export { default as LoginModal } from './LoginModal';
 export { default as ProfileModal } from './ProfileModal';
 export { default as SignupModal } from './SignupModal';
 
-// Role-based components and utilities
-export {
-  RequireAuth,
-  ShowIfPermission,
-  RequirePermission,
-  RequireAnyPermission,
-  RequireRole,
-  RequireAnyRole,
-  RoleBasedRender
-} from './RoleBasedComponents';
+// // Role-based components and utilities
+export {   RequireAuth,} from './RoleBasedComponents';
+// export {
+//   RequireAuth,
+//   RequirePermission,
+//   RequireAnyPermission,
+//   RequireRole,
+//   RequireAnyRole,
+//   RoleBasedRender
+// } 
 
-export { ProtectedRoute } from './ProtectedRoute';
+
+// export { ProtectedRoute } from './ProtectedRoute';

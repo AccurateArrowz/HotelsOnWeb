@@ -17,4 +17,3 @@ npm install
 npm run dev
 ```
 
-The backend will be set up in a separate folder soon.

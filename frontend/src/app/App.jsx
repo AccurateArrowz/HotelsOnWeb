@@ -1,11 +1,10 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import Navbar from '@shared/components/Navbar';
 import Footer from '@shared/components/Footer';
 import { RequireAuth, RequireRole } from '@features/auth/RoleBasedComponents';
-import { AuthProvider } from '@features/auth/AuthProvider';
 import { LoginModal } from '@features/auth';
 import { Suspense, lazy, useState } from 'react';
-import OwnerDashboard from '@features/owner/pages/OwnerDashbaord';
+import { useAuth } from '../features/auth/useAuth';
 
 // Lazy-loaded page components
 const Home = lazy(() => import('@app/pages/Home'));
@@ -18,10 +17,29 @@ const MyHotel = lazy(() => import('@features/owner/MyHotel'));
 
 function App() {
   const [loginModalOpen, setLoginModalOpen] = useState(false);
-  const handleRequireLogin = () => setLoginModalOpen(true);
-  return (
+  const openLoginModal = () => setLoginModalOpen(true);
 
-    <AuthProvider>
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const { isAuthenticated } = useAuth();
+  const redirectOnModalClosePrefixes = ['/list-property'];
+  const shouldRedirectOnModalClose = redirectOnModalClosePrefixes.some(
+    (prefix) => location.pathname === prefix || location.pathname.startsWith(`${prefix}/`)
+  );
+
+  const closeLoginModal = () => {
+    setLoginModalOpen(false);
+    console.log('isAuthenticated', isAuthenticated);
+    console.log('shouldRedirectOnModalClose ', shouldRedirectOnModalClose);
+    if (!isAuthenticated && shouldRedirectOnModalClose) {
+      navigate('/', { replace: true });
+    }
+  };
+  return (
+    <>
+
       <Navbar />
       <main className="main-content">
         <Suspense fallback={<div>Loading...</div>}>
@@ -31,24 +49,24 @@ function App() {
             <Route path="/hotels/id/:id" element={<HotelDetails />} />
             {/*The following routes require authentication */}
             <Route path="/booking/:id" element={
-              <RequireAuth onRequireLogin={handleRequireLogin}>
+              <RequireAuth onRequireLogin={openLoginModal}>
                 {/* Place booking component here */}
               </RequireAuth>
             } />
             <Route path="/dashboard" element={
-              <RequireAuth onRequireLogin={handleRequireLogin}>
+              <RequireAuth onRequireLogin={openLoginModal}>
                 <DashboardPage />
               </RequireAuth>
             } />
             <Route path="/list-property" element={
-              <RequireAuth onRequireLogin={handleRequireLogin}>
+              <RequireAuth onRequireLogin={openLoginModal}>
                 <RequireRole role="hotelOwner">
                   <ListYourProperty />
                 </RequireRole>
               </RequireAuth>
             } />
             <Route path="/my-hotel" element={
-              <RequireAuth onRequireLogin={handleRequireLogin}>
+              <RequireAuth onRequireLogin={openLoginModal}>
                 <RequireRole role="hotelOwner">
                   <MyHotel />
                 </RequireRole>
@@ -60,9 +78,9 @@ function App() {
         </Suspense>
       </main>
       <Footer />
-      <LoginModal open={loginModalOpen} onClose={() => setLoginModalOpen(false)} />
-    </AuthProvider>
+      <LoginModal open={loginModalOpen} onClose={closeLoginModal} />
 
+    </>
   );
 }
 

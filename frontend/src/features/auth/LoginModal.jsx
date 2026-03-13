@@ -14,7 +14,7 @@ const LoginModal = ({ open, onClose, onSwitchToSignup }) => {
     
     try {
       await login(email, password);
-      onClose();
+      onClose?.();
     } catch (err) {
       setError('Failed to log in. Please check your credentials.');
     }

@@ -5,10 +5,9 @@ import HotelsSearchSection from '@features/home/HotelsSearchSection';
 
 const Home = () => {
 
-
+  
   return (
     <div className="home-page">
-
     <HotelsSearchSection></HotelsSearchSection>
      <PopularCities></PopularCities>
      <FeaturesHighlight></FeaturesHighlight>
