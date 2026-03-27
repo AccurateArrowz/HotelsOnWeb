@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useAuth, RequireAuth, RequireRole, LoginModal } from '../../auth';
+import { api } from '../../../services/api';
+import { uploadFiles } from '../../../services/mediaUpload';
   
 const ListYourProperty = () => {
   const { user, isAuthenticated } = useAuth();
@@ -50,31 +52,24 @@ const ListYourProperty = () => {
     setSubmitSuccess(false);
     
     try {
-      // Create FormData for multipart upload
-      const formData = new FormData();
-      
-      // Append property data
-      Object.keys(propertyData).forEach(key => {
-        if (key !== 'images') {
-          formData.append(key, propertyData[key]);
-        }
+      const uploads = await uploadFiles({
+        files: propertyData.images,
+        folder: '/hotel-requests'
       });
-      
-      // Append images
-      propertyData.images.forEach((image, index) => {
-        formData.append(`images`, image);
+
+      const imageUrls = uploads.map((u) => u.url).filter(Boolean);
+
+      const response = await api.post('/hotel-requests/request', {
+        name: propertyData.name,
+        description: propertyData.description,
+        street: propertyData.street,
+        city: propertyData.city,
+        country: propertyData.country,
+        amenities: propertyData.amenities,
+        imageUrls
       });
-      
-      // Submit to backend
-      const response = await fetch('http://localhost:3001/api/hotel-requests/request', {
-        method: 'POST',
-        body: formData,
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).token : ''}`
-        }
-      });
-      
-      if (response.ok) {
+
+      if (response.status >= 200 && response.status < 300) {
         setSubmitSuccess(true);
         // Reset form
         setPropertyData({
@@ -88,12 +83,11 @@ const ListYourProperty = () => {
         });
         setImagePreviews([]);
       } else {
-        const errorData = await response.json();
-        setSubmitError(errorData.error || 'Failed to submit property request');
+        setSubmitError('Failed to submit property request');
       }
     } catch (error) {
       console.error('Error submitting property:', error);
-      setSubmitError('An error occurred while submitting your property request');
+      setSubmitError(error?.response?.data?.error || 'An error occurred while submitting your property request');
     } finally {
       setIsSubmitting(false);
     }

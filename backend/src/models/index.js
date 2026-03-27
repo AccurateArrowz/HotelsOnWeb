@@ -7,6 +7,10 @@ const Booking = require('./Booking');
 const BookingRoom = require('./BookingRoom');
 const HotelRequest = require('./HotelRequest');
 const HotelRequestImage = require('./HotelRequestImage');
+const Role = require('./Role');
+const Permission = require('./Permission');
+const RolePermission = require('./RolePermission');
+// const UserRole = require('./UserRole');
 
 // User associations
 User.hasMany(Booking, { foreignKey: 'userId', as: 'bookings' });
@@ -54,6 +58,29 @@ User.hasMany(HotelRequest, { foreignKey: 'userId', as: 'hotelRequests' });
 HotelRequestImage.belongsTo(HotelRequest, { foreignKey: 'hotelRequestId', as: 'hotelRequest' });
 HotelRequest.hasMany(HotelRequestImage, { foreignKey: 'hotelRequestId', as: 'images' });
 
+// RBAC associations
+// Role.belongsToMany(Permission, {
+//   through: RolePermission,
+//   foreignKey: 'roleId',
+//   otherKey: 'permissionId',
+//   as: 'permissions'
+// });
+// Permission.belongsToMany(Role, {
+//   through: RolePermission,
+//   foreignKey: 'permissionId',
+//   otherKey: 'roleId',
+//   as: 'roles'
+// });
+
+// User.hasMany(UserRole, { foreignKey: 'userId', as: 'userRoles' });
+// UserRole.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+
+// Role.hasMany(UserRole, { foreignKey: 'roleId', as: 'userRoles' });
+// UserRole.belongsTo(Role, { foreignKey: 'roleId', as: 'role' });
+
+// Hotel.hasMany(UserRole, { foreignKey: 'hotelId', as: 'userRoles' });
+// UserRole.belongsTo(Hotel, { foreignKey: 'hotelId', as: 'hotel' });
+
 module.exports = {
   User,
   Hotel,
@@ -63,5 +90,9 @@ module.exports = {
   Booking,
   BookingRoom,
   HotelRequest,
-  HotelRequestImage
-}; 
+  HotelRequestImage,
+  Role,
+  Permission,
+  RolePermission,
+  // UserRole
+};

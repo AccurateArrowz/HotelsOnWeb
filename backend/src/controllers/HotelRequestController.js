@@ -1,6 +1,4 @@
 const { HotelRequest, HotelRequestImage } = require('../models');
-const path = require('path');
-const fs = require('fs').promises;
 
 // Create a new hotel listing request
 exports.createHotelRequest = async (req, res) => {
@@ -9,7 +7,7 @@ exports.createHotelRequest = async (req, res) => {
     const userId = req.user.id;
     
     // Extract hotel data from request body
-    const { name, description, street, city, country } = req.body;
+    const { name, description, street, city, country, imageUrls } = req.body;
     
     // Validate required fields
     if (!name || !street || !city || !country) {
@@ -28,20 +26,23 @@ exports.createHotelRequest = async (req, res) => {
       userId
     });
     
-    // Process uploaded images if any
+    // Persist image URLs (uploaded directly to the media provider from the client)
     const images = [];
-    if (req.files && req.files.length > 0) {
-      for (let i = 0; i < req.files.length; i++) {
-        const file = req.files[i];
-        const imageUrl = `/uploads/${file.filename}`;
-        
+    if (Array.isArray(imageUrls) && imageUrls.length > 0) {
+      for (let i = 0; i < imageUrls.length; i++) {
+        const imageUrl = imageUrls[i];
+
+        if (typeof imageUrl !== 'string' || imageUrl.trim().length === 0) {
+          continue;
+        }
+
         const image = await HotelRequestImage.create({
           hotelRequestId: hotelRequest.id,
-          imageUrl,
-          isPrimary: i === 0, // First image is primary
+          imageUrl: imageUrl.trim(),
+          isPrimary: i === 0,
           orderIndex: i
         });
-        
+
         images.push(image);
       }
     }

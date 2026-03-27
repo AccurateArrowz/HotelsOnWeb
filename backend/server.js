@@ -11,6 +11,7 @@ const hotelRoutes = require('./src/routes/hotelRoutes');
 const authRoutes = require('./src/routes/authRoutes');
 const hotelRequestRoutes = require('./src/routes/hotelRequestRoutes');
 const bookingRoutes = require('./src/routes/bookingRoutes');
+const mediaRoutes = require('./src/routes/mediaRoutes');
 
 // Middleware
 app.use(cors());
@@ -23,6 +24,7 @@ app.use('/api/hotels', hotelRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/hotel-requests', hotelRequestRoutes);
 app.use('/api/bookings', bookingRoutes);
+app.use('/api/media', mediaRoutes);
 
 // Initialize database and start server
 async function startServer() {
@@ -31,8 +33,8 @@ async function startServer() {
     await sequelize.authenticate();
     console.log('Database connection established successfully.');
 
-    // Sync all models with database (create tables)
-    await sequelize.sync({ force: false , alter: true }); // Set force: false to preserve existing data
+    // 'alter' Syncs all models with database (/ create tables)
+    await sequelize.sync({ force: false , alter: false }); // Set force: false to preserve existing data
     console.log('Database synchronized successfully.');
 
     // Start server

@@ -5,6 +5,7 @@ import { RequireAuth, RequireRole } from '@features/auth/RoleBasedComponents';
 import { LoginModal } from '@features/auth';
 import { Suspense, lazy, useState } from 'react';
 import { useAuth } from '../features/auth/useAuth';
+import  OwnerDashboard  from '@features/owner/pages/OwnerDashboard';
 
 // Lazy-loaded page components
 const Home = lazy(() => import('@app/pages/Home'));
@@ -37,6 +38,7 @@ function App() {
       navigate('/', { replace: true });
     }
   };
+  
   return (
     <>
 
@@ -68,7 +70,7 @@ function App() {
             <Route path="/my-hotel" element={
               <RequireAuth onRequireLogin={openLoginModal}>
                 <RequireRole role="hotelOwner">
-                  <MyHotel />
+                  <OwnerDashboard></OwnerDashboard>
                 </RequireRole>
               </RequireAuth>
             } />

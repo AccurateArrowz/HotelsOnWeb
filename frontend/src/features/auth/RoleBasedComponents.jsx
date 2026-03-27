@@ -1,6 +1,6 @@
-// import React from 'react';
-// import { Navigate, useLocation } from 'react-router-dom';
-// import { useAuth } from './useAuth';
+import React from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
+import { useAuth } from './useAuth';
 
 // /**
 //  * Component that renders children only if the user is authenticated.
@@ -10,10 +10,10 @@ export const RequireAuth = ({ children, redirectTo = '/login', onRequireLogin })
   const { user, loading } = useAuth();
   const location = useLocation();
 
-  if (loading) {
-    return <div className="loading">Loading...</div>;
+  if(loading) {
+    return <div>Loading...</div>;
   }
-
+  
   if (!user) {
     if (typeof onRequireLogin === 'function') {
       onRequireLogin();
@@ -82,8 +82,13 @@ export const RequireRole = ({
   redirectTo = '/unauthorized',
   fallback,
 }) => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const location = useLocation();
+
+  if (loading) {
+    return <div className="loading">Loading...</div>;
+  }
+
 
   if (user?.role !== role) {
     if (fallback !== undefined) {
