@@ -135,7 +135,7 @@ const ListYourProperty = () => {
   return (
     <div style={{ padding: '2rem', maxWidth: '800px', margin: '0 auto' }}>
       <h1>List Your Property</h1>
-      <p>Fill out the form below to list your property on HotelBooker.</p>
+      <p>Fill out the form below to list your property on BookMyHotel.</p>
       
       {submitSuccess && (
         <div style={{
