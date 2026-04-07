@@ -122,7 +122,7 @@ const ListYourProperty = () => {
   }
 
   // If user is authenticated but not a hotel owner, show message
-  if (user && user.role !== 'hotelOwner') {
+  if (user && user.role !== 'owner') {
     return (
       <div style={{ padding: '2rem', textAlign: 'center' }}>
         <h1>List Your Property</h1>
@@ -335,7 +335,7 @@ const ListYourProperty = () => {
 const ListYourPropertyWithAuth = () => {
   return (
     <RequireAuth redirectTo="/login">
-      <RequireRole role="hotelOwner" redirectTo="/unauthorized">
+      <RequireRole role="owner" redirectTo="/unauthorized">
         <ListYourProperty />
       </RequireRole>
     </RequireAuth>

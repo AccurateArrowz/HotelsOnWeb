@@ -20,7 +20,7 @@ const Navbar = () => {
           
           {user && (
             <>
-              {user.role === 'hotelOwner' ? (
+              {user.role === 'owner' ? (
                 <Link to="/my-hotel">My Hotel</Link>
               ) : user.role === 'customer' ? (
                 <Link to="/dashboard">My Bookings</Link>

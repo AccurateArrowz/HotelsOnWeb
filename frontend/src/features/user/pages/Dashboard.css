@@ -131,7 +131,7 @@
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 }
 
-.dashboard-section[data-role="hotelOwner"] .action-cards {
+.dashboard-section[data-role="owner"] .action-cards {
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 }
 

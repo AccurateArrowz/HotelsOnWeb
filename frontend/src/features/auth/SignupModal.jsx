@@ -149,7 +149,7 @@ const SignupModal = ({ open, onClose, onSwitchToLogin }) => {
               aria-label="Select account type"
             >
               <option value="customer">Traveler looking to book hotels</option>
-              <option value="hotelOwner">Hotel owner listing my property</option>
+              <option value="owner">Hotel owner listing my property</option>
             </select>
           </div>
 

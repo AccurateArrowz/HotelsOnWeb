@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAuth, ProtectedRoute } from '@features/auth/useAuth';
-import { RequirePermission, RequireRole, RoleBasedRender } from '@features/components/RoleBasedComponents';
+import { RequirePermission, RequireRole, RoleBasedRender } from '@features/auth';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -62,7 +62,7 @@ const Dashboard = () => {
                   </div>
                 </div>
               ),
-              hotelOwner: (
+              owner: (
                 <div className="dashboard-section">
                   <h2>Hotel Owner Dashboard</h2>
                   <p>Manage your hotels and view bookings.</p>

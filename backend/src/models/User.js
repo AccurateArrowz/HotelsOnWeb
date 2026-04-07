@@ -32,8 +32,15 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
     allowNull: true
   },
-  role: {
-    type: DataTypes.ENUM('customer', 'hotelOwner', 'admin', 'manager', 'receptionist'),
+  roleId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    references: {
+      model: 'Roles',
+      key: 'id'
+    },
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE'
   }
 }, {
   hooks: {

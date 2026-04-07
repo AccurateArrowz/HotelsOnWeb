@@ -38,6 +38,7 @@ body {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
+  justify-content: center;
 }
 
 a {
@@ -66,10 +67,6 @@ button {
   color: white;
   cursor: pointer;
   transition: border-color 0.25s;
-}
-
-button:hover {
-  border-color: #646cff;
 }
 
 button:focus,
@@ -158,10 +155,7 @@ button:focus-visible {
   background: #c82333;
 }
 
-.main-content {
-  flex: 1;
-  padding: 2rem 0;
-}
+
 
 .app-footer {
   background: #333;

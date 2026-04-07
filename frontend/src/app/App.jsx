@@ -1,11 +1,10 @@
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
-import Navbar from '@shared/components/Navbar';
-import Footer from '@shared/components/Footer';
+import {Navbar, Footer} from '@shared/components';
 import { RequireAuth, RequireRole } from '@features/auth/RoleBasedComponents';
-import { LoginModal } from '@features/auth';
+import { LoginModal, LoginPage } from '@features/auth';
 import { Suspense, lazy, useState } from 'react';
-import { useAuth } from '../features/auth/useAuth';
 import  OwnerDashboard  from '@features/owner/pages/OwnerDashboard';
+import { useAuth } from '../features/auth/useAuth';
 
 // Lazy-loaded page components
 const Home = lazy(() => import('@app/pages/Home'));
@@ -47,6 +46,7 @@ function App() {
         <Suspense fallback={<div>Loading...</div>}>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/login" element={<LoginPage />} />
             <Route path="hotels/:query" element={<HotelsPage />} />
             <Route path="/hotels/id/:id" element={<HotelDetails />} />
             {/*The following routes require authentication */}
@@ -61,15 +61,15 @@ function App() {
               </RequireAuth>
             } />
             <Route path="/list-property" element={
-              <RequireAuth onRequireLogin={openLoginModal}>
-                <RequireRole role="hotelOwner">
+              // <RequireAuth onRequireLogin={openLoginModal}>
+                <RequireRole role="owner">
                   <ListYourProperty />
                 </RequireRole>
-              </RequireAuth>
+              // </RequireAuth>
             } />
             <Route path="/my-hotel" element={
               <RequireAuth onRequireLogin={openLoginModal}>
-                <RequireRole role="hotelOwner">
+                <RequireRole role="owner">
                   <OwnerDashboard></OwnerDashboard>
                 </RequireRole>
               </RequireAuth>
@@ -87,3 +87,4 @@ function App() {
 }
 
 export default App;
+

@@ -17,6 +17,7 @@ const LoginModal = ({ open, onClose, onSwitchToSignup }) => {
       onClose?.();
     } catch (err) {
       setError('Failed to log in. Please check your credentials.');
+      console.log('login error: ', err)
     }
   };
 

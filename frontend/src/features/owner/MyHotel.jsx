@@ -17,7 +17,7 @@ const MyHotel = () => {
   };
 
   // This is a simple check. Ideally, you'd use a protected route component.
-  if (user?.role !== 'hotelOwner') {
+  if (user?.role !== 'owner') {
     return (
       <div className="my-hotel-container unauthorized-message">
         <h2>Unauthorized</h2>
