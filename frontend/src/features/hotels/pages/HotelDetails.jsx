@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { fetchHotelById } from '@services/api';
+import { useGetHotelByIdQuery } from '../hotelsApi';
 import { useAuth, LoginModal, SignupModal } from '@features/auth';
 import { BookingModal } from '@bookings/components';
 import './HotelDetails.css';
@@ -10,47 +10,23 @@ import { FaBed } from 'react-icons/fa';
 const HotelDetailsPage = () => {
   const { id } = useParams();
   const { isAuthenticated } = useAuth();
-  const [hotel, setHotel] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const {
+    data: hotel,
+    isLoading: loading,
+    error,
+  } = useGetHotelByIdQuery(id);
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [signupModalOpen, setSignupModalOpen] = useState(false);
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [selectedRoomType, setSelectedRoomType] = useState(null);
-
-  useEffect(() => {
-    const fetchHotel = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const data = await fetchHotelById(id);
-        console.log("individual hotel:", data);
-        setHotel(data);
-      } catch (err) {
-        setError(err.response?.data?.message || err.message || 'Failed to fetch hotel details');
-        setHotel(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchHotel();
-  }, [id]);
 
   if (loading) {
     return <div className="hotel-details-page"><div className="loading">Loading hotel details...</div></div>;
   }
 
   if (error) {
-    return (
-      <div className="hotel-details-page">
-        <div className="error">
-          <span>Error: {error}</span>
-          <button className="try-again-btn" onClick={() => window.location.reload()}>
-            Try Again
-          </button>
-        </div>
-      </div>
-    );
+    const message = error?.data?.message || error?.error || 'Failed to fetch hotel details';
+    return <div className="hotel-details-page"><div className="error">{message}</div></div>;
   }
 
   if (!hotel) {

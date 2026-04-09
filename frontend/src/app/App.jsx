@@ -1,7 +1,7 @@
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import {Navbar, Footer} from '@shared/components';
 import { RequireAuth, RequireRole } from '@features/auth/RoleBasedComponents';
-import { LoginModal, LoginPage } from '@features/auth';
+import { LoginModal } from '@features/auth';
 import { Suspense, lazy, useState } from 'react';
 import  OwnerDashboard  from '@features/owner/pages/OwnerDashboard';
 import { useAuth } from '../features/auth/useAuth';
@@ -46,7 +46,6 @@ function App() {
         <Suspense fallback={<div>Loading...</div>}>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/login" element={<LoginPage />} />
             <Route path="hotels/:query" element={<HotelsPage />} />
             <Route path="/hotels/id/:id" element={<HotelDetails />} />
             {/*The following routes require authentication */}

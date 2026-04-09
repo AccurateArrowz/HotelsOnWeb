@@ -4,6 +4,7 @@
     "useDefineForClassFields": true,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
+    "allowJs": true,
     "skipLibCheck": true,
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
@@ -26,6 +27,6 @@
       "@assets/*": ["assets/*"]
     }
   },
-  "include": ["src/**/*.{js,jsx}"],
+  "include": ["src"],
   "exclude": ["node_modules", "dist"]
 }

@@ -1,5 +1,4 @@
 import ImageKit from 'imagekit-javascript';
-import { api } from './api';
 
 const getImageKitClient = () => {
   const publicKey = import.meta.env.VITE_IMAGEKIT_PUBLIC_KEY;
@@ -14,7 +13,19 @@ const getImageKitClient = () => {
 
 export const uploadFile = async ({ file, fileName, folder }) => {
   const imagekit = getImageKitClient();
-  const { data: auth } = await api.get('/media/auth');
+  const user = localStorage.getItem('user');
+  const token = user ? JSON.parse(user)?.token : null;
+
+  const res = await fetch('http://localhost:3001/api/media/auth', {
+    method: 'GET',
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  });
+
+  if (!res.ok) {
+    throw new Error('Failed to get media auth');
+  }
+
+  const auth = await res.json();
 
   const result = await new Promise((resolve, reject) => {
     imagekit.upload(

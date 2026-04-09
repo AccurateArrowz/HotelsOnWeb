@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAuth, ProtectedRoute } from '@features/auth/useAuth';
+import { useAuth, ProtectedRoute } from '@features/auth';
 import { RequirePermission, RequireRole, RoleBasedRender } from '@features/auth';
 import './Dashboard.css';
 

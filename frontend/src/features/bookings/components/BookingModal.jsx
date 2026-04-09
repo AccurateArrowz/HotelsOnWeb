@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import bookingService from '../../../services/bookingService';
 import '../../../styles/modal.css';
 import '../../../styles/bookingModal.css';
 

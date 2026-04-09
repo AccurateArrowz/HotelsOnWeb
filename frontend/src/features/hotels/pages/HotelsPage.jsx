@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { FixedSizeList as List } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { HotelList } from '@features/hotels/components';
-import { fetchHotels } from '@services/api';
+import { useLazyGetHotelsQuery } from '../hotelsApi';
 import './HotelsPage.css';
 
 const PAGE_SIZE = 20;
@@ -21,13 +21,15 @@ const HotelsPage = () => {
   const listRef = useRef();
   const [sortBy, setSortBy] = useState('name-asc'); // Default sort
 
+  const [triggerGetHotels] = useLazyGetHotelsQuery();
+
   // Fetch hotels for the current query/page
   const fetchMoreHotels = useCallback(async (IsInitialLoad = false) => {
     try {
       setLoading(true);
       setError(null);
       const nextPage = IsInitialLoad ? 1 : page;
-      const hotelResponse = await fetchHotels({ q: query});
+      const hotelResponse = await triggerGetHotels({ q: query, page: nextPage, limit: PAGE_SIZE }).unwrap();
       // console.log("API response:", hotelResponse);
       if (IsInitialLoad) {
         setHotels(Array.isArray(hotelResponse) ? hotelResponse : []);
@@ -37,11 +39,11 @@ const HotelsPage = () => {
       setHasMore((Array.isArray(hotelResponse) ? hotelResponse.length : 0) === PAGE_SIZE);
       setPage(nextPage + 1);
     } catch (err) {
-      setError(err.response?.hotelResponse?.message || err.message || 'Failed to fetch hotels');
+      setError(err?.data?.message || err?.error || err?.message || 'Failed to fetch hotels');
     } finally {
       setLoading(false);
     }
-  }, [query, page]);
+  }, [query, page, triggerGetHotels]);
 
   // Initial load or city change
   useEffect(() => {

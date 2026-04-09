@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useAuth, RequireAuth, RequireRole, LoginModal } from '../../auth';
-import { api } from '../../../services/api';
 import { uploadFiles } from '../../../services/mediaUpload';
+import { useCreateHotelRequestMutation } from '../hotelRequestsApi';
   
 const ListYourProperty = () => {
   const { user, isAuthenticated } = useAuth();
+  const [createHotelRequest] = useCreateHotelRequestMutation();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [propertyData, setPropertyData] = useState({
     name: '',
@@ -59,7 +60,7 @@ const ListYourProperty = () => {
 
       const imageUrls = uploads.map((u) => u.url).filter(Boolean);
 
-      const response = await api.post('/hotel-requests/request', {
+      await createHotelRequest({
         name: propertyData.name,
         description: propertyData.description,
         street: propertyData.street,
@@ -67,27 +68,23 @@ const ListYourProperty = () => {
         country: propertyData.country,
         amenities: propertyData.amenities,
         imageUrls
-      });
+      }).unwrap();
 
-      if (response.status >= 200 && response.status < 300) {
-        setSubmitSuccess(true);
-        // Reset form
-        setPropertyData({
-          name: '',
-          description: '',
-          street: '',
-          city: '',
-          country: '',
-          amenities: [],
-          images: []
-        });
-        setImagePreviews([]);
-      } else {
-        setSubmitError('Failed to submit property request');
-      }
+      setSubmitSuccess(true);
+      // Reset form
+      setPropertyData({
+        name: '',
+        description: '',
+        street: '',
+        city: '',
+        country: '',
+        amenities: [],
+        images: []
+      });
+      setImagePreviews([]);
     } catch (error) {
       console.error('Error submitting property:', error);
-      setSubmitError(error?.response?.data?.error || 'An error occurred while submitting your property request');
+      setSubmitError(error?.data?.error || error?.data?.message || 'An error occurred while submitting your property request');
     } finally {
       setIsSubmitting(false);
     }
