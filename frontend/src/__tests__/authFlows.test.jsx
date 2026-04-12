@@ -2,8 +2,9 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { AuthProvider } from '../auth/AuthContext.jsx';
-import { LoginModal } from '../auth/components/LoginModal.jsx';
-import { SignupModal } from '../auth/components/SignupModal.jsx';
+import { Modal } from '../shared/components/Modal.jsx';
+import LoginForm from '../auth/LoginForm.jsx';
+import SignupForm from '../auth/SignupForm.jsx';
 
 // Mock authService used inside AuthContext
 import authService from '../services/authService.js';
@@ -26,7 +27,9 @@ describe('Authentication flows', () => {
     authService.login.mockResolvedValueOnce({ data: { email: 'user@example.com' } });
 
     render(
-      <LoginModal open onClose={jest.fn()} onSwitchToSignup={jest.fn()} />,
+      <Modal isOpen={true} onClose={jest.fn()} title="Sign In">
+        <LoginForm onSuccess={jest.fn()} onSwitchToSignup={jest.fn()} />
+      </Modal>,
       { wrapper }
     );
 
@@ -50,7 +53,9 @@ describe('Authentication flows', () => {
     authService.register.mockResolvedValueOnce({ data: { email: 'new@example.com' } });
 
     render(
-      <SignupModal open onClose={jest.fn()} onSwitchToLogin={jest.fn()} />,
+      <Modal isOpen={true} onClose={jest.fn()} title="Create Account">
+        <SignupForm onSuccess={jest.fn()} onSwitchToLogin={jest.fn()} />
+      </Modal>,
       { wrapper }
     );
 

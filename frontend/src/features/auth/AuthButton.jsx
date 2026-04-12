@@ -1,14 +1,17 @@
 import { useState } from 'react';
 import { useAuth } from './useAuth';
+import { Modal } from '../../shared';
+import LoginForm from './LoginForm';
+import SignupForm from './SignupForm';
 import './auth.css';
-import  LoginModal  from './LoginModal';
-import  SignupModal  from './SignupModal';
+import RoughAuthModal from './roughAuthModal';
 
 const AuthButton = () => {
   const { user, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [loginOpen, setLoginOpen] = useState(false);
-  const [signupOpen, setSignupOpen] = useState(false);
+  // const [loginOpen, setLoginOpen] = useState(false);
+  // const [signupOpen, setSignupOpen] = useState(false);
+  const [authenticationMode, setAuthenticationMode] = useState(null); //'login' | 'signup' | null
 
   const handleLogout = () => {
     logout();
@@ -34,30 +37,16 @@ const AuthButton = () => {
 
   return (
     <>
-      <button onClick={() => setLoginOpen(true)} className="login-btn">
+      <button onClick={() => setAuthenticationMode("login")} className="login-btn">
         Login
       </button>
-      <button onClick={() => setSignupOpen(true)} className="signup-btn" style={{ marginLeft: '8px' }}>
+      <button onClick={() => setAuthenticationMode("signup")} className="signup-btn" style={{ marginLeft: '8px' }}>
         Signup
       </button>
       
-      <LoginModal
-        open={loginOpen}
-        onClose={() => setLoginOpen(false)}
-        onSwitchToSignup={() => {
-          setLoginOpen(false);
-          setSignupOpen(true);
-        }}
-      />
-      
-      <SignupModal
-        open={signupOpen}
-        onClose={() => setSignupOpen(false)}
-        onSwitchToLogin={() => {
-          setSignupOpen(false);
-          setLoginOpen(true);
-        }}
-      />
+      {(authenticationMode !== null) &&
+        <RoughAuthModal authenticationMode={authenticationMode}/>
+      }
     </>
   );
 };

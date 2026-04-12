@@ -1,10 +1,8 @@
-import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
-import {Navbar, Footer} from '@shared/components';
+import { Routes, Route } from 'react-router-dom';
+import { Navbar, Footer } from '@shared/components';
 import { RequireAuth, RequireRole } from '@features/auth/RoleBasedComponents';
-import { LoginModal } from '@features/auth';
-import { Suspense, lazy, useState } from 'react';
-import  OwnerDashboard  from '@features/owner/pages/OwnerDashboard';
-import { useAuth } from '../features/auth/useAuth';
+import { Suspense, lazy } from 'react';
+import OwnerDashboard from '@features/owner/pages/OwnerDashboard';
 
 // Lazy-loaded page components
 const Home = lazy(() => import('@app/pages/Home'));
@@ -16,27 +14,17 @@ const Unauthorized = lazy(() => import('@app/pages/Unauthorized'));
 const MyHotel = lazy(() => import('@features/owner/MyHotel'));
 
 function App() {
-  const [loginModalOpen, setLoginModalOpen] = useState(false);
-  const openLoginModal = () => setLoginModalOpen(true);
 
 
-  const location = useLocation();
-  const navigate = useNavigate();
+  // const location = useLocation();
+  // const navigate = useNavigate();
 
-  const { isAuthenticated } = useAuth();
-  const redirectOnModalClosePrefixes = ['/list-property'];
-  const shouldRedirectOnModalClose = redirectOnModalClosePrefixes.some(
-    (prefix) => location.pathname === prefix || location.pathname.startsWith(`${prefix}/`)
-  );
+  // const { isAuthenticated } = useAuth();
+  // const redirectOnModalClosePrefixes = ['/list-property'];
+  // const shouldRedirectOnModalClose = redirectOnModalClosePrefixes.some(
+  //   (prefix) => location.pathname === prefix || location.pathname.startsWith(`${prefix}/`)
+  // );
 
-  const closeLoginModal = () => {
-    setLoginModalOpen(false);
-    console.log('isAuthenticated', isAuthenticated);
-    console.log('shouldRedirectOnModalClose ', shouldRedirectOnModalClose);
-    if (!isAuthenticated && shouldRedirectOnModalClose) {
-      navigate('/', { replace: true });
-    }
-  };
   
   return (
     <>
@@ -79,7 +67,7 @@ function App() {
         </Suspense>
       </main>
       <Footer />
-      <LoginModal open={loginModalOpen} onClose={closeLoginModal} />
+
 
     </>
   );

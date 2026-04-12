@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useGetHotelByIdQuery } from '../hotelsApi';
-import { useAuth, LoginModal, SignupModal } from '@features/auth';
-import { BookingModal } from '@bookings/components';
+import { useAuth, LoginForm, SignupForm } from '@features/auth';
+import { BookingForm } from '@bookings/components';
+import { Modal } from '@shared/components';
 import './HotelDetails.css';
 import { MdPool, MdFamilyRestroom, MdLocalParking, MdSmokeFree, MdRestaurant, MdRoomService, MdLocalBar, MdFreeBreakfast, MdElevator, MdFitnessCenter, MdSpa, MdWifi } from 'react-icons/md';
 import { FaBed } from 'react-icons/fa';
@@ -122,30 +123,33 @@ const HotelDetailsPage = () => {
         </div>
       </div>
 
-      <LoginModal
-        open={loginModalOpen}
-        onClose={() => setLoginModalOpen(false)}
-        onSwitchToSignup={() => {
-          setLoginModalOpen(false);
-          setSignupModalOpen(true);
-        }}
-      />
+      <Modal isOpen={loginModalOpen} onClose={() => setLoginModalOpen(false)} title="Sign In" size="md" className="login-modal">
+        <LoginForm
+          onSuccess={() => setLoginModalOpen(false)}
+          onSwitchToSignup={() => {
+            setLoginModalOpen(false);
+            setSignupModalOpen(true);
+          }}
+        />
+      </Modal>
 
-      <SignupModal
-        open={signupModalOpen}
-        onClose={() => setSignupModalOpen(false)}
-        onSwitchToLogin={() => {
-          setSignupModalOpen(false);
-          setLoginModalOpen(true);
-        }}
-      />
+      <Modal isOpen={signupModalOpen} onClose={() => setSignupModalOpen(false)} title="Create Account" size="md" className="signup-modal">
+        <SignupForm
+          onSuccess={() => setSignupModalOpen(false)}
+          onSwitchToLogin={() => {
+            setSignupModalOpen(false);
+            setLoginModalOpen(true);
+          }}
+        />
+      </Modal>
 
-      <BookingModal
-        open={bookingModalOpen}
-        onClose={() => setBookingModalOpen(false)}
-        hotel={hotel}
-        roomType={selectedRoomType}
-      />
+      <Modal isOpen={bookingModalOpen} onClose={() => setBookingModalOpen(false)} title="Book Room" size="lg" className="booking-modal">
+        <BookingForm
+          hotel={hotel}
+          roomType={selectedRoomType}
+          onClose={() => setBookingModalOpen(false)}
+        />
+      </Modal>
     </div>
   );
 };

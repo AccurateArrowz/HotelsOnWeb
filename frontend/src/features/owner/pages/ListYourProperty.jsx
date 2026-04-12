@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { useAuth, RequireAuth, RequireRole, LoginModal } from '../../auth';
+import { useAuth, RequireAuth, RequireRole, LoginForm } from '../../auth';
+import { Modal } from '../../../shared';
 import { uploadFiles } from '../../../services/mediaUpload';
 import { useCreateHotelRequestMutation } from '../hotelRequestsApi';
   
@@ -110,10 +111,9 @@ const ListYourProperty = () => {
         >
           Login to Continue
         </button>
-        <LoginModal 
-          isOpen={showLoginModal} 
-          onClose={() => setShowLoginModal(false)} 
-        />
+        <Modal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} title="Sign In" size="md" className="login-modal">
+          <LoginForm onSuccess={() => setShowLoginModal(false)} />
+        </Modal>
       </div>
     );
   }

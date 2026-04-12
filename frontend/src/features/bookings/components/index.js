@@ -1,1 +1,1 @@
-export { default as BookingModal } from './BookingModal';
+export { default as BookingForm } from './BookingForm';
