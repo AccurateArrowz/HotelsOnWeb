@@ -4,7 +4,11 @@ import { RequireAuth, RequireRole } from '@features/auth/RoleBasedComponents';
 import { Suspense, lazy } from 'react';
 import OwnerDashboard from '@features/owner/pages/OwnerDashboard';
 
-// Lazy-loaded page components
+// Route definitions use React Router v6 with lazy loading for code splitting
+// Protected routes wrap components with RequireAuth/RequireRole guards
+
+// Lazy-loaded page components for performance optimization
+// Suspense fallback renders while chunks load
 const Home = lazy(() => import('@app/pages/Home'));
 const HotelsPage = lazy(() => import('@features/hotels/pages/HotelsPage'));
 const HotelDetails = lazy(() => import('@features/hotels/pages/HotelDetails'));
@@ -25,21 +29,26 @@ function App() {
   //   (prefix) => location.pathname === prefix || location.pathname.startsWith(`${prefix}/`)
   // );
 
-  
+
   return (
     <>
 
       <Navbar />
       <main className="main-content">
+        {/* Route-level code splitting with Suspense boundary */}
         <Suspense fallback={<div>Loading...</div>}>
           <Routes>
+            {/* Public routes */}
             <Route path="/" element={<Home />} />
             <Route path="hotels/:query" element={<HotelsPage />} />
             <Route path="/hotels/id/:id" element={<HotelDetails />} />
-            {/*The following routes require authentication */}
+
+            {/* Protected routes - currently bypassed for development
+                Re-enable RequireAuth/RequireRole wrappers before production */}
+            {/*
             <Route path="/booking/:id" element={
               <RequireAuth onRequireLogin={openLoginModal}>
-                {/* Place booking component here */}
+                <div>Booking component placeholder</div>
               </RequireAuth>
             } />
             <Route path="/dashboard" element={
@@ -61,6 +70,7 @@ function App() {
                 </RequireRole>
               </RequireAuth>
             } />
+            */}
             <Route path="/unauthorized" element={<Unauthorized />} />
             <Route path="*" element={<div>Page not found</div>} />
           </Routes>

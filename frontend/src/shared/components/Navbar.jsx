@@ -5,7 +5,7 @@ import './Navbar.css';
 
 const Navbar = () => {
   const { isAuthenticated, user } = useAuth();
-  const [profileOpen, setProfileOpen] = React.useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = React.useState(false);
   
   return (
     <header className="app-header">
@@ -33,7 +33,7 @@ const Navbar = () => {
             {isAuthenticated && (
               <button
                 className="profile-btn"
-                onClick={() => setProfileOpen(true)}
+                onClick={() => { console.log('profile button clicked '); setIsProfileModalOpen(true); }}
                 aria-label="Open profile"
               >
                 <span className="profile-avatar">
@@ -41,7 +41,7 @@ const Navbar = () => {
                 </span>
               </button>
             )}
-            <ProfileModal open={profileOpen} onClose={() => setProfileOpen(false)} />
+           {isProfileModalOpen && <ProfileModal onClose={() => setIsProfileModalOpen(false)}/>}
           </div>
         </div>
       </nav>

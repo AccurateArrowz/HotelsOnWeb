@@ -1,12 +1,12 @@
 import { useAuth } from './useAuth';
 import { Modal } from '../../shared';
-import './authForms.css';
+import '../../styles/modal.css';
 
-const ProfileModal = ({ open, onClose }) => {
+const ProfileModal = ({onClose}) => {
   const { user, logout } = useAuth();
 
   return (
-    <Modal isOpen={open} onClose={onClose} title="Profile" size="sm" className="profile-modal">
+    <Modal isModalOpen={true} onClose={onClose} title="Profile" size="sm" className="profile-modal">
       <div className="profile-info">
           <div><strong>Name:</strong> {user.firstName} {user.lastName}</div>
           <div><strong>Email:</strong> {user.email}</div>
@@ -14,7 +14,8 @@ const ProfileModal = ({ open, onClose }) => {
           <div><strong>Role:</strong> {user.role}</div>
         </div>
       <div className="profile-actions">
-        <button className="primary-button" onClick={() => { logout(); onClose(); }}>Logout</button>
+        <button className="primary-button" onClick={() => { logout(); 
+          onClose(); }}>Logout</button>
       </div>
     </Modal>
   );

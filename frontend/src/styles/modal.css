@@ -27,20 +27,11 @@
 }
 
 /* Profile Modal Specific Styles */
-.modal-content.profile-modal {
+/* .modal-content.profile-modal {
   max-width: 380px;
-}
+} */
 
-.modal-content.profile-modal .modal-header {
-  padding: 1.5rem 1.8rem 1rem;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.modal-content.profile-modal .modal-header h2 {
-  font-size: 1.4rem;
-  color: #222;
-  margin: 0;
-}
+/* Profile modal header styles handled by Tailwind in component */
 
 .profile-info {
   padding: 1.5rem 1.8rem;
@@ -85,20 +76,8 @@
   to   { transform: none; opacity: 1; }
 }
 
-.modal-header {
-  padding: 2rem 2rem 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid #f0f0f0;
-}
-.modal-header h2 {
-  margin: 0;
-  font-size: 1.6rem;
-  font-weight: 600;
-  color: #222;
-}
-.close-button {
+/* Modal header uses Tailwind classes - responsive styles handled in component */
+.modal-close-button {
   background: none;
   border: none;
   font-size: 1.7rem;
@@ -107,7 +86,7 @@
   padding: 0.25rem 0.5rem;
   transition: color 0.2s;
 }
-.close-button:hover {
+.modal-close-button:hover {
   color: #1976d2;
 }
 

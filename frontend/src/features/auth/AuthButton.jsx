@@ -4,7 +4,7 @@ import { Modal } from '../../shared';
 import LoginForm from './LoginForm';
 import SignupForm from './SignupForm';
 import './auth.css';
-import RoughAuthModal from './roughAuthModal';
+import AuthModal from './AuthModal';
 
 const AuthButton = () => {
   const { user, logout } = useAuth();
@@ -37,15 +37,15 @@ const AuthButton = () => {
 
   return (
     <>
-      <button onClick={() => setAuthenticationMode("login")} className="login-btn">
+      <button onClick={() => {console.log('login button clicked'); setAuthenticationMode("login")}} className="login-btn">
         Login
       </button>
-      <button onClick={() => setAuthenticationMode("signup")} className="signup-btn" style={{ marginLeft: '8px' }}>
+      <button onClick={() => {console.log('signup button clicked'); setAuthenticationMode("signup")}} className="signup-btn" style={{ marginLeft: '8px' }}>
         Signup
       </button>
       
       {(authenticationMode !== null) &&
-        <RoughAuthModal authenticationMode={authenticationMode}/>
+        <AuthModal authenticationMode={authenticationMode}/>
       }
     </>
   );

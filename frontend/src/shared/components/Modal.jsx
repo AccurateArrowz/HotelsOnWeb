@@ -1,20 +1,20 @@
-import { useEffect, useState } from 'react';
-import './Modal.css';
+import { useEffect } from 'react';
+import '@/styles/modal.css';
 
-/**
- * Reusable Modal component with overlay, header, and content wrapper.
- * Handles ESC key closing and click-outside-to-close behavior.
- */
 export default function Modal({
+  isModalOpen,
+  onClose,
+  title,
   children,
   size = 'md',
   className = '',
 }) {
-  const [isModalOpen, setIsModalOpen] = useState(true);
+  // const [isModalOpen, setIsModalOpen] = useState(true);
   useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === 'Escape') {
-        setIsModalOpen(false)
+        // setIsModalOpen(false)
+        onClose();
       }
     };
 
@@ -22,22 +22,24 @@ export default function Modal({
     return () => document.removeEventListener('keydown', handleEscape);
   }, []);
 
-  // Lock body scroll when modal is open
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, []);
+  // Lock body scroll 
+  // useEffect(() => {
+  //   if (isOpen) {
+  //     document.body.style.overflow = 'hidden';
+  //   } else {
+  //     document.body.style.overflow = '';
+  //   }
+  //   return () => {
+  //     document.body.style.overflow = '';
+  //   };
+  // }, []);
 
   if (!isModalOpen) return null;
 
   const handleOverlayClick = () => {
-    setIsModalOpen(false)
+    // setIsModalOpen(false)
+    console.log('overlay clicked')
+    onClose();
   };
 
 
@@ -60,10 +62,15 @@ export default function Modal({
         aria-modal="true"
       >
 
-          <div className="modal-header">
+          <div className="modal-header flex items-center justify-between px-6 py-4 border-b border-gray-100">
+              {title && (
+                <h2 className="text-xl md:text-2xl font-semibold text-gray-800 m-0">
+                  {title}
+                </h2>
+              )}
               <button
-                className="modal-close-button"
-                onClick={()=> setIsModalOpen(false)}
+                className="modal-close-button ml-auto"
+                onClick={onClose}
                 aria-label="Close modal"
               >
                 ×
