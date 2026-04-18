@@ -18,16 +18,20 @@ const Navbar = () => {
             <Link to="/list-property">List your Property</Link>
           )}
           
-          {user && (
-            <>
-              {user.role === 'owner' ? (
-                <Link to="/my-hotel">My Hotel</Link>
-              ) : user.role === 'customer' ? (
+          {user && user.role === 'owner' &&
+                <Link to="/my-hotel">My Hotel</Link>}
+              {user && user.role === 'customer'  && 
                 <Link to="/dashboard">My Bookings</Link>
-              ) : <Link to="/dashboard">Admin Dashboard</Link>}
-            </>
-          )}
-          
+              }
+
+           {user && user.role === 'admin'  &&
+                  <>    
+                  <Link to="/dashboard">Admin Dashboard</Link>
+                  {/* <Link to="/admin/users">Manage Users</Link> */}
+                  <Link to="/admin/hotels">Manage Hotels</Link>
+                  <Link to="/admin/hotel-requests">Hotel Requests</Link>
+                </>
+}
           <div className="auth-section">
             {!isAuthenticated && <AuthButton />}
             {isAuthenticated && (

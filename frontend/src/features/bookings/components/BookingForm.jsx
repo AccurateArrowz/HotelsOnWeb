@@ -111,6 +111,7 @@ const BookingForm = ({ hotel, roomType, onClose }) => {
 
       {paymentSuccess ? (
         <div className="success-content">
+          <h2 className="form-title">Book Room</h2>
           <div className="success-icon">✓</div>
           <h3>Payment Successful!</h3>
           <p>Your booking has been confirmed.</p>
@@ -128,6 +129,7 @@ const BookingForm = ({ hotel, roomType, onClose }) => {
         </div>
       ) : paymentStep ? (
         <div className="payment-content">
+          <h2 className="form-title">Book Room</h2>
           <div className="booking-summary">
             <h3>Booking Summary</h3>
             <div className="summary-item">
@@ -192,6 +194,7 @@ const BookingForm = ({ hotel, roomType, onClose }) => {
         </div>
       ) : (
         <form onSubmit={handleBookingSubmit} className="booking-form">
+          <h2 className="form-title">Book Room</h2>
           <div className="hotel-info">
             <h3>{hotel.name}</h3>
             <p>{hotel.street}, {hotel.city}</p>

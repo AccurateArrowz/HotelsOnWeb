@@ -73,6 +73,7 @@ const SignupForm = ({ onSuccess, onSwitchToLogin }) => {
       {error && <div className="error-message">{error}</div>}
 
       <form onSubmit={handleSubmit} className="signup-form">
+        <h2 className="form-title">Create Account</h2>
         <div className="form-row">
           <div className="form-group">
             <label htmlFor="firstName">First Name</label>

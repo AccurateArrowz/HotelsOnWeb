@@ -1,11 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-export const baseApi = createApi({
-  reducerPath: 'baseApi',
-  baseQuery: fetchBaseQuery({
+// Custom base query that extracts data from standardized API responses
+const baseQueryWithResponseHandler = async (args, api, extraOptions) => {
+  const baseQuery = fetchBaseQuery({
     baseUrl: 'http://localhost:3001/api',
     prepareHeaders: (headers, { getState }) => {
-      // Get token from localStorage or Redux state
       const user = localStorage.getItem('user');
       if (user) {
         const userData = JSON.parse(user);
@@ -15,10 +14,46 @@ export const baseApi = createApi({
       }
       return headers;
     },
-  }),
-  tagTypes: ['Hotel', 'Booking', 'User'], // For cache invalidation
-  endpoints: () => ({}), // Empty base - endpoints will be injected
+  });
+
+  const result = await baseQuery(args, api, extraOptions);
+
+  // Handle standardized API response format
+  if (result.data) {
+    // Extract data from standardized response: { success: true, data: ..., message: ... }
+    if (result.data.success === true && 'data' in result.data) {
+      return { ...result, data: result.data.data };
+    }
+  }
+
+  // Handle error responses
+  if (result.error) {
+    const errorData = result.error.data;
+    if (errorData && typeof errorData === 'object') {
+      // Standardized error format: { success: false, message: ..., errors: ... }
+      if (errorData.success === false) {
+        return {
+          ...result,
+          error: {
+            status: result.error.status,
+            data: {
+              message: errorData.message || 'An error occurred',
+              errors: errorData.errors || null,
+            },
+          },
+        };
+      }
+    }
+  }
+
+  return result;
+};
+
+export const baseApi = createApi({
+  reducerPath: 'baseApi',
+  baseQuery: baseQueryWithResponseHandler,
+  tagTypes: ['Hotel', 'Booking', 'User', 'HotelRequest'],
+  endpoints: () => ({}),
 });
 
-// Export the hook for the API slice
 export const { usePrefetch: useBaseApiPrefetch } = baseApi;

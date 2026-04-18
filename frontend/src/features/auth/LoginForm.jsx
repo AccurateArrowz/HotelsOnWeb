@@ -26,6 +26,7 @@ const LoginForm = ({ onSuccess, onSwitchToSignup }) => {
       {error && <div className="error-message">{error}</div>}
 
       <form onSubmit={handleSubmit} className="auth-form">
+        <h2 className="form-title">Sign In</h2>
         <div className="form-group">
           <label htmlFor="login-email">Email Address</label>
           <input

@@ -123,7 +123,7 @@ const HotelDetailsPage = () => {
         </div>
       </div>
 
-      <Modal isOpen={loginModalOpen} onClose={() => setLoginModalOpen(false)} title="Sign In" size="md" className="login-modal">
+      <Modal isOpen={loginModalOpen} onClose={() => setLoginModalOpen(false)} size="md" className="login-modal">
         <LoginForm
           onSuccess={() => setLoginModalOpen(false)}
           onSwitchToSignup={() => {
@@ -133,7 +133,7 @@ const HotelDetailsPage = () => {
         />
       </Modal>
 
-      <Modal isOpen={signupModalOpen} onClose={() => setSignupModalOpen(false)} title="Create Account" size="md" className="signup-modal">
+      <Modal isOpen={signupModalOpen} onClose={() => setSignupModalOpen(false)} size="md" className="signup-modal">
         <SignupForm
           onSuccess={() => setSignupModalOpen(false)}
           onSwitchToLogin={() => {
@@ -143,7 +143,7 @@ const HotelDetailsPage = () => {
         />
       </Modal>
 
-      <Modal isOpen={bookingModalOpen} onClose={() => setBookingModalOpen(false)} title="Book Room" size="lg" className="booking-modal">
+      <Modal isOpen={bookingModalOpen} onClose={() => setBookingModalOpen(false)} size="lg" className="booking-modal">
         <BookingForm
           hotel={hotel}
           roomType={selectedRoomType}

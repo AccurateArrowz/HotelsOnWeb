@@ -6,8 +6,9 @@ const ProfileModal = ({onClose}) => {
   const { user, logout } = useAuth();
 
   return (
-    <Modal isModalOpen={true} onClose={onClose} title="Profile" size="sm" className="profile-modal">
+    <Modal isModalOpen={true} onClose={onClose} size="sm" className="profile-modal">
       <div className="profile-info">
+          <h2 className='text-center'>Profile</h2>
           <div><strong>Name:</strong> {user.firstName} {user.lastName}</div>
           <div><strong>Email:</strong> {user.email}</div>
           {user.phone && <div><strong>Phone:</strong> {user.phone}</div>}

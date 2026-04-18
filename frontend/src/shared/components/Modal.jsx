@@ -2,9 +2,9 @@ import { useEffect } from 'react';
 import '@/styles/modal.css';
 
 export default function Modal({
+  isOpen,
   isModalOpen,
   onClose,
-  title,
   children,
   size = 'md',
   className = '',
@@ -20,7 +20,7 @@ export default function Modal({
 
     document.addEventListener('keydown', handleEscape);
     return () => document.removeEventListener('keydown', handleEscape);
-  }, []);
+  }, [onClose]);
 
   // Lock body scroll 
   // useEffect(() => {
@@ -34,7 +34,8 @@ export default function Modal({
   //   };
   // }, []);
 
-  if (!isModalOpen) return null;
+  const modalOpen = isOpen ?? isModalOpen;
+  if (!modalOpen) return null;
 
   const handleOverlayClick = () => {
     // setIsModalOpen(false)
@@ -61,21 +62,14 @@ export default function Modal({
         role="dialog"
         aria-modal="true"
       >
-
-          <div className="modal-header flex items-center justify-between px-6 py-4 border-b border-gray-100">
-              {title && (
-                <h2 className="text-xl md:text-2xl font-semibold text-gray-800 m-0">
-                  {title}
-                </h2>
-              )}
-              <button
-                className="modal-close-button ml-auto"
-                onClick={onClose}
-                aria-label="Close modal"
-              >
-                ×
-              </button>
-          </div>
+        <button
+          className="modal-close-button"
+          onClick={onClose}
+          aria-label="Close modal"
+          type="button"
+        >
+          ×
+        </button>
         <div className="modal-body">{children}</div>
       </div>
     </div>

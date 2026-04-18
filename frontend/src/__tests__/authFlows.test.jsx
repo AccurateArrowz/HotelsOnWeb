@@ -27,7 +27,7 @@ describe('Authentication flows', () => {
     authService.login.mockResolvedValueOnce({ data: { email: 'user@example.com' } });
 
     render(
-      <Modal isOpen={true} onClose={jest.fn()} title="Sign In">
+      <Modal isOpen={true} onClose={jest.fn()}>
         <LoginForm onSuccess={jest.fn()} onSwitchToSignup={jest.fn()} />
       </Modal>,
       { wrapper }
@@ -53,7 +53,7 @@ describe('Authentication flows', () => {
     authService.register.mockResolvedValueOnce({ data: { email: 'new@example.com' } });
 
     render(
-      <Modal isOpen={true} onClose={jest.fn()} title="Create Account">
+      <Modal isOpen={true} onClose={jest.fn()}>
         <SignupForm onSuccess={jest.fn()} onSwitchToLogin={jest.fn()} />
       </Modal>,
       { wrapper }

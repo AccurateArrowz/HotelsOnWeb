@@ -16,6 +16,7 @@ const DashboardPage = lazy(() => import('@features/user/pages/DashboardPage'));
 const ListYourProperty = lazy(() => import('@features/owner/pages/ListYourProperty'));
 const Unauthorized = lazy(() => import('@app/pages/Unauthorized'));
 const MyHotel = lazy(() => import('@features/owner/MyHotel'));
+const HotelRequestsPage = lazy(() => import('@features/admin').then(module => ({ default: module.HotelRequestsPage })));
 
 function App() {
 
@@ -43,8 +44,7 @@ function App() {
             <Route path="hotels/:query" element={<HotelsPage />} />
             <Route path="/hotels/id/:id" element={<HotelDetails />} />
 
-            {/* Protected routes - currently bypassed for development
-                Re-enable RequireAuth/RequireRole wrappers before production */}
+            {/* Protected routes */}
             {/*
             <Route path="/booking/:id" element={
               <RequireAuth onRequireLogin={openLoginModal}>
@@ -71,6 +71,11 @@ function App() {
               </RequireAuth>
             } />
             */}
+             <Route path="/admin/hotel-requests" element={
+              <RequireRole role='admin'>
+                <HotelRequestsPage />
+              </RequireRole>
+            } />
             <Route path="/unauthorized" element={<Unauthorized />} />
             <Route path="*" element={<div>Page not found</div>} />
           </Routes>

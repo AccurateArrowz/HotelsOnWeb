@@ -18,7 +18,7 @@ export default function AuthModal({authenticationMode = 'login'}) { //addung def
 
  
   return (
-     <Modal isModalOpen={true} onClose={() => setAuthMode(null)} title={authMode === 'login' ? 'Sign In' : 'Create Account'}>
+     <Modal isModalOpen={true} onClose={() => setAuthMode(null)}>
         {authMode === 'login'
           ? <LoginForm onSwitchToSignup={toggleAuthMode} />
           : <SignupForm onSwitchToLogin={toggleAuthMode} />

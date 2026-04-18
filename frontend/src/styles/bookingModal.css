@@ -87,6 +87,16 @@
   padding: 0 24px 24px 24px;
 }
 
+/* Form Title - Centered with responsive design and accessibility */
+.form-title {
+  text-align: center;
+  margin: 0 0 1.5rem 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2d3748;
+  line-height: 1.3;
+}
+
 .form-group {
   margin-bottom: 20px;
 }
@@ -382,6 +392,11 @@
   .secondary-button {
     width: 100%;
     justify-content: center;
+  }
+
+  .form-title {
+    font-size: 1.25rem;
+    margin: 0 0 1rem 0;
   }
 }
 

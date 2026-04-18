@@ -111,7 +111,7 @@ const ListYourProperty = () => {
         >
           Login to Continue
         </button>
-        <Modal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} title="Sign In" size="md" className="login-modal">
+        <Modal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} size="md" className="login-modal">
           <LoginForm onSuccess={() => setShowLoginModal(false)} />
         </Modal>
       </div>
