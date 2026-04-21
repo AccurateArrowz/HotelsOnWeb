@@ -32,6 +32,22 @@ const HotelRequest = sequelize.define('HotelRequest', {
     type: DataTypes.ENUM('pending', 'approved', 'rejected'),
     defaultValue: 'pending'
   },
+  adminNotes: {
+    type: DataTypes.TEXT,
+    allowNull: true
+  },
+  processedAt: {
+    type: DataTypes.DATE,
+    allowNull: true
+  },
+  processedBy: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    references: {
+      model: User,
+      key: 'id'
+    }
+  },
   userId: {
     type: DataTypes.INTEGER,
     allowNull: false,

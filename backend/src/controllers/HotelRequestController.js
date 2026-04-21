@@ -1,4 +1,5 @@
-const { HotelRequest, HotelRequestImage } = require('../models');
+const { HotelRequest, HotelRequestImage, User } = require('../models');
+const { sendSuccess, sendBadRequest, sendNotFound, sendInternalError } = require('../utils/apiResponse');
 
 // Create a new hotel listing request
 exports.createHotelRequest = async (req, res) => {
@@ -11,9 +12,7 @@ exports.createHotelRequest = async (req, res) => {
     
     // Validate required fields
     if (!name || !street || !city || !country) {
-      return res.status(400).json({ 
-        error: 'Missing required fields: name, street, city, and country are required' 
-      });
+      return sendBadRequest(res, 'Missing required fields: name, street, city, and country are required');
     }
     
     // Create hotel request
@@ -48,16 +47,18 @@ exports.createHotelRequest = async (req, res) => {
     }
     
     // Return success response
-    res.status(201).json({
-      message: 'Hotel listing request submitted successfully',
-      hotelRequest: {
+    return sendSuccess(
+      res,
+      {
         ...hotelRequest.toJSON(),
         images
-      }
-    });
+      },
+      'Hotel listing request submitted successfully',
+      201
+    );
   } catch (error) {
     console.error('Error creating hotel request:', error);
-    res.status(500).json({ error: 'Failed to submit hotel listing request' });
+    return sendInternalError(res, 'Failed to submit hotel listing request');
   }
 };
 
@@ -76,10 +77,10 @@ exports.getUserHotelRequests = async (req, res) => {
       order: [['createdAt', 'DESC']]
     });
     
-    res.json(hotelRequests);
+    return sendSuccess(res, hotelRequests);
   } catch (error) {
     console.error('Error fetching hotel requests:', error);
-    res.status(500).json({ error: 'Failed to fetch hotel requests' });
+    return sendInternalError(res, 'Failed to fetch hotel requests');
   }
 };
 
@@ -99,12 +100,145 @@ exports.getHotelRequestById = async (req, res) => {
     });
     
     if (!hotelRequest) {
-      return res.status(404).json({ error: 'Hotel request not found' });
+      return sendNotFound(res, 'Hotel request not found');
     }
     
-    res.json(hotelRequest);
+    return sendSuccess(res, hotelRequest);
   } catch (error) {
     console.error('Error fetching hotel request:', error);
-    res.status(500).json({ error: 'Failed to fetch hotel request' });
+    return sendInternalError(res, 'Failed to fetch hotel request');
+  }
+};
+
+// Get all pending hotel requests (admin only)
+exports.getPendingHotelRequests = async (req, res) => {
+  try {
+    const pendingRequests = await HotelRequest.findAll({
+      where: { status: 'pending' },
+      include: [
+        {
+          model: HotelRequestImage,
+          as: 'images',
+          attributes: ['id', 'imageUrl', 'isPrimary', 'orderIndex']
+        },
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'firstName', 'lastName', 'email', 'phone']
+        }
+      ],
+      order: [['createdAt', 'DESC']]
+    });
+
+    return sendSuccess(res, pendingRequests);
+  } catch (error) {
+    console.error('Error fetching pending hotel requests:', error);
+    return sendInternalError(res, 'Failed to fetch pending hotel requests');
+  }
+};
+
+// Get all hotel requests with optional status filter (admin only)
+exports.getAllHotelRequests = async (req, res) => {
+  try {
+    const { status } = req.query;
+    const whereClause = status ? { status } : {};
+
+    const requests = await HotelRequest.findAll({
+      where: whereClause,
+      include: [
+        {
+          model: HotelRequestImage,
+          as: 'images',
+          attributes: ['id', 'imageUrl', 'isPrimary', 'orderIndex']
+        },
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'firstName', 'lastName', 'email', 'phone']
+        }
+      ],
+      order: [['createdAt', 'DESC']]
+    });
+
+    return sendSuccess(res, requests);
+  } catch (error) {
+    console.error('Error fetching hotel requests:', error);
+    return sendInternalError(res, 'Failed to fetch hotel requests');
+  }
+};
+
+// Update hotel request status (admin only)
+exports.updateHotelRequestStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status, adminNotes } = req.body;
+    const adminId = req.user.id;
+
+
+    const hotelRequest = await HotelRequest.findByPk(id);
+    if (!hotelRequest) {
+      return sendNotFound(res, 'Hotel request not found');
+    }
+
+    // Validate status
+    if (!['approved', 'rejected', 'pending'].includes(status)) {
+      return sendBadRequest(res, 'Invalid status. Must be approved or rejected');
+    }
+
+
+    // Prevent updating already processed requests
+    if (hotelRequest.status !== 'pending') {
+      return sendBadRequest(res, 'Request has already been processed');
+    }
+
+    // Update request
+    await hotelRequest.update({
+      status,
+      adminNotes: adminNotes || null,
+      processedAt: new Date(),
+      processedBy: adminId
+    });
+
+    // If approved, create the actual hotel
+    let createdHotel = null;
+    if (status === 'approved') {
+      const { Hotel, HotelImage } = require('../models');
+
+      createdHotel = await Hotel.create({
+        name: hotelRequest.name,
+        description: hotelRequest.description,
+        street: hotelRequest.street,
+        city: hotelRequest.city,
+        country: hotelRequest.country,
+        hotelOwnerId: hotelRequest.userId,
+        isActive: true
+      });
+
+      // Copy images to hotel
+      const images = await HotelRequestImage.findAll({
+        where: { hotelRequestId: id }
+      });
+
+      for (const img of images) {
+        await HotelImage.create({
+          hotelId: createdHotel.id,
+          imageUrl: img.imageUrl,
+          isPrimary: img.isPrimary,
+          orderIndex: img.orderIndex
+        });
+      }
+    }
+
+    return sendSuccess(
+      res,
+      {
+        ...hotelRequest.toJSON(),
+        createdHotel: createdHotel ? { id: createdHotel.id, name: createdHotel.name } : null
+      },
+      `Hotel request ${status} successfully`
+    );
+  } catch (error) {
+    console.error('Error updating hotel request status:', error);
+    return sendInternalError(res, 'Failed to update hotel request status');
   }
 };

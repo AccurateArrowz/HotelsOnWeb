@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { User } = require('../models');
+const { User, Role } = require('../models');
 
 // Middleware to authenticate token and attach user to request
 const authenticateToken = async (req, res, next) => {
@@ -37,4 +37,24 @@ const authenticateToken = async (req, res, next) => {
   }
 };
 
-module.exports = { authenticateToken };
+// Middleware to require admin role
+const requireAdmin = async (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ error: 'Authentication required.' });
+    }
+
+    const role = await Role.findByPk(req.user.roleId);
+
+    if (!role || role.key !== 'admin') {
+      return res.status(403).json({ error: 'Access denied. Admin privileges required.' });
+    }
+
+    next();
+  } catch (error) {
+    console.error('Admin authorization error:', error);
+    res.status(500).json({ error: 'Server error during authorization.' });
+  }
+};
+
+module.exports = { authenticateToken, requireAdmin };

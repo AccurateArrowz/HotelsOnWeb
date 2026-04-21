@@ -1,7 +1,10 @@
-const { Hotel, HotelImage, RoomType } = require('../models');
+import { Hotel, HotelImage, RoomType } from '../models';
+import { sendSuccess, sendBadRequest, sendNotFound, sendInternalError } from '../utils/apiResponse';
+import { Request, Response } from 'express';
+import { Op } from 'sequelize';
 
 // Fetch hotel by ID, including images and rooms
-exports.getHotelById = async (req, res) => {
+export const getHotelById = async (req: Request, res: Response) => {
   try {
     const hotel = await Hotel.findByPk(req.params.id, {
       include: [
@@ -18,25 +21,25 @@ exports.getHotelById = async (req, res) => {
       ]
     });
     if (!hotel) {
-      return res.status(404).json({ error: 'Hotel not found' });
+      return sendNotFound(res, 'Hotel not found');
     }
     const hotelJson = hotel.toJSON();
     hotelJson.images = hotelJson.images || [];
     hotelJson.roomTypes = hotelJson.roomTypes || [];
-    res.json(hotelJson);
+    return sendSuccess(res, { data: hotelJson });
   } catch (error) {
     console.error('Error fetching hotel:', error);
-    res.status(500).json({ error: 'Failed to fetch hotel' });
+    return sendInternalError(res, 'Failed to fetch hotel');
   }
 };
 
-exports.getAllHotelsByCity =  async (req, res) => {
-    const query = req.query.q;
+export const getAllHotelsByCity = async (req: Request, res: Response) => {
+    const query = req.query.q as string;
+    console.log(query);
     if (!query || query.trim() === '') {
-      return res.status(400).json({ error: 'Missing or invalid search query parameter' });
+      return sendBadRequest(res, 'Missing or invalid search query parameter');
     }
     try {
-      const { Op } = require('sequelize');
       // Fetch hotels with their primary image only, searching by both city and hotel name
       const hotels = await Hotel.findAll({
         where: {
@@ -63,11 +66,11 @@ exports.getAllHotelsByCity =  async (req, res) => {
         delete hotelJson.images;
         return hotelJson;
       });
-      res.json(hotelsWithPrimaryImg);
+      return sendSuccess(res, {data: hotelsWithPrimaryImg});
 
       console.log(`[HOTEL_SEARCH] Response sent for query: ${query}`);
     } catch (error) {
       console.error('Error fetching hotels by query:', error);
-      res.status(500).json({ error: 'Failed to fetch hotels by query' });
+      return sendInternalError(res, 'Failed to fetch hotels by query');
     }
   };

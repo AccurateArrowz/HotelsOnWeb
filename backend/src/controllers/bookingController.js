@@ -3,6 +3,7 @@ const BookingRoom = require('../models/BookingRoom');
 const Hotel = require('../models/Hotel');
 const RoomType = require('../models/RoomType');
 const User = require('../models/User');
+const { sendSuccess, sendBadRequest, sendNotFound, sendInternalError } = require('../utils/apiResponse');
 
 const bookingController = {
   // Create a new booking
@@ -18,22 +19,22 @@ const bookingController = {
       today.setHours(0, 0, 0, 0);
 
       if (checkIn < today) {
-        return res.status(400).json({ message: 'Check-in date cannot be in the past' });
+        return sendBadRequest(res, 'Check-in date cannot be in the past');
       }
 
       if (checkOut <= checkIn) {
-        return res.status(400).json({ message: 'Check-out date must be after check-in date' });
+        return sendBadRequest(res, 'Check-out date must be after check-in date');
       }
 
       // Get hotel and room type details
       const hotel = await Hotel.findByPk(hotelId);
       if (!hotel) {
-        return res.status(404).json({ message: 'Hotel not found' });
+        return sendNotFound(res, 'Hotel not found');
       }
 
       const roomType = await RoomType.findByPk(roomTypeId);
       if (!roomType) {
-        return res.status(404).json({ message: 'Room type not found' });
+        return sendNotFound(res, 'Room type not found');
       }
 
       // Calculate total amount (simplified calculation)
@@ -79,13 +80,10 @@ const bookingController = {
         ]
       });
 
-      res.status(201).json({
-        message: 'Booking created successfully',
-        booking: completeBooking
-      });
+      return sendSuccess(res, completeBooking, 'Booking created successfully', 201);
     } catch (error) {
       console.error('Error creating booking:', error);
-      res.status(500).json({ message: 'Failed to create booking' });
+      return sendInternalError(res, 'Failed to create booking');
     }
   },
 
@@ -114,10 +112,10 @@ const bookingController = {
         order: [['createdAt', 'DESC']]
       });
 
-      res.json({ bookings });
+      return sendSuccess(res, { bookings });
     } catch (error) {
       console.error('Error fetching user bookings:', error);
-      res.status(500).json({ message: 'Failed to fetch bookings' });
+      return sendInternalError(res, 'Failed to fetch bookings');
     }
   },
 
@@ -147,13 +145,13 @@ const bookingController = {
       });
 
       if (!booking) {
-        return res.status(404).json({ message: 'Booking not found' });
+        return sendNotFound(res, 'Booking not found');
       }
 
-      res.json({ booking });
+      return sendSuccess(res, { booking });
     } catch (error) {
       console.error('Error fetching booking:', error);
-      res.status(500).json({ message: 'Failed to fetch booking' });
+      return sendInternalError(res, 'Failed to fetch booking');
     }
   },
 
@@ -169,11 +167,11 @@ const bookingController = {
       });
 
       if (!booking) {
-        return res.status(404).json({ message: 'Booking not found' });
+        return sendNotFound(res, 'Booking not found');
       }
 
       if (booking.paymentStatus === 'paid') {
-        return res.status(400).json({ message: 'Booking is already paid' });
+        return sendBadRequest(res, 'Booking is already paid');
       }
 
       // Simulate payment processing delay
@@ -189,29 +187,26 @@ const bookingController = {
           status: 'confirmed'
         });
 
-        res.json({
-          success: true,
-          message: 'Payment processed successfully',
-          booking: {
+        return sendSuccess(
+          res,
+          {
             id: booking.id,
             bookingNumber: booking.bookingNumber,
             paymentStatus: 'paid',
             status: 'confirmed'
-          }
-        });
+          },
+          'Payment processed successfully'
+        );
       } else {
         await booking.update({
           paymentStatus: 'failed'
         });
 
-        res.status(400).json({
-          success: false,
-          message: 'Payment failed. Please try again.'
-        });
+        return sendBadRequest(res, 'Payment failed. Please try again.');
       }
     } catch (error) {
       console.error('Error processing payment:', error);
-      res.status(500).json({ message: 'Payment processing failed' });
+      return sendInternalError(res, 'Payment processing failed');
     }
   },
 
@@ -226,11 +221,11 @@ const bookingController = {
       });
 
       if (!booking) {
-        return res.status(404).json({ message: 'Booking not found' });
+        return sendNotFound(res, 'Booking not found');
       }
 
       if (booking.status === 'cancelled') {
-        return res.status(400).json({ message: 'Booking is already cancelled' });
+        return sendBadRequest(res, 'Booking is already cancelled');
       }
 
       await booking.update({
@@ -239,17 +234,18 @@ const bookingController = {
         cancelledBy: userId
       });
 
-      res.json({
-        message: 'Booking cancelled successfully',
-        booking: {
+      return sendSuccess(
+        res,
+        {
           id: booking.id,
           bookingNumber: booking.bookingNumber,
           status: 'cancelled'
-        }
-      });
+        },
+        'Booking cancelled successfully'
+      );
     } catch (error) {
       console.error('Error cancelling booking:', error);
-      res.status(500).json({ message: 'Failed to cancel booking' });
+      return sendInternalError(res, 'Failed to cancel booking');
     }
   }
 };

@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const { Role } = require('../models');
+const { sendSuccess, sendBadRequest, sendInternalError, sendUnauthorized } = require('../utils/apiResponse');
 
 // Function to generate a JWT
 const generateToken = (id) => {
@@ -16,7 +17,7 @@ exports.register = async (req, res) => {
     const userExists = await User.findOne({ where: { email } });
 
     if (userExists) {
-      return res.status(400).json({ message: 'User already exists' });
+      return sendBadRequest(res, 'User already exists');
     }
 
     // Use role directly from request or default to customer
@@ -24,7 +25,7 @@ exports.register = async (req, res) => {
     const roleRecord = await Role.findOne({ where: { key: roleKey } });
     
     if (!roleRecord) {
-      return res.status(400).json({ message: 'Invalid role specified' });
+      return sendBadRequest(res, 'Invalid role specified');
     }
 
     const user = await User.create({
@@ -41,21 +42,26 @@ exports.register = async (req, res) => {
       const roleRecord = await Role.findByPk(user.roleId);
       const roleKey = roleRecord ? roleRecord.key : 'customer';
       
-      res.status(201).json({
-        _id: user.id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        phone: user.phone,
-        role: roleKey,
-        roleId: user.roleId,
-        token: generateToken(user.id),
-      });
+      return sendSuccess(
+        res,
+        {
+          _id: user.id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          phone: user.phone,
+          role: roleKey,
+          roleId: user.roleId,
+          token: generateToken(user.id),
+        },
+        'User registered successfully',
+        201
+      );
     } else {
-      res.status(400).json({ message: 'Invalid user data' });
+      return sendBadRequest(res, 'Invalid user data');
     }
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return sendInternalError(res, error.message);
   }
 };
 
@@ -72,19 +78,23 @@ exports.login = async (req, res) => {
 
 
 
-      res.json({
-        _id: user.id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        role: roleKey,
-        roleId: user.roleId,
-        token: generateToken(user.id),
-      });
+      return sendSuccess(
+        res,
+        {
+          _id: user.id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          role: roleKey,
+          roleId: user.roleId,
+          token: generateToken(user.id),
+        },
+        'Login successful'
+      );
     } else {
-      res.status(401).json({ message: 'Invalid email or password' });
+      return sendUnauthorized(res, 'Invalid email or password');
     }
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return sendInternalError(res, error.message);
   }
 };

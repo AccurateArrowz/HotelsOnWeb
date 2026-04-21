@@ -11,6 +11,10 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
+# TypeScript compiled output
+dist/
+*.tsbuildinfo
+
 # Logs
 logs
 *.log
@@ -64,3 +68,6 @@ Thumbs.db
 # Temporary files
 tmp/
 temp/
+
+#scripts
+scripts/*
