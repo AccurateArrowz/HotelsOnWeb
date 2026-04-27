@@ -42,7 +42,7 @@ const HotelRequest = sequelize.define('HotelRequest', {
   },
   processedBy: {
     type: DataTypes.INTEGER,
-    allowNull: true,
+    allowNull: true, 
     references: {
       model: User,
       key: 'id'

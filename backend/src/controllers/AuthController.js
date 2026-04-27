@@ -45,16 +45,18 @@ exports.register = async (req, res) => {
       return sendSuccess(
         res,
         {
-          _id: user.id,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          email: user.email,
-          phone: user.phone,
-          role: roleKey,
-          roleId: user.roleId,
-          token: generateToken(user.id),
+          data: {
+            _id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            phone: user.phone,
+            role: roleKey,
+            roleId: user.roleId,
+            token: generateToken(user.id),
+          },
+          message: 'User registered successfully',
         },
-        'User registered successfully',
         201
       );
     } else {
@@ -67,6 +69,9 @@ exports.register = async (req, res) => {
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;
+  console.log('from authController : ')
+  console.log('email', email);
+  // console.log('password', password);
 
   try {
     const user = await User.findOne({ where: { email } });
@@ -81,15 +86,17 @@ exports.login = async (req, res) => {
       return sendSuccess(
         res,
         {
-          _id: user.id,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          email: user.email,
-          role: roleKey,
-          roleId: user.roleId,
-          token: generateToken(user.id),
-        },
-        'Login successful'
+          data: {
+            _id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            role: roleKey,
+            roleId: user.roleId,
+            token: generateToken(user.id),
+          },
+          message: 'Login successful',
+        }
       );
     } else {
       return sendUnauthorized(res, 'Invalid email or password');

@@ -80,7 +80,7 @@ const bookingController = {
         ]
       });
 
-      return sendSuccess(res, completeBooking, 'Booking created successfully', 201);
+      return sendSuccess(res, { data: completeBooking, message: 'Booking created successfully' }, 201);
     } catch (error) {
       console.error('Error creating booking:', error);
       return sendInternalError(res, 'Failed to create booking');
@@ -112,7 +112,7 @@ const bookingController = {
         order: [['createdAt', 'DESC']]
       });
 
-      return sendSuccess(res, { bookings });
+      return sendSuccess(res, { data: bookings });
     } catch (error) {
       console.error('Error fetching user bookings:', error);
       return sendInternalError(res, 'Failed to fetch bookings');
@@ -148,7 +148,7 @@ const bookingController = {
         return sendNotFound(res, 'Booking not found');
       }
 
-      return sendSuccess(res, { booking });
+      return sendSuccess(res, { data: booking });
     } catch (error) {
       console.error('Error fetching booking:', error);
       return sendInternalError(res, 'Failed to fetch booking');
@@ -190,12 +190,14 @@ const bookingController = {
         return sendSuccess(
           res,
           {
-            id: booking.id,
-            bookingNumber: booking.bookingNumber,
-            paymentStatus: 'paid',
-            status: 'confirmed'
-          },
-          'Payment processed successfully'
+            data: {
+              id: booking.id,
+              bookingNumber: booking.bookingNumber,
+              paymentStatus: 'paid',
+              status: 'confirmed'
+            },
+            message: 'Payment processed successfully'
+          }
         );
       } else {
         await booking.update({
@@ -237,11 +239,13 @@ const bookingController = {
       return sendSuccess(
         res,
         {
-          id: booking.id,
-          bookingNumber: booking.bookingNumber,
-          status: 'cancelled'
-        },
-        'Booking cancelled successfully'
+          data: {
+            id: booking.id,
+            bookingNumber: booking.bookingNumber,
+            status: 'cancelled'
+          },
+          message: 'Booking cancelled successfully'
+        }
       );
     } catch (error) {
       console.error('Error cancelling booking:', error);

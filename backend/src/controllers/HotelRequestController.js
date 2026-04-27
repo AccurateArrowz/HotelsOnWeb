@@ -50,10 +50,12 @@ exports.createHotelRequest = async (req, res) => {
     return sendSuccess(
       res,
       {
-        ...hotelRequest.toJSON(),
-        images
+        data: {
+          ...hotelRequest.toJSON(),
+          images
+        },
+        message: 'Hotel listing request submitted successfully'
       },
-      'Hotel listing request submitted successfully',
       201
     );
   } catch (error) {
@@ -77,7 +79,7 @@ exports.getUserHotelRequests = async (req, res) => {
       order: [['createdAt', 'DESC']]
     });
     
-    return sendSuccess(res, hotelRequests);
+    return sendSuccess(res, { data: hotelRequests });
   } catch (error) {
     console.error('Error fetching hotel requests:', error);
     return sendInternalError(res, 'Failed to fetch hotel requests');
@@ -103,44 +105,24 @@ exports.getHotelRequestById = async (req, res) => {
       return sendNotFound(res, 'Hotel request not found');
     }
     
-    return sendSuccess(res, hotelRequest);
+    return sendSuccess(res, { data: hotelRequest });
   } catch (error) {
     console.error('Error fetching hotel request:', error);
     return sendInternalError(res, 'Failed to fetch hotel request');
   }
 };
 
-// Get all pending hotel requests (admin only)
-exports.getPendingHotelRequests = async (req, res) => {
-  try {
-    const pendingRequests = await HotelRequest.findAll({
-      where: { status: 'pending' },
-      include: [
-        {
-          model: HotelRequestImage,
-          as: 'images',
-          attributes: ['id', 'imageUrl', 'isPrimary', 'orderIndex']
-        },
-        {
-          model: User,
-          as: 'user',
-          attributes: ['id', 'firstName', 'lastName', 'email', 'phone']
-        }
-      ],
-      order: [['createdAt', 'DESC']]
-    });
-
-    return sendSuccess(res, pendingRequests);
-  } catch (error) {
-    console.error('Error fetching pending hotel requests:', error);
-    return sendInternalError(res, 'Failed to fetch pending hotel requests');
-  }
-};
-
-// Get all hotel requests with optional status filter (admin only)
-exports.getAllHotelRequests = async (req, res) => {
+// Get hotel requests with optional status filter (admin only)
+exports.getHotelRequests = async (req, res) => {
   try {
     const { status } = req.query;
+
+    // Validate status if provided
+    const validStatuses = ['pending', 'approved', 'rejected'];
+    if (status && !validStatuses.includes(status)) {
+      return sendBadRequest(res, `Invalid status. Must be one of: ${validStatuses.join(', ')}`);
+    }
+
     const whereClause = status ? { status } : {};
 
     const requests = await HotelRequest.findAll({
@@ -160,7 +142,24 @@ exports.getAllHotelRequests = async (req, res) => {
       order: [['createdAt', 'DESC']]
     });
 
-    return sendSuccess(res, requests);
+    // Transform to match frontend field names
+    const transformedRequests = requests.map(req => {
+      const plain = req.toJSON();
+      const ownerName = plain.user
+        ? `${plain.user.firstName} ${plain.user.lastName}`
+        : 'Unknown';
+
+      return {
+        ...plain,
+        hotelName: plain.name,
+        address: plain.street,
+        street: plain.street,
+        ownerId: plain.userId,
+        ownerName,
+      };
+    });
+
+    return sendSuccess(res, { data: transformedRequests });
   } catch (error) {
     console.error('Error fetching hotel requests:', error);
     return sendInternalError(res, 'Failed to fetch hotel requests');
