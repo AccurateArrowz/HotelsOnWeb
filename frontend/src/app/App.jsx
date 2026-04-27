@@ -16,7 +16,7 @@ const DashboardPage = lazy(() => import('@features/user/pages/DashboardPage'));
 const ListYourProperty = lazy(() => import('@features/owner/pages/ListYourProperty'));
 const Unauthorized = lazy(() => import('@app/pages/Unauthorized'));
 const MyHotel = lazy(() => import('@features/owner/MyHotel'));
-const HotelRequestsPage = lazy(() => import('@features/admin').then(module => ({ default: module.HotelRequestsPage })));
+const HotelRequestsPage = lazy(() => import('@features/admin/HotelRequestsPage'));
 
 function App() {
 
@@ -45,32 +45,25 @@ function App() {
             <Route path="/hotels/id/:id" element={<HotelDetails />} />
 
             {/* Protected routes */}
-            {/*
+            
             <Route path="/booking/:id" element={
-              <RequireAuth onRequireLogin={openLoginModal}>
+              <RequireRole role="owner">
                 <div>Booking component placeholder</div>
-              </RequireAuth>
-            } />
-            <Route path="/dashboard" element={
-              <RequireAuth onRequireLogin={openLoginModal}>
-                <DashboardPage />
-              </RequireAuth>
+              </RequireRole>
             } />
             <Route path="/list-property" element={
-              // <RequireAuth onRequireLogin={openLoginModal}>
+              // <RequireRole  role='owner' onRequireLogin={openLoginModal}>
                 <RequireRole role="owner">
                   <ListYourProperty />
                 </RequireRole>
-              // </RequireAuth>
+              // </RequireRole> role='owner' 
             } />
             <Route path="/my-hotel" element={
-              <RequireAuth onRequireLogin={openLoginModal}>
-                <RequireRole role="owner">
-                  <OwnerDashboard></OwnerDashboard>
-                </RequireRole>
-              </RequireAuth>
+              <RequireRole role="owner">
+                <OwnerDashboard />
+              </RequireRole>
             } />
-            */}
+           
              <Route path="/admin/hotel-requests" element={
               <RequireRole role='admin'>
                 <HotelRequestsPage />
