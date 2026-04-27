@@ -1,6 +1,5 @@
 {
-  "dependencies": {
-    "date-fns": "^4.1.0",
-    "react-datepicker": "^8.4.0"
+  "devDependencies": {
+    "@tailwindcss/vite": "4.1.11"
   }
 }

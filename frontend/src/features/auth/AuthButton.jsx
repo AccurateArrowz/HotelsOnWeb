@@ -13,6 +13,7 @@ const AuthButton = () => {
   // const [signupOpen, setSignupOpen] = useState(false);
   const [authenticationMode, setAuthenticationMode] = useState(null); //'login' | 'signup' | null
 
+
   const handleLogout = () => {
     logout();
     setMenuOpen(false);
@@ -37,15 +38,15 @@ const AuthButton = () => {
 
   return (
     <>
-      <button onClick={() => {console.log('login button clicked'); setAuthenticationMode("login")}} className="login-btn">
+      <button onClick={() => { console.log('login button clicked'); setAuthenticationMode("login") }} className="login-btn">
         Login
       </button>
-      <button onClick={() => {console.log('signup button clicked'); setAuthenticationMode("signup")}} className="signup-btn" style={{ marginLeft: '8px' }}>
+      <button onClick={() => { console.log('signup button clicked'); setAuthenticationMode("signup") }} className="signup-btn" style={{ marginLeft: '8px' }}>
         Signup
       </button>
-      
+
       {(authenticationMode !== null) &&
-        <AuthModal authenticationMode={authenticationMode}/>
+        <AuthModal authenticationMode={authenticationMode} onClose={() => { console.log('onClose Modal of the AuthButton called'); setAuthenticationMode(null) }} />
       }
     </>
   );

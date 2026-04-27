@@ -7,6 +7,7 @@ import { Modal } from '@shared/components';
 import './HotelDetails.css';
 import { MdPool, MdFamilyRestroom, MdLocalParking, MdSmokeFree, MdRestaurant, MdRoomService, MdLocalBar, MdFreeBreakfast, MdElevator, MdFitnessCenter, MdSpa, MdWifi } from 'react-icons/md';
 import { FaBed } from 'react-icons/fa';
+import RoomCard from '../components/RoomCard';
 
 const HotelDetailsPage = () => {
   const { id } = useParams();
@@ -114,11 +115,8 @@ const HotelDetailsPage = () => {
         <h2>Available Rooms</h2>
         <div className="rooms-grid">
           {hotel.roomTypes && hotel.roomTypes.length > 0 ? hotel.roomTypes.map((roomType) => (
-            <div key={roomType.id} className="room-card">
-              <h3>{roomType.name}</h3>
-              <p className="price">Rs.{roomType.basePrice} / night</p>
-              <button className="book-btn" onClick={() => handleBookNow(roomType)}>Book Now</button>
-            </div>
+            <RoomCard key={roomType.id} roomType={roomType} onBookNow={()=>handleBookNow(roomType)}>
+            </RoomCard>
           )) : <div>No rooms available.</div>}
         </div>
       </div>
