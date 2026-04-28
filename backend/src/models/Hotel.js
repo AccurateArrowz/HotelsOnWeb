@@ -35,14 +35,6 @@ const Hotel = sequelize.define('Hotel', {
   isActive: {
     type: DataTypes.BOOLEAN,
     defaultValue: true
-  },
-  hotelOwnerId: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-    references: {
-      model: 'Users',
-      key: 'id'
-    }
   }
 });
 

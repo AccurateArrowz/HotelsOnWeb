@@ -1,4 +1,4 @@
-import { Hotel, HotelImage, RoomType, Room } from '../models';
+import { Hotel, HotelImage, RoomType, Room, HotelOwner } from '../models';
 import { sendSuccess, sendBadRequest, sendNotFound, sendInternalError } from '../utils/apiResponse';
 import { Request, Response } from 'express';
 import { Op } from 'sequelize';
@@ -80,29 +80,36 @@ export const getMyHotels = async (req: Request, res: Response) => {
   try {
     const userId = (req as Request & { user: { id: number } }).user.id;
 
-    const hotels = await Hotel.findAll({
-      where: { hotelOwnerId: userId },
+    const hotelOwners = await HotelOwner.findAll({
+      where: { userId },
       include: [
         {
-          model: HotelImage,
-          as: 'images',
-          attributes: ['id', 'imageUrl', 'isPrimary', 'orderIndex']
-        },
-        {
-          model: RoomType,
-          as: 'roomTypes',
-          where: { isActive: true },
-          required: false
-        },
-        {
-          model: Room,
-          as: 'rooms',
-          required: false
+          model: Hotel,
+          as: 'hotel',
+          include: [
+            {
+              model: HotelImage,
+              as: 'images',
+              attributes: ['id', 'imageUrl', 'isPrimary', 'orderIndex']
+            },
+            {
+              model: RoomType,
+              as: 'roomTypes',
+              where: { isActive: true },
+              required: false
+            },
+            {
+              model: Room,
+              as: 'rooms',
+              required: false
+            }
+          ]
         }
       ],
       order: [['createdAt', 'DESC']]
     });
 
+    const hotels = hotelOwners.map(ho => (ho as unknown as { hotel: typeof Hotel }).hotel);
     return sendSuccess(res, { data: hotels });
   } catch (error) {
     console.error('Error fetching owner hotels:', error);

@@ -1,4 +1,4 @@
-const { RoomType, Room, Hotel } = require('../models');
+const { RoomType, Room, Hotel, HotelOwner } = require('../models');
 const { sendSuccess, sendBadRequest, sendNotFound, sendInternalError, sendForbidden } = require('../utils/apiResponse');
 
 // Get all room types for a hotel
@@ -13,7 +13,8 @@ exports.getRoomTypesByHotel = async (req, res) => {
       return sendNotFound(res, 'Hotel not found');
     }
 
-    if (hotel.hotelOwnerId !== userId) {
+    const ownership = await HotelOwner.findOne({ where: { hotelId, userId } });
+    if (!ownership) {
       return sendForbidden(res, 'Not authorized to view this hotel\'s room types');
     }
 
@@ -40,7 +41,8 @@ exports.getRoomTypeById = async (req, res) => {
       return sendNotFound(res, 'Hotel not found');
     }
 
-    if (hotel.hotelOwnerId !== userId) {
+    const ownership = await HotelOwner.findOne({ where: { hotelId, userId } });
+    if (!ownership) {
       return sendForbidden(res, 'Not authorized to view this room type');
     }
 
@@ -77,7 +79,8 @@ exports.createRoomType = async (req, res) => {
       return sendNotFound(res, 'Hotel not found');
     }
 
-    if (hotel.hotelOwnerId !== userId) {
+    const ownership = await HotelOwner.findOne({ where: { hotelId, userId } });
+    if (!ownership) {
       return sendForbidden(res, 'Not authorized to create room types for this hotel');
     }
 
@@ -118,7 +121,8 @@ exports.updateRoomType = async (req, res) => {
       return sendNotFound(res, 'Hotel not found');
     }
 
-    if (hotel.hotelOwnerId !== userId) {
+    const ownership = await HotelOwner.findOne({ where: { hotelId, userId } });
+    if (!ownership) {
       return sendForbidden(res, 'Not authorized to update this room type');
     }
 
@@ -160,7 +164,8 @@ exports.deleteRoomType = async (req, res) => {
       return sendNotFound(res, 'Hotel not found');
     }
 
-    if (hotel.hotelOwnerId !== userId) {
+    const ownership = await HotelOwner.findOne({ where: { hotelId, userId } });
+    if (!ownership) {
       return sendForbidden(res, 'Not authorized to delete this room type');
     }
 

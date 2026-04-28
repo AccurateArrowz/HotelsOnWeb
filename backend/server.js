@@ -38,7 +38,7 @@ async function startServer() {
     console.log('Database connection established successfully.');
 
     // 'alter' Syncs all models with database (/ create tables)
-    await sequelize.sync({ force: false , alter: false }); // Set force: false to preserve existing data
+    await sequelize.sync({ force: false , alter: true }); // Set force: false to preserve existing data
     console.log('Database synchronized successfully.');
 
     // Start server

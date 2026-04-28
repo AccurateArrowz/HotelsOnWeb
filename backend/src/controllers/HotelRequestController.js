@@ -201,7 +201,7 @@ exports.updateHotelRequestStatus = async (req, res) => {
     // If approved, create the actual hotel
     let createdHotel = null;
     if (status === 'approved') {
-      const { Hotel, HotelImage } = require('../models');
+      const { Hotel, HotelImage, HotelOwner } = require('../models');
 
       createdHotel = await Hotel.create({
         name: hotelRequest.name,
@@ -209,8 +209,13 @@ exports.updateHotelRequestStatus = async (req, res) => {
         street: hotelRequest.street,
         city: hotelRequest.city,
         country: hotelRequest.country,
-        hotelOwnerId: hotelRequest.userId,
         isActive: true
+      });
+
+      // Create HotelOwner relationship
+      await HotelOwner.create({
+        hotelId: createdHotel.id,
+        userId: hotelRequest.userId
       });
 
       // Copy images to hotel

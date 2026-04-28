@@ -1,4 +1,4 @@
-const { Room, RoomType, Hotel, Booking, BookingRoom } = require('../models');
+const { Room, RoomType, Hotel, Booking, BookingRoom, HotelOwner, User } = require('../models');
 const { sendSuccess, sendBadRequest, sendNotFound, sendInternalError, sendForbidden } = require('../utils/apiResponse');
 const { Op } = require('sequelize');
 
@@ -7,6 +7,7 @@ exports.getRoomsByHotel = async (req, res) => {
   try {
     const { hotelId } = req.params;
     const userId = req.user.id;
+    console.log('rooms controller,  rooms requested for hotel id:', hotelId)
 
     // Verify hotel ownership
     const hotel = await Hotel.findByPk(hotelId);
@@ -14,7 +15,8 @@ exports.getRoomsByHotel = async (req, res) => {
       return sendNotFound(res, 'Hotel not found');
     }
 
-    if (hotel.hotelOwnerId !== userId) {
+    const ownership = await HotelOwner.findOne({ where: { hotelId, userId } });
+    if (!ownership) {
       return sendForbidden(res, 'Not authorized to view this hotel\'s rooms');
     }
 
@@ -97,7 +99,8 @@ exports.getRoomById = async (req, res) => {
       return sendNotFound(res, 'Hotel not found');
     }
 
-    if (hotel.hotelOwnerId !== userId) {
+    const ownership = await HotelOwner.findOne({ where: { hotelId, userId } });
+    if (!ownership) {
       return sendForbidden(res, 'Not authorized to view this room');
     }
 
@@ -135,7 +138,8 @@ exports.createRoom = async (req, res) => {
       return sendNotFound(res, 'Hotel not found');
     }
 
-    if (hotel.hotelOwnerId !== userId) {
+    const ownership = await HotelOwner.findOne({ where: { hotelId, userId } });
+    if (!ownership) {
       return sendForbidden(res, 'Not authorized to create rooms for this hotel');
     }
 
@@ -190,7 +194,8 @@ exports.updateRoom = async (req, res) => {
       return sendNotFound(res, 'Hotel not found');
     }
 
-    if (hotel.hotelOwnerId !== userId) {
+    const ownership = await HotelOwner.findOne({ where: { hotelId, userId } });
+    if (!ownership) {
       return sendForbidden(res, 'Not authorized to update this room');
     }
 
@@ -249,7 +254,8 @@ exports.deleteRoom = async (req, res) => {
       return sendNotFound(res, 'Hotel not found');
     }
 
-    if (hotel.hotelOwnerId !== userId) {
+    const ownership = await HotelOwner.findOne({ where: { hotelId, userId } });
+    if (!ownership) {
       return sendForbidden(res, 'Not authorized to delete this room');
     }
 
