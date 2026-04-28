@@ -1,10 +1,9 @@
-import { Hotel, HotelImage, RoomType, Room, HotelOwner } from '../models';
-import { sendSuccess, sendBadRequest, sendNotFound, sendInternalError } from '../utils/apiResponse';
-import { Request, Response } from 'express';
-import { Op } from 'sequelize';
+const { Hotel, HotelImage, RoomType, Room, HotelOwner } = require('../models');
+const { sendSuccess, sendBadRequest, sendNotFound, sendInternalError } = require('../utils/apiResponse');
+const { Op } = require('sequelize');
 
 // Fetch hotel by ID, including images and rooms
-export const getHotelById = async (req: Request, res: Response) => {
+const getHotelById = async (req, res) => {
   try {
     const hotel = await Hotel.findByPk(req.params.id, {
       include: [
@@ -33,8 +32,8 @@ export const getHotelById = async (req: Request, res: Response) => {
   }
 };
 
-export const getAllHotelsByCity = async (req: Request, res: Response) => {
-    const query = req.query.q as string;
+const getAllHotelsByCity = async (req, res) => {
+    const query = req.query.q;
     console.log(query);
     if (!query || query.trim() === '') {
       return sendBadRequest(res, 'Missing or invalid search query parameter');
@@ -76,9 +75,9 @@ export const getAllHotelsByCity = async (req: Request, res: Response) => {
   };
 
 // Get hotels owned by the authenticated user
-export const getMyHotels = async (req: Request, res: Response) => {
+const getMyHotels = async (req, res) => {
   try {
-    const userId = (req as Request & { user: { id: number } }).user.id;
+    const userId = req.user.id;
 
     const hotelOwners = await HotelOwner.findAll({
       where: { userId },
@@ -110,12 +109,18 @@ export const getMyHotels = async (req: Request, res: Response) => {
     });
 
     const hotels = hotelOwners.map(ho => {
-      const hoData = ho.toJSON() as { hotel?: unknown };
+      const hoData = ho.toJSON();
       return hoData.hotel;
-    }).filter((hotel): hotel is NonNullable<typeof hotel> => hotel != null);
+    }).filter(hotel => hotel != null);
     return sendSuccess(res, { data: hotels });
   } catch (error) {
     console.error('Error fetching owner hotels:', error);
     return sendInternalError(res, 'Failed to fetch your hotels');
   }
+};
+
+module.exports = {
+  getHotelById,
+  getAllHotelsByCity,
+  getMyHotels
 };
