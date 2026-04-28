@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import KPICard from '@/features/owner/components/KPICard';
-import RevenueChart from '@/features/owner/components/RevenueChart';
-import RoomTypesManagement from '@/features/owner/components/RoomTypesManagement';
-import RoomManagement from '@/features/owner/components/RoomManagement';
-import { useGetMyHotelsQuery } from '@features/owner/ownerHotelsApi';
-import '@/features/owner/pages/MyHotelPage.css';
+import { useState } from 'react';
+import KPICard from '@features/owner/components/KPICard';
+import RevenueChart from '@features/owner/components/RevenueChart';
+import RoomTypesManagement from '@features/owner/components/RoomTypesManagement';
+import RoomManagement from '@features/owner/components/RoomManagement';
+import HotelSwitcher from '@features/owner/components/HotelSwitcher';
+import { useActiveHotel } from '@features/owner/useActiveHotel';
+import '@features/owner/pages/MyHotelPage.css';
 
 // Revenue data placeholder until backend endpoint is available
 const MOCK_REVENUE_DATA = [
@@ -154,14 +155,15 @@ const MyHotelPage = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const { data: hotels, isLoading: hotelsLoading, error: hotelsError } = useGetMyHotelsQuery();
-
-  const hotel = hotels?.[0];
-  const hotelId = hotel?.id;
+  const { hotel, hotelId, hotels, isLoading: hotelsLoading, error: hotelsError, switchHotel } = useActiveHotel();
 
   const handleNavClick = (tabId) => {
     setActiveTab(tabId);
     setSidebarOpen(false);
+  };
+
+  const handleHotelChange = (newHotel) => {
+    switchHotel(newHotel);
   };
 
   const renderContent = () => {
@@ -240,13 +242,12 @@ const MyHotelPage = () => {
       {/* Sidebar */}
       <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
         <div className="sidebar-header">
-          <div className="hotel-logo">
-            <div className="logo-placeholder">{hotel.name.charAt(0)}</div>
-            <div className="hotel-info">
-              <h3 className="hotel-name">{hotel.name}</h3>
-              <span className="portal-label">Owner Portal</span>
-            </div>
-          </div>
+          <HotelSwitcher
+            hotels={hotels}
+            activeHotel={hotel}
+            onHotelChange={handleHotelChange}
+            isLoading={hotelsLoading}
+          />
         </div>
 
         <nav className="sidebar-nav" aria-label="Hotel management sections">
@@ -265,7 +266,7 @@ const MyHotelPage = () => {
 
         <div className="sidebar-footer">
           <div className="user-info">
-            <div className="user-avatar">O</div>
+            <div className="user-avatar" aria-hidden="true">O</div>
             <span className="user-label">Owner</span>
           </div>
         </div>

@@ -13,11 +13,6 @@ const Navbar = () => {
         <Link to="/" className="nav-logo">HotelsOnWeb</Link>
         
         <div className="nav-links">
-          {/* Show only if not a plain user */}
-          {(!user || (user.role === 'owner')) && (
-            <Link to="/list-property">List your Property</Link>
-          )}
-          
           {user && user.role === 'owner' &&
                 <Link to="/my-hotel">My Hotel</Link>}
               {user && user.role === 'customer'  && 
