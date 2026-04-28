@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { Navbar, Footer } from '@shared/components';
 import { RequireAuth, RequireRole } from '@features/auth/RoleBasedComponents';
 import { Suspense, lazy } from 'react';
@@ -19,9 +19,10 @@ const MyHotel = lazy(() => import('@features/owner/pages/MyHotelPage'));
 const HotelRequestsPage = lazy(() => import('@features/admin/HotelRequestsPage'));
 
 function App() {
-
-
-  // const location = useLocation();
+  const location = useLocation();
+  
+  // Hide footer on owner dashboard pages to prevent sidebar overlap
+  const hideFooter = location.pathname === '/my-hotel' || location.pathname === '/list-property';
   // const navigate = useNavigate();
 
   // const { isAuthenticated } = useAuth();
@@ -74,7 +75,7 @@ function App() {
           </Routes>
         </Suspense>
       </main>
-      <Footer />
+      {!hideFooter && <Footer />}
 
 
     </>

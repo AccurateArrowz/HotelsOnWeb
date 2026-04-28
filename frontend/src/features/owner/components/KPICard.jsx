@@ -1,12 +1,12 @@
 import React from 'react';
 import '@/features/owner/components/KPICard.css';
 
-const KPICard = ({ icon: Icon, label, value, subText, trend, trendUp }) => {
+const KPICard = ({ Icon, label, value, subText, trend, trendUp }) => {
   return (
     <div className="kpi-card" role="region" aria-label={`${label} metric`}>
       <div className="kpi-card-header">
         <div className="kpi-icon-container" aria-hidden="true">
-          {Icon}
+          {Icon && <Icon size={20} strokeWidth={2} />}
         </div>
         {trend && (
           <div 

@@ -1,6 +1,21 @@
 //from claude 
 import { useState } from "react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from "recharts";
+import {
+  LayoutDashboard,
+  CalendarDays,
+  BedDouble,
+  BarChart3,
+  DollarSign,
+  Calendar,
+  Star,
+  AlertTriangle,
+  Info,
+  CheckCircle2,
+  Plus,
+  TrendingUp,
+  TrendingDown,
+} from 'lucide-react';
 
 const revenueData = [
 { month: "Aug", revenue: 42000, occupancy: 68 },
@@ -51,13 +66,13 @@ upcoming:  { label: "Upcoming",  bg: "#ede9fe", text: "#5b21b6" },
 checkout:  { label: "Check-out", bg: "#fef3c7", text: "#92400e" },
 completed: { label: "Completed", bg: "#f1f5f9", text: "#475569" },
 };
-const KPICard = ({ icon, label, value, sub, trend, trendUp }) => (
+const KPICard = ({ Icon, label, value, sub, trend, trendUp }) => (
   <div style={{ background: "#fff", borderRadius: 16, padding: "20px", border: "1px solid #f1f5f9", display: "flex", flexDirection: "column", gap: 12 }}>
     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-      <span style={{ fontSize: 24 }}>{icon}</span>
+      <span style={{ display: "flex", alignItems: "center", color: "#64748b" }}>{Icon && <Icon size={22} strokeWidth={1.5} />}</span>
       {trend && (
-        <span style={{ fontSize: 11, fontWeight: 600, padding: "3px 8px", borderRadius: 20, background: trendUp ? "#d1fae5" : "#fee2e2", color: trendUp ? "#065f46" : "#991b1b" }}>
-          {trendUp ? "▲" : "▼"} {trend}
+        <span style={{ fontSize: 11, fontWeight: 600, padding: "3px 8px", borderRadius: 20, background: trendUp ? "#d1fae5" : "#fee2e2", color: trendUp ? "#065f46" : "#991b1b", display: "flex", alignItems: "center", gap: 4 }}>
+          {trendUp ? <TrendingUp size={12} /> : <TrendingDown size={12} />} {trend}
         </span>
       )}
     </div>
@@ -75,10 +90,10 @@ const occupied = rooms.filter(r => r.status === "occupied").length;
 const occupancyRate = Math.round((occupied / rooms.length) * 100);
 const filteredBookings = bookingFilter === "all" ? bookings : bookings.filter(b => b.status === bookingFilter);
 const navItems = [
-{ id: "overview", icon: "◉", label: "Overview" },
-{ id: "bookings", icon: "📋", label: "Bookings" },
-{ id: "rooms", icon: "🛏", label: "Rooms" },
-{ id: "analytics", icon: "📊", label: "Analytics" },
+{ id: "overview", Icon: LayoutDashboard, label: "Overview" },
+{ id: "bookings", Icon: CalendarDays, label: "Bookings" },
+{ id: "rooms", Icon: BedDouble, label: "Rooms" },
+{ id: "analytics", Icon: BarChart3, label: "Analytics" },
 ];
 return (
 <div style={{ minHeight: "100vh", background: "#f8fafc", fontFamily: "system-ui, -apple-system, sans-serif", display: "flex" }}>
@@ -100,7 +115,7 @@ fontSize: 13, fontWeight: 500, width: "100%",
 background: activeTab === item.id ? "#fbbf24" : "transparent",
 color: activeTab === item.id ? "#0f172a" : "#94a3b8",
 }}>
-<span>{item.icon}</span>{item.label}
+<item.Icon size={16} aria-hidden="true" />{item.label}
 </button>
 ))}
 </nav>
@@ -123,18 +138,22 @@ color: activeTab === item.id ? "#0f172a" : "#94a3b8",
         <p style={{ color: "#94a3b8", fontSize: 13, margin: "4px 0 0" }}>Tuesday, February 17, 2026</p>
       </div>
       <div style={{ display: "flex", gap: 10 }}>
-        <button style={{ fontSize: 13, background: "#fff", border: "1px solid #e2e8f0", color: "#475569", padding: "8px 16px", borderRadius: 12, cursor: "pointer" }}>Export Report</button>
-        <button style={{ fontSize: 13, background: "#fbbf24", border: "none", color: "#0f172a", fontWeight: 600, padding: "8px 16px", borderRadius: 12, cursor: "pointer" }}>+ New Booking</button>
+        <button style={{ fontSize: 13, background: "#fff", border: "1px solid #e2e8f0", color: "#475569", padding: "8px 16px", borderRadius: 12, cursor: "pointer", display: "flex", alignItems: "center", gap: 8 }}>
+          <BarChart3 size={14} aria-hidden="true" /> Export Report
+        </button>
+        <button style={{ fontSize: 13, background: "#fbbf24", border: "none", color: "#0f172a", fontWeight: 600, padding: "8px 16px", borderRadius: 12, cursor: "pointer", display: "flex", alignItems: "center", gap: 8 }}>
+          <Plus size={14} aria-hidden="true" /> New Booking
+        </button>
       </div>
     </div>
 
     {activeTab === "overview" && (
       <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14 }}>
-          <KPICard icon="💰" label="Revenue This Month" value="$61,200" trend="5.2%" trendUp={true} sub="vs $58,100 last month" />
-          <KPICard icon="🛏" label="Occupancy Rate" value={`${occupancyRate}%`} trend="3.1%" trendUp={true} sub={`${occupied} of ${rooms.length} rooms occupied`} />
-          <KPICard icon="📅" label="Bookings This Month" value="148" trend="2.4%" trendUp={true} sub="12 arriving today" />
-          <KPICard icon="⭐" label="Avg. Guest Rating" value="4.7 / 5" trend="0.2" trendUp={true} sub="Based on 94 reviews" />
+          <KPICard Icon={DollarSign} label="Revenue This Month" value="$61,200" trend="5.2%" trendUp={true} sub="vs $58,100 last month" />
+          <KPICard Icon={BedDouble} label="Occupancy Rate" value={`${occupancyRate}%`} trend="3.1%" trendUp={true} sub={`${occupied} of ${rooms.length} rooms occupied`} />
+          <KPICard Icon={Calendar} label="Bookings This Month" value="148" trend="2.4%" trendUp={true} sub="12 arriving today" />
+          <KPICard Icon={Star} label="Avg. Guest Rating" value="4.7 / 5" trend="0.2" trendUp={true} sub="Based on 94 reviews" />
         </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 16 }}>
@@ -166,7 +185,11 @@ color: activeTab === item.id ? "#0f172a" : "#94a3b8",
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {alerts.map((a, i) => (
                 <div key={i} style={{ borderRadius: 12, padding: "10px 12px", display: "flex", gap: 10, background: a.type === "warning" ? "#fffbeb" : a.type === "success" ? "#f0fdf4" : "#eff6ff" }}>
-                  <span style={{ fontSize: 13 }}>{a.type === "warning" ? "⚠️" : a.type === "success" ? "✅" : "ℹ️"}</span>
+                  <span style={{ display: "flex", alignItems: "center" }}>
+                    {a.type === "warning" ? <AlertTriangle size={16} color="#f59e0b" aria-hidden="true" /> : 
+                     a.type === "success" ? <CheckCircle2 size={16} color="#10b981" aria-hidden="true" /> : 
+                     <Info size={16} color="#3b82f6" aria-hidden="true" />}
+                  </span>
                   <div>
                     <p style={{ fontSize: 12, color: "#334155", fontWeight: 500, margin: 0 }}>{a.message}</p>
                     <p style={{ fontSize: 11, color: "#94a3b8", margin: "2px 0 0" }}>{a.time}</p>

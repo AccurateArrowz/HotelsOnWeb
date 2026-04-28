@@ -28,7 +28,7 @@ const baseQueryWithResponseHandler = async (
   extraOptions: object
 ): Promise<BaseQueryResult> => {
   const baseQuery = fetchBaseQuery({
-    baseUrl: 'http://localhost:3001/api',
+    baseUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api',
     prepareHeaders: (headers) => {
       const user = localStorage.getItem('user');
       if (user) {

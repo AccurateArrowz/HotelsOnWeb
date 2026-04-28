@@ -5,7 +5,7 @@
   background-color: #f8fafc;
 }
 
-/* Sidebar */
+/* Sidebar - extends full height on owner pages (footer hidden) */
 .sidebar {
   width: 260px;
   background: #0f172a;
@@ -17,6 +17,7 @@
   left: 0;
   top: 64px;
   z-index: 100;
+  overflow-y: auto;
 }
 
 .sidebar-header {

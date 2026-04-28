@@ -30,7 +30,8 @@
     "tailwind": "^4.0.0",
     "tailwindcss": "^4.1.11",
     "zod": "^3.22.4",
-    "@hotelsonweb/shared": "file:../shared"
+    "@hotelsonweb/shared": "file:../shared",
+    "lucide-react": "^1.11.0"
   },
   "devDependencies": {
     "@babel/core": "^7.28.0",

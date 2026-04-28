@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { ChevronDown, Plus } from 'lucide-react';
 import type { OwnerHotel } from '@features/owner/ownerHotelsApi';
 import './HotelSwitcher.css';
 
@@ -116,20 +117,11 @@ export const HotelSwitcher = ({
           <span className="hotel-switcher__name">{currentHotel.name}</span>
           <span className="hotel-switcher__label">Owner Portal</span>
         </div>
-        <svg
+        <ChevronDown
+          size={16}
           className={`hotel-switcher__chevron ${isOpen ? 'is-open' : ''}`}
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
           aria-hidden="true"
-        >
-          <polyline points="6 9 12 15 18 9" />
-        </svg>
+        />
       </button>
 
       {isOpen && (
@@ -174,19 +166,7 @@ export const HotelSwitcher = ({
 
           <div className="hotel-switcher__footer">
             <a href="/list-property" className="hotel-switcher__add-btn">
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <line x1="12" y1="5" x2="12" y2="19" />
-                <line x1="5" y1="12" x2="19" y2="12" />
-              </svg>
+              <Plus size={16} aria-hidden="true" />
               Add a property
             </a>
           </div>

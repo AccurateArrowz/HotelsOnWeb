@@ -1,4 +1,25 @@
 import { useState } from 'react';
+import {
+  LayoutDashboard,
+  CalendarDays,
+  BedDouble,
+  Tags,
+  BarChart3,
+  DollarSign,
+  Users,
+  Calendar,
+  Star,
+  AlertTriangle,
+  Info,
+  Menu,
+  Hotel,
+  Settings,
+  Plus,
+  Filter,
+  ChevronDown,
+  TrendingUp,
+  TrendingDown,
+} from 'lucide-react';
 import KPICard from '@features/owner/components/KPICard';
 import RevenueChart from '@features/owner/components/RevenueChart';
 import RoomTypesManagement from '@features/owner/components/RoomTypesManagement';
@@ -19,11 +40,11 @@ const MOCK_REVENUE_DATA = [
 ];
 
 const navItems = [
-  { id: 'overview', icon: '◉', label: 'Overview' },
-  { id: 'bookings', icon: '📋', label: 'Bookings' },
-  { id: 'rooms', icon: '🛏', label: 'Rooms' },
-  { id: 'room-types', icon: '🏷', label: 'Room Types' },
-  { id: 'analytics', icon: '📊', label: 'Analytics' },
+  { id: 'overview', icon: LayoutDashboard, label: 'Overview' },
+  { id: 'bookings', icon: CalendarDays, label: 'Bookings' },
+  { id: 'rooms', icon: BedDouble, label: 'Rooms' },
+  { id: 'room-types', icon: Tags, label: 'Room Types' },
+  { id: 'analytics', icon: BarChart3, label: 'Analytics' },
 ];
 
 // Overview Section Component
@@ -31,7 +52,7 @@ const OverviewSection = () => (
   <div className="dashboard-grid">
     <div className="kpi-grid">
       <KPICard
-        icon="💰"
+        Icon={DollarSign}
         label="Monthly Revenue"
         value="$61,200"
         trend="5.2%"
@@ -39,7 +60,7 @@ const OverviewSection = () => (
         subText="vs $58,100 last month"
       />
       <KPICard
-        icon="🛏"
+        Icon={BedDouble}
         label="Occupancy Rate"
         value="87%"
         trend="3.1%"
@@ -47,7 +68,7 @@ const OverviewSection = () => (
         subText="26 of 30 rooms occupied"
       />
       <KPICard
-        icon="📅"
+        Icon={Calendar}
         label="New Bookings"
         value="148"
         trend="2.4%"
@@ -55,7 +76,7 @@ const OverviewSection = () => (
         subText="12 arriving today"
       />
       <KPICard
-        icon="⭐"
+        Icon={Star}
         label="Guest Rating"
         value="4.7/5"
         trend="0.2"
@@ -79,14 +100,14 @@ const OverviewSection = () => (
         </div>
         <div className="alerts-list">
           <div className="alert-item warning">
-            <span>⚠️</span>
+            <AlertTriangle size={18} aria-hidden="true" />
             <div className="alert-content">
               <p className="alert-text">Room 205 requires maintenance</p>
               <span className="alert-time">2 hours ago</span>
             </div>
           </div>
           <div className="alert-item info">
-            <span>ℹ️</span>
+            <Info size={18} aria-hidden="true" />
             <div className="alert-content">
               <p className="alert-text">New booking from John Smith</p>
               <span className="alert-time">4 hours ago</span>
@@ -104,8 +125,14 @@ const BookingsSection = () => (
     <div className="section-header">
       <h2 id="bookings-title">Recent Bookings</h2>
       <div className="section-actions">
-        <button className="btn btn-outline">Filter</button>
-        <button className="btn btn-primary">+ New Booking</button>
+        <button className="btn btn-outline">
+          <Filter size={16} style={{ marginRight: '0.5rem' }} aria-hidden="true" />
+          Filter
+        </button>
+        <button className="btn btn-primary">
+          <Plus size={16} style={{ marginRight: '0.5rem' }} aria-hidden="true" />
+          New Booking
+        </button>
       </div>
     </div>
     <div className="table-container shadow-sm">
@@ -136,7 +163,9 @@ const BookingsSection = () => (
 // Placeholder Section Component
 const PlaceholderSection = ({ title }) => (
   <div className="placeholder-content">
-    <div className="empty-icon">�</div>
+    <div className="empty-icon" aria-hidden="true">
+      <Settings size={48} strokeWidth={1} />
+    </div>
     <h3>{title} Coming Soon</h3>
     <p>This feature is under development.</p>
   </div>
@@ -172,7 +201,9 @@ const MyHotelPage = () => {
     if (!hotelId && activeTab !== 'overview') {
       return (
         <div className="empty-state">
-          <div className="empty-icon">🏨</div>
+          <div className="empty-icon" aria-hidden="true">
+            <Hotel size={48} />
+          </div>
           <h3>Hotel Required</h3>
           <p>You need to set up a hotel before managing {navItems.find(n => n.id === activeTab)?.label.toLowerCase()}.</p>
         </div>
@@ -211,10 +242,15 @@ const MyHotelPage = () => {
     return (
       <div className="my-hotel-page empty">
         <div className="empty-hotel-state">
-          <div className="empty-icon">🏨</div>
+          <div className="empty-icon" aria-hidden="true">
+            <Hotel size={48} />
+          </div>
           <h2>No Hotel Found</h2>
           <p>You don&apos;t have any hotels registered yet.</p>
-          <button className="btn btn-primary">List Your Property</button>
+          <button className="btn btn-primary">
+            <Plus size={16} style={{ marginRight: '0.5rem' }} aria-hidden="true" />
+            List Your Property
+          </button>
         </div>
       </div>
     );
@@ -229,7 +265,7 @@ const MyHotelPage = () => {
         aria-label="Open navigation menu"
         aria-expanded={sidebarOpen}
       >
-        <span aria-hidden="true">☰</span>
+        <Menu size={20} aria-hidden="true" />
       </button>
 
       {/* Overlay for mobile drawer */}
@@ -251,17 +287,22 @@ const MyHotelPage = () => {
         </div>
 
         <nav className="sidebar-nav" aria-label="Hotel management sections">
-          {navItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => handleNavClick(item.id)}
-              className={`nav-item ${activeTab === item.id ? 'active' : ''}`}
-              aria-current={activeTab === item.id ? 'page' : undefined}
-            >
-              <span className="nav-icon">{item.icon}</span>
-              <span className="nav-label">{item.label}</span>
-            </button>
-          ))}
+          {navItems.map((item) => {
+            const IconComponent = item.icon;
+            return (
+              <button
+                key={item.id}
+                onClick={() => handleNavClick(item.id)}
+                className={`nav-item ${activeTab === item.id ? 'active' : ''}`}
+                aria-current={activeTab === item.id ? 'page' : undefined}
+              >
+                <span className="nav-icon" aria-hidden="true">
+                  <IconComponent size={18} />
+                </span>
+                <span className="nav-label">{item.label}</span>
+              </button>
+            );
+          })}
         </nav>
 
         <div className="sidebar-footer">
@@ -288,8 +329,14 @@ const MyHotelPage = () => {
           </div>
           {activeTab !== 'room-types' && (
             <div className="header-actions">
-              <button className="btn btn-outline">Export Report</button>
-              <button className="btn btn-primary">Edit Hotel Details</button>
+              <button className="btn btn-outline">
+                <BarChart3 size={16} style={{ marginRight: '0.5rem' }} aria-hidden="true" />
+                Export Report
+              </button>
+              <button className="btn btn-primary">
+                <Settings size={16} style={{ marginRight: '0.5rem' }} aria-hidden="true" />
+                Edit Hotel Details
+              </button>
             </div>
           )}
         </header>
