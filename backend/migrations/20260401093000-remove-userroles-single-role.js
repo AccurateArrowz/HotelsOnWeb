@@ -14,11 +14,18 @@ module.exports = {
       CREATE OR REPLACE FUNCTION enforce_hotel_owner_role()
       RETURNS TRIGGER AS $$
       DECLARE
+        owner_role_id INTEGER;
         has_owner_role BOOLEAN;
       BEGIN
+        SELECT id INTO owner_role_id FROM "Roles" WHERE key = 'owner' LIMIT 1;
+
+        IF owner_role_id IS NULL THEN
+          RAISE EXCEPTION 'Owner role is not defined in Roles';
+        END IF;
+
         SELECT EXISTS(
           SELECT 1 FROM "Users" u
-          WHERE u.id = NEW."userId" AND u.role = 'hotelOwner'
+          WHERE u.id = NEW."userId" AND u."roleId" = owner_role_id
         ) INTO has_owner_role;
 
         IF NOT has_owner_role THEN

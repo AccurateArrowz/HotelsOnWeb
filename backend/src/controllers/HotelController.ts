@@ -1,4 +1,4 @@
-import { Hotel, HotelImage, RoomType } from '../models';
+import { Hotel, HotelImage, RoomType, Room } from '../models';
 import { sendSuccess, sendBadRequest, sendNotFound, sendInternalError } from '../utils/apiResponse';
 import { Request, Response } from 'express';
 import { Op } from 'sequelize';
@@ -74,3 +74,38 @@ export const getAllHotelsByCity = async (req: Request, res: Response) => {
       return sendInternalError(res, 'Failed to fetch hotels by query');
     }
   };
+
+// Get hotels owned by the authenticated user
+export const getMyHotels = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as Request & { user: { id: number } }).user.id;
+
+    const hotels = await Hotel.findAll({
+      where: { hotelOwnerId: userId },
+      include: [
+        {
+          model: HotelImage,
+          as: 'images',
+          attributes: ['id', 'imageUrl', 'isPrimary', 'orderIndex']
+        },
+        {
+          model: RoomType,
+          as: 'roomTypes',
+          where: { isActive: true },
+          required: false
+        },
+        {
+          model: Room,
+          as: 'rooms',
+          required: false
+        }
+      ],
+      order: [['createdAt', 'DESC']]
+    });
+
+    return sendSuccess(res, { data: hotels });
+  } catch (error) {
+    console.error('Error fetching owner hotels:', error);
+    return sendInternalError(res, 'Failed to fetch your hotels');
+  }
+};

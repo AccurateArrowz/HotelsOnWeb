@@ -77,7 +77,7 @@ const baseQueryWithResponseHandler = async (
 export const baseApi = createApi({
   reducerPath: 'baseApi',
   baseQuery: baseQueryWithResponseHandler,
-  tagTypes: ['Hotel', 'Booking', 'User', 'HotelRequest'],
+  tagTypes: ['Hotel', 'Booking', 'User', 'HotelRequest', 'RoomType', 'Room'],
   endpoints: () => ({}),
 });
 

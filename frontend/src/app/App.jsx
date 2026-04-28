@@ -15,7 +15,7 @@ const HotelDetails = lazy(() => import('@features/hotels/pages/HotelDetails'));
 const DashboardPage = lazy(() => import('@features/user/pages/DashboardPage'));
 const ListYourProperty = lazy(() => import('@features/owner/pages/ListYourProperty'));
 const Unauthorized = lazy(() => import('@app/pages/Unauthorized'));
-const MyHotel = lazy(() => import('@features/owner/MyHotel'));
+const MyHotel = lazy(() => import('@features/owner/pages/MyHotelPage'));
 const HotelRequestsPage = lazy(() => import('@features/admin/HotelRequestsPage'));
 
 function App() {
@@ -60,7 +60,7 @@ function App() {
             } />
             <Route path="/my-hotel" element={
               <RequireRole role="owner">
-                <OwnerDashboard />
+                <MyHotel />
               </RequireRole>
             } />
            

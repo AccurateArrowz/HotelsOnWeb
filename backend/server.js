@@ -12,6 +12,8 @@ const authRoutes = require('./src/routes/authRoutes');
 const hotelRequestRoutes = require('./src/routes/hotelRequestRoutes');
 const bookingRoutes = require('./src/routes/bookingRoutes');
 const mediaRoutes = require('./src/routes/mediaRoutes');
+const roomTypeRoutes = require('./src/routes/roomTypeRoutes');
+const roomRoutes = require('./src/routes/roomRoutes');
 
 // Middleware
 app.use(cors());
@@ -21,6 +23,8 @@ app.use('/uploads', express.static('uploads'));
 
 // API routes
 app.use('/api/hotels', hotelRoutes);
+app.use('/api/hotels/:hotelId/room-types', roomTypeRoutes);
+app.use('/api/hotels/:hotelId/rooms', roomRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/hotel-requests', hotelRequestRoutes);
 app.use('/api/bookings', bookingRoutes);
