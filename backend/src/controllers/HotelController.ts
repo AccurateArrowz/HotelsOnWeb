@@ -109,7 +109,10 @@ export const getMyHotels = async (req: Request, res: Response) => {
       order: [['createdAt', 'DESC']]
     });
 
-    const hotels = hotelOwners.map(ho => (ho as unknown as { hotel: typeof Hotel }).hotel);
+    const hotels = hotelOwners.map(ho => {
+      const hoData = ho.toJSON() as { hotel?: unknown };
+      return hoData.hotel;
+    }).filter((hotel): hotel is NonNullable<typeof hotel> => hotel != null);
     return sendSuccess(res, { data: hotels });
   } catch (error) {
     console.error('Error fetching owner hotels:', error);

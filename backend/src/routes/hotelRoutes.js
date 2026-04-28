@@ -5,13 +5,13 @@ const HotelImage = require('../models/HotelImage');
 const {getAllHotelsByCity,getHotelById, getMyHotels} = require('../controllers/HotelController');
 const { authenticateToken } = require('../middleware/auth');
 
+// Get hotels owned by the authenticated user (owner only) - MUST be before /:id
+router.get('/owner/my-hotels', authenticateToken, getMyHotels);
+
 // right now, I am not providing all hotels from all cities , the city will be provided as query parameter
 router.get('/',getAllHotelsByCity);
 
-// Get hotel by ID with all images and rooms
+// Get hotel by ID with all images and rooms - MUST be after specific routes
 router.get('/:id', getHotelById);
-
-// Get hotels owned by the authenticated user (owner only)
-router.get('/owner/my-hotels', authenticateToken, getMyHotels);
 
 module.exports = router; 
