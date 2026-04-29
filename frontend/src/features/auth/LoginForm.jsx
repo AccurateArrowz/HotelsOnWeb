@@ -1,16 +1,19 @@
 import { useState } from 'react';
 import { useAuth } from './useAuth';
+import Spinner from '@shared/components/Spinner';
 import './authForms.css';
 
 const LoginForm = ({ onSuccess, onSwitchToSignup }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
 
     try {
       await login(email, password);
@@ -18,6 +21,8 @@ const LoginForm = ({ onSuccess, onSwitchToSignup }) => {
     } catch (err) {
       setError('Failed to log in. Please check your credentials.');
       console.log('login error: ', err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -54,7 +59,16 @@ const LoginForm = ({ onSuccess, onSwitchToSignup }) => {
         </div>
 
         <div className="form-actions">
-          <button type="submit" className="primary-button">Sign In</button>
+          <button type="submit" className="primary-button" disabled={loading}>
+            {loading ? (
+              <div className="flex items-center justify-center gap-2">
+                <Spinner size="small" />
+                <span>Signing In...</span>
+              </div>
+            ) : (
+              'Sign In'
+            )}
+          </button>
         </div>
       </form>
 

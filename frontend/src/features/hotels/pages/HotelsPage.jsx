@@ -4,6 +4,7 @@ import { FixedSizeList as List } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { HotelList } from '@features/hotels/components';
 import { Loading } from '@shared/components';
+import { toast } from '@shared/utils/toast';
 import { useLazyGetHotelsQuery } from '../hotelsApi';
 import './HotelsPage.css';
 
@@ -40,7 +41,9 @@ const HotelsPage = () => {
       setHasMore((Array.isArray(hotelResponse) ? hotelResponse.length : 0) === PAGE_SIZE);
       setPage(nextPage + 1);
     } catch (err) {
-      setError(err?.data?.message || err?.error || err?.message || 'Failed to fetch hotels');
+      const errorMessage = err?.data?.message || err?.error || err?.message || 'Failed to fetch hotels';
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }

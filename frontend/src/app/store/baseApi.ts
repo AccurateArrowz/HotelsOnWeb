@@ -7,6 +7,7 @@ import {
   type FetchBaseQueryMeta,
   type QueryReturnValue,
 } from '@reduxjs/toolkit/query/react';
+import { toast } from '@shared/utils/toast';
 
 interface ApiResponse<T> {
   success: boolean;
@@ -21,6 +22,9 @@ interface ApiErrorResponse {
 }
 
 type BaseQueryResult = QueryReturnValue<unknown, FetchBaseQueryError, FetchBaseQueryMeta>;
+
+// Flag to track the first API request for Render cold start notification
+let isFirstRequest = true;
 
 const baseQueryWithResponseHandler = async (
   args: string | FetchArgs,
@@ -40,6 +44,12 @@ const baseQueryWithResponseHandler = async (
       return headers;
     },
   });
+
+  // Handle Render cold start notification on the very first request
+  if (isFirstRequest) {
+    isFirstRequest = false;
+    toast.info('The backend is hosted on Render. Please wait 50-60 seconds for the first response while the server wakes up.', 8000);
+  }
 
   const result = await baseQuery(args, api, extraOptions);
 

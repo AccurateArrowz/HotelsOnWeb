@@ -6,14 +6,20 @@ import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { store } from './app/store/store';
 import { AuthProvider } from '@features/auth/AuthProvider';
+import { ToastProvider, ToastListener } from '@shared/utils/toast';
+import { ToastContainer } from '@shared/components/Toast';
  
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Provider store={store}>
       <BrowserRouter>
-        <AuthProvider>
-          <App />
-        </AuthProvider>
+        <ToastProvider>
+          <ToastListener />
+          <ToastContainer />
+          <AuthProvider>
+            <App />
+          </AuthProvider>
+        </ToastProvider>
       </BrowserRouter>
     </Provider>
   </React.StrictMode>

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from './useAuth';
+import Spinner from '@shared/components/Spinner';
 import './authForms.css';
 
 const SignupForm = ({ onSuccess, onSwitchToLogin }) => {
@@ -12,7 +13,7 @@ const SignupForm = ({ onSuccess, onSwitchToLogin }) => {
     password: '',
     confirmPassword: ''
   });
-
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const { register } = useAuth();
 
@@ -54,6 +55,7 @@ const SignupForm = ({ onSuccess, onSwitchToLogin }) => {
     }
 
     try {
+      setLoading(true);
       await register({
         firstName: formData.firstName,
         lastName: formData.lastName,
@@ -65,6 +67,8 @@ const SignupForm = ({ onSuccess, onSwitchToLogin }) => {
       onSuccess?.();
     } catch (err) {
       setError(err.message || 'Failed to create an account. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -180,8 +184,15 @@ const SignupForm = ({ onSuccess, onSwitchToLogin }) => {
         </div>
 
         <div className="form-actions">
-          <button type="submit" className="primary-button">
-            Create Account
+          <button type="submit" className="primary-button" disabled={loading}>
+            {loading ? (
+              <div className="flex items-center justify-center gap-2">
+                <Spinner size="small" />
+                <span>Creating Account...</span>
+              </div>
+            ) : (
+              'Create Account'
+            )}
           </button>
         </div>
       </form>

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Spinner from '@shared/components/Spinner';
 import '../../../styles/bookingModal.css';
 
 const BookingForm = ({ hotel, roomType, onClose }) => {
@@ -181,10 +182,10 @@ const BookingForm = ({ hotel, roomType, onClose }) => {
                 disabled={paymentLoading}
               >
                 {paymentLoading ? (
-                  <>
-                    <span className="spinner"></span>
-                    Processing...
-                  </>
+                  <div className="flex items-center justify-center gap-2">
+                    <Spinner size="small" />
+                    <span>Processing...</span>
+                  </div>
                 ) : (
                   'Pay Now'
                 )}
@@ -269,10 +270,10 @@ const BookingForm = ({ hotel, roomType, onClose }) => {
               disabled={loading || calculateNights() <= 0}
             >
               {loading ? (
-                <>
-                  <span className="spinner"></span>
-                  Creating Booking...
-                </>
+                <div className="flex items-center justify-center gap-2">
+                  <Spinner size="small" />
+                  <span>Creating Booking...</span>
+                </div>
               ) : (
                 'Continue to Payment'
               )}
