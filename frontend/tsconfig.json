@@ -24,8 +24,7 @@
       "@shared/*": ["shared/*"],
       "@services/*": ["services/*"],
       "@app/*": ["app/*"],
-      "@assets/*": ["assets/*"],
-      "@hotelsonweb/shared": ["../shared/dist"]
+      "@assets/*": ["assets/*"]
     }
   },
   "include": ["src"],
