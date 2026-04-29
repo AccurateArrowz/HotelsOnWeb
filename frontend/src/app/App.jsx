@@ -18,6 +18,7 @@ const Unauthorized = lazy(() => import('@app/pages/Unauthorized'));
 const MyHotel = lazy(() => import('@features/owner/pages/MyHotelPage'));
 const HotelRequestsPage = lazy(() => import('@features/admin/HotelRequestsPage'));
 const ProfilePage = lazy(() => import('@features/auth/pages/ProfilePage'));
+const MyBookings = lazy(() => import('@features/bookings/pages/MyBookings'));
 
 function App() {
   const location = useLocation();
@@ -74,6 +75,11 @@ function App() {
             <Route path="/profile" element={
               <RequireAuth>
                 <ProfilePage />
+              </RequireAuth>
+            } />
+            <Route path="/my-bookings" element={
+              <RequireAuth>
+                <MyBookings />
               </RequireAuth>
             } />
             <Route path="/unauthorized" element={<Unauthorized />} />

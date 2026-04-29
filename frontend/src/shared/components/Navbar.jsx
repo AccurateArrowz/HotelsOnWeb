@@ -39,7 +39,7 @@ const Navbar = () => {
           {user && user.role === 'owner' &&
                 <Link to="/my-hotel" onClick={closeMobileMenu}>My Hotel</Link>}
               {user && user.role === 'customer'  &&
-                <Link to="/dashboard" onClick={closeMobileMenu}>My Bookings</Link>
+                <Link to="/my-bookings" onClick={closeMobileMenu}>My Bookings</Link>
               }
 
            {user && user.role === 'admin'  &&

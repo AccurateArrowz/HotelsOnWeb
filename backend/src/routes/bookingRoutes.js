@@ -2,12 +2,14 @@ const express = require('express');
 const router = express.Router();
 const bookingController = require('../controllers/bookingController');
 const { authenticateToken } = require('../middleware/auth');
+const { validate } = require('../middleware/validate');
+const { createBookingSchema, paymentSchema } = require('../validations/bookingValidation');
 
 //authenticate the user for all routes
 router.use(authenticateToken);
 
 // Create a new booking (protected route)
-router.post('/', bookingController.createBooking);
+router.post('/', validate(createBookingSchema), bookingController.createBooking);
 
 // Get user's bookings (protected route)
 router.get('/user', bookingController.getUserBookings);
@@ -16,7 +18,7 @@ router.get('/user', bookingController.getUserBookings);
 router.get('/:id', bookingController.getBookingById);
 
 // Process payment simulation (protected route)
-router.post('/:id/payment', bookingController.processPayment);
+router.post('/:id/payment', validate(paymentSchema), bookingController.processPayment);
 
 // Cancel booking (protected route)
 router.patch('/:id/cancel', bookingController.cancelBooking);

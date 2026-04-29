@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from './useAuth';
 import { Modal } from '../../shared';
 import LoginForm from './LoginForm';
@@ -27,8 +28,8 @@ const AuthButton = () => {
         </div>
         {menuOpen && (
           <div className="dropdown-menu">
-            <button onClick={() => setMenuOpen(false)}>Profile</button>
-            <button onClick={() => setMenuOpen(false)}>My Bookings</button>
+            <Link to="/profile" onClick={() => setMenuOpen(false)}>Profile</Link>
+            <Link to="/my-bookings" onClick={() => setMenuOpen(false)}>My Bookings</Link>
             <button onClick={handleLogout}>Logout</button>
           </div>
         )}

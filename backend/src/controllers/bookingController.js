@@ -66,13 +66,16 @@ const bookingController = {
         include: [
           {
             model: Hotel,
-            attributes: ['name', 'address', 'city']
+            as: 'hotel',
+            attributes: ['name', 'street', 'city', 'country']
           },
           {
             model: BookingRoom,
+            as: 'bookingRooms',
             include: [
               {
                 model: RoomType,
+                as: 'roomType',
                 attributes: ['name', 'basePrice']
               }
             ]
@@ -97,13 +100,16 @@ const bookingController = {
         include: [
           {
             model: Hotel,
-            attributes: ['name', 'address', 'city']
+            as: 'hotel',
+            attributes: ['name', 'street', 'city', 'country']
           },
           {
             model: BookingRoom,
+            as: 'bookingRooms',
             include: [
               {
                 model: RoomType,
+                as: 'roomType',
                 attributes: ['name', 'basePrice']
               }
             ]

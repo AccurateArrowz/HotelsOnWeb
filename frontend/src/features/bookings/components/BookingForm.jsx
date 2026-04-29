@@ -1,18 +1,20 @@
 import { useState } from 'react';
+import { useCreateBookingMutation, useProcessPaymentMutation } from '../bookingsApi';
 import Spinner from '@shared/components/Spinner';
 import '../../../styles/bookingModal.css';
 
 const BookingForm = ({ hotel, roomType, onClose }) => {
+  const [createBooking, { isLoading: isCreating }] = useCreateBookingMutation();
+  const [processPayment, { isLoading: isPaying }] = useProcessPaymentMutation();
+
   const [formData, setFormData] = useState({
     checkInDate: '',
     checkOutDate: '',
     specialRequests: ''
   });
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [booking, setBooking] = useState(null);
   const [paymentStep, setPaymentStep] = useState(false);
-  const [paymentLoading, setPaymentLoading] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
 
   const handleInputChange = (e) => {
@@ -42,48 +44,37 @@ const BookingForm = ({ hotel, roomType, onClose }) => {
   const handleBookingSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    setLoading(true);
 
     try {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      // Simulate successful booking response
-      const mockBooking = {
-        id: Math.floor(Math.random() * 10000),
-        bookingNumber: `BK${Date.now()}`,
+      const result = await createBooking({
         hotelId: hotel.id,
         roomTypeId: roomType.id,
         checkInDate: formData.checkInDate,
         checkOutDate: formData.checkOutDate,
         specialRequests: formData.specialRequests,
-        status: 'confirmed'
-      };
+      }).unwrap();
 
-      setBooking(mockBooking);
+      setBooking(result);
       setPaymentStep(true);
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to create booking');
-    } finally {
-      setLoading(false);
+      setError(err?.data?.message || 'Failed to create booking. Please try again.');
     }
   };
 
   const handlePayment = async () => {
-    setPaymentLoading(true);
+    if (!booking) return;
+    
     setError('');
 
     try {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await processPayment({
+        id: booking.id,
+        paymentMethod: 'credit_card',
+      }).unwrap();
 
-      // Simulate successful payment
-      console.log('Payment processed successfully (simulated)');
       setPaymentSuccess(true);
     } catch (err) {
-      setError(err.response?.data?.message || 'Payment failed');
-    } finally {
-      setPaymentLoading(false);
+      setError(err?.data?.message || 'Payment failed. Please try again.');
     }
   };
 
@@ -93,11 +84,9 @@ const BookingForm = ({ hotel, roomType, onClose }) => {
       checkOutDate: '',
       specialRequests: ''
     });
-    setLoading(false);
     setError('');
     setBooking(null);
     setPaymentStep(false);
-    setPaymentLoading(false);
     setPaymentSuccess(false);
   };
 
@@ -172,15 +161,20 @@ const BookingForm = ({ hotel, roomType, onClose }) => {
               <button
                 className="secondary-button"
                 onClick={() => setPaymentStep(false)}
-                disabled={paymentLoading}
+                disabled={isPaying}
               >
                 Back
               </button>
               <button
                 className="primary-button"
                 onClick={handlePayment}
-                disabled={paymentLoading}
+                disabled={isPaying}
               >
+                {isPaying ? (
+                  <>
+                    <span className="spinner"></span>
+                    Processing...
+                  </>
                 {paymentLoading ? (
                   <div className="flex items-center justify-center gap-2">
                     <Spinner size="small" />
@@ -260,15 +254,20 @@ const BookingForm = ({ hotel, roomType, onClose }) => {
               type="button"
               className="secondary-button"
               onClick={handleClose}
-              disabled={loading}
+              disabled={isCreating}
             >
               Cancel
             </button>
             <button
               type="submit"
               className="primary-button"
-              disabled={loading || calculateNights() <= 0}
+              disabled={isCreating || calculateNights() <= 0}
             >
+              {isCreating ? (
+                <>
+                  <span className="spinner"></span>
+                  Creating Booking...
+                </>
               {loading ? (
                 <div className="flex items-center justify-center gap-2">
                   <Spinner size="small" />

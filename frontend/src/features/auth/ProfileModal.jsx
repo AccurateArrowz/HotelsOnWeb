@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useAuth } from './useAuth';
 import { Modal } from '../../shared';
 import '../../styles/modal.css';
@@ -14,8 +15,16 @@ const ProfileModal = ({onClose}) => {
           {user.phone && <div><strong>Phone:</strong> {user.phone}</div>}
           <div><strong>Role:</strong> {user.role}</div>
         </div>
-      <div className="profile-actions">
-        <button className="primary-button" onClick={() => { logout(); 
+      <div className="profile-actions" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <Link 
+          to="/my-bookings" 
+          className="primary-button text-center" 
+          onClick={onClose}
+          style={{ textDecoration: 'none' }}
+        >
+          My Bookings
+        </Link>
+        <button className="secondary-button" onClick={() => { logout(); 
           onClose(); }}>Logout</button>
       </div>
     </Modal>
