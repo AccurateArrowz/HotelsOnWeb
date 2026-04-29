@@ -142,7 +142,7 @@ export default function ImageCarousel({
                 aria-label={`Slide ${index + 1} of ${slidesCount}`}
                 aria-hidden={index < currentIndex || index >= currentIndex + visibleSlides}
               >
-                <div className="relative aspect-[16/9] w-full overflow-hidden rounded-lg">
+                <div className="relative aspect-[4/3] w-full overflow-hidden rounded-lg">
                   <img
                     src={image}
                     alt={`${alt} ${index + 1}`}

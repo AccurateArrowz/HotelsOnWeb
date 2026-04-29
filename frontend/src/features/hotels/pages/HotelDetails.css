@@ -9,6 +9,23 @@
   padding: 2.5rem 2rem 2.5rem 2rem;
   font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
   color: #222;
+  /* border: pink;
+  border-width: 6px;
+  height : 40vh; */
+}
+
+@media (min-width: 1024px) {
+  .hotel-details-page {
+    max-width: 1200px;
+    padding: 2.5rem 3rem;
+  }
+}
+
+@media (min-width: 1400px) {
+  .hotel-details-page {
+    max-width: 1400px;
+    padding: 2.5rem 4rem;
+  }
 }
 
 .hotel-header {
@@ -130,6 +147,11 @@
 }
 
 /* Image Gallery */
+.hotel-carousel-wrapper {
+  margin-bottom: 2rem;
+  min-height: 500px;
+}
+
 .image-gallery {
   margin-bottom: 2rem;
 }

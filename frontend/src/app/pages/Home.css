@@ -22,7 +22,7 @@ display: flex;
   text-align: center;
   padding: 3rem 1rem 2rem 1rem;
   width: 100%;
-  max-width: 700px;
+  max-width: 1200px;
   margin: 0 auto;
   background: rgba(44,62,80,0.45);
   border-radius: 18px;
@@ -473,55 +473,250 @@ display: flex;
   color: #222;
 }
 
-@media (max-width: 700px) {
-  .hero-title {
-    font-size: 1.7rem;
-  }
-  .hero-overlay {
-    padding: 2rem 0.5rem 1.5rem 0.5rem;
-  }
+/* Large screens: search bar spans full row */
+@media (min-width: 901px) {
   .search-bar {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.5rem;
+    width: 100%;
+    justify-content: stretch;
+    gap: 0.75rem;
   }
+
+  .search-bar input[type="text"] {
+    flex: 2;
+    min-width: 250px;
+  }
+
+  .search-bar .react-datepicker-wrapper,
+  .search-bar .react-datepicker__input-container {
+    flex: 1;
+  }
+
+  .search-bar .datepicker-input {
+    width: 100%;
+  }
+
+  .guest-selector-container {
+    flex: 1;
+    min-width: 140px;
+  }
+
+  .guest-selector-trigger {
+    width: 100%;
+  }
+
+  .search-btn {
+    flex: 0 0 auto;
+    min-width: 100px;
+  }
+}
+
+/* Tablet breakpoint for search form */
+@media (max-width: 900px) {
+  .search-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  .search-bar input[type="text"] {
+    grid-column: 1 / -1;
+    min-width: 100%;
+  }
+
+  .search-bar .react-datepicker-wrapper {
+    width: 100%;
+  }
+
+  .search-bar .react-datepicker__input-container {
+    width: 100%;
+  }
+
+  .search-bar .datepicker-input {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .guest-selector-container {
+    min-width: unset;
+    width: 100%;
+  }
+
+  .search-btn {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-height: 44px;
+  }
+}
+
+/* Mobile breakpoint */
+@media (max-width: 600px) {
+  .hero-section {
+    min-height: auto;
+    padding: 1rem;
+  }
+
+  .hero-title {
+    font-size: 1.5rem;
+    letter-spacing: 0.5px;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-overlay {
+    padding: 1.5rem 1rem;
+    border-radius: 12px;
+    max-width: 100%;
+  }
+
+  .search-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+
+  .search-bar input[type="text"] {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-width: unset;
+    min-height: 44px;
+    font-size: 16px; /* Prevents iOS zoom on focus */
+  }
+
+  .search-bar .react-datepicker-wrapper {
+    width: 100%;
+  }
+
+  .search-bar .react-datepicker__input-container {
+    width: 100%;
+  }
+
+  .search-bar .datepicker-input {
+    width: 100%;
+    min-width: unset;
+    min-height: 44px;
+    font-size: 16px;
+  }
+
+  .guest-selector-container {
+    grid-column: 1 / 2;
+    min-width: unset;
+    width: 100%;
+  }
+
+  .guest-selector-trigger {
+    min-height: 44px;
+    font-size: 16px;
+  }
+
+  .search-btn {
+    grid-column: 1 / -1;
+  }
+
+  .guest-selector-dropdown {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 90vw;
+    max-width: 320px;
+    margin: 0;
+    z-index: 1001;
+  }
+
+  .guest-selector-dropdown::before {
+    content: '';
+    position: fixed;
+    top: -100vh;
+    left: -100vw;
+    right: -100vw;
+    bottom: -100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: -1;
+  }
+
+  .search-btn {
+    width: 100%;
+    min-height: 48px;
+    font-size: 1.05rem;
+  }
+
   .top-hotels-section {
     margin: 1.5rem auto 0.5rem auto;
     padding: 0 0.2rem;
   }
-  
+
   .popular-cities-section {
     padding: 2rem 1rem;
   }
-  
+
   .popular-cities-section h2 {
-    font-size: 2rem;
+    font-size: 1.75rem;
   }
-  
+
+  .popular-cities-section p {
+    font-size: 1rem;
+  }
+
   .cities-grid {
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
   }
-  
+
   .city-image {
-    height: 180px;
+    height: 200px;
   }
 
   .feature-hero-section {
-    padding: 2rem 0.5rem 1.5rem 0.5rem;
+    padding: 2rem 1rem 1.5rem 1rem;
   }
+
   .feature-hero-title {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
   }
+
+  .feature-hero-subtitle {
+    font-size: 1rem;
+  }
+
   .feature-hero-grid {
-    gap: 1.2rem;
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
+
   .feature-hero-item {
-    padding: 1.2rem 0.7rem 1rem 0.7rem;
+    padding: 1.5rem 1rem;
   }
-  .feature-hero-icon {
-    width: 44px;
-    height: 44px;
-    margin-bottom: 0.7rem;
+}
+
+/* Small mobile adjustments */
+@media (max-width: 400px) {
+  .hero-title {
+    font-size: 1.3rem;
+  }
+
+  .hero-subtitle {
+    font-size: 0.95rem;
+  }
+
+  .hero-overlay {
+    padding: 1.25rem 0.75rem;
+  }
+
+  .search-bar {
+    padding: 0.75rem;
+  }
+
+  .guest-option {
+    margin-bottom: 1rem;
+    gap: 12px;
+  }
+
+  .counter-btn {
+    width: 36px;
+    height: 36px;
   }
 } 

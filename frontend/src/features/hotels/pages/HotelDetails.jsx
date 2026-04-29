@@ -76,11 +76,12 @@ const HotelDetailsPage = () => {
     <div className="hotel-details-page">
       {/* Image Gallery */}
       {allImages.length > 0 && (
-        <ImageCarousel
-          images={allImages}
-          alt={`${hotel.name} photo`}
-          className="mb-8"
-        />
+        <div className="hotel-carousel-wrapper">
+          <ImageCarousel
+            images={allImages}
+            alt={`${hotel.name} photo`}
+          />
+        </div>
       )}
 
       {/* Hotel Info */}

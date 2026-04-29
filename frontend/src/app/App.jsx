@@ -1,6 +1,6 @@
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { Navbar, Footer, Loading } from '@shared/components';
-import { RequireAuth, RequireRole } from '@features/auth/RoleBasedComponents';
+import { RequireAuth, RequireRole } from '@features/auth';
 import { Suspense, lazy } from 'react';
 import OwnerDashboard from '@features/owner/pages/OwnerDashboard';
 
@@ -17,6 +17,7 @@ const ListYourProperty = lazy(() => import('@features/owner/pages/ListYourProper
 const Unauthorized = lazy(() => import('@app/pages/Unauthorized'));
 const MyHotel = lazy(() => import('@features/owner/pages/MyHotelPage'));
 const HotelRequestsPage = lazy(() => import('@features/admin/HotelRequestsPage'));
+const ProfilePage = lazy(() => import('@features/auth/pages/ProfilePage'));
 
 function App() {
   const location = useLocation();
@@ -69,6 +70,11 @@ function App() {
               <RequireRole role='admin'>
                 <HotelRequestsPage />
               </RequireRole>
+            } />
+            <Route path="/profile" element={
+              <RequireAuth>
+                <ProfilePage />
+              </RequireAuth>
             } />
             <Route path="/unauthorized" element={<Unauthorized />} />
             <Route path="*" element={<div>Page not found</div>} />
