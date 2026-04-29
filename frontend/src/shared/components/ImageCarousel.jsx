@@ -12,6 +12,7 @@ export default function ImageCarousel({
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
   const [visibleSlides, setVisibleSlides] = useState(1);
+  const [viewportWidth, setViewportWidth] = useState(0);
   const autoPlayRef = useRef(null);
 
   const minSwipeDistance = 50;
@@ -22,7 +23,17 @@ export default function ImageCarousel({
   // Track responsive breakpoint for visible slides
   useEffect(() => {
     const updateVisibleSlides = () => {
-      setVisibleSlides(window.innerWidth >= 768 ? 2 : 1);
+      const width = window.innerWidth;
+      setViewportWidth(width);
+      if (width >= 1280) {
+        setVisibleSlides(4);
+      } else if (width >= 1024) {
+        setVisibleSlides(3);
+      } else if (width >= 640) {
+        setVisibleSlides(2);
+      } else {
+        setVisibleSlides(1);
+      }
     };
 
     updateVisibleSlides();
@@ -115,7 +126,7 @@ export default function ImageCarousel({
         )}
 
         {/* Images container */}
-        <div className="w-full overflow-hidden px-12 md:px-16">
+        <div className="w-full overflow-hidden px-4 sm:px-6 lg:px-8">
           <div
             className="flex transition-transform duration-300 ease-out"
             style={{
@@ -125,13 +136,13 @@ export default function ImageCarousel({
             {images.map((image, index) => (
               <div
                 key={index}
-                className="w-full flex-shrink-0 px-2 md:w-1/2"
+                className="w-full flex-shrink-0 px-1 sm:px-2 sm:w-1/2 lg:w-1/3 xl:w-1/4"
                 role="group"
                 aria-roledescription="slide"
                 aria-label={`Slide ${index + 1} of ${slidesCount}`}
                 aria-hidden={index < currentIndex || index >= currentIndex + visibleSlides}
               >
-                <div className="relative aspect-[16/10] w-full overflow-hidden rounded-lg">
+                <div className="relative aspect-[16/9] w-full overflow-hidden rounded-lg">
                   <img
                     src={image}
                     alt={`${alt} ${index + 1}`}
@@ -185,6 +196,13 @@ export default function ImageCarousel({
       {/* Screen reader live region for slide announcements */}
       <div className="sr-only" aria-live="polite" aria-atomic="true">
         Showing slide {currentIndex + 1} of {slidesCount}
+      </div>
+
+      {/* Debug: Viewport info */}
+      <div className="mt-2 flex items-center justify-center gap-4 text-xs text-gray-500">
+        <span>Viewport: {viewportWidth}px</span>
+        <span>|</span>
+        <span>Images shown: {visibleSlides}</span>
       </div>
     </div>
   );

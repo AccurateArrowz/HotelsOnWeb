@@ -3,6 +3,9 @@ const cors = require('cors');
 const sequelize = require('./src/config/database');
 require('./src/models');
 
+const startupStart = Date.now();
+console.log(`[STARTUP] Server initialization started at ${new Date().toISOString()}`);
+
 const app = express();
 const PORT = process.env.PORT || 5012;
 
@@ -43,17 +46,20 @@ app.use('/api/media', mediaRoutes);
 // Initialize database and start server
 async function startServer() {
   try {
+    const dbConnectStart = Date.now();
     // Test database connection
     await sequelize.authenticate();
-    console.log('Database connection established successfully.');
+    console.log(`[STARTUP] Database connected in ${Date.now() - dbConnectStart}ms`);
 
+    const dbSyncStart = Date.now();
     // 'alter' Syncs all models with database (/ create tables)
     await sequelize.sync({ force: false , alter: false }); // Set force: false to preserve existing data
-    console.log('Database synchronized successfully.');
+    console.log(`[STARTUP] Database sync completed in ${Date.now() - dbSyncStart}ms`);
 
     // Start server
     app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
+      const totalTime = Date.now() - startupStart;
+      console.log(`[STARTUP] Server ready on port ${PORT} (total startup: ${totalTime}ms ~${(totalTime/1000).toFixed(1)}s)`);
     });
   } catch (error) {
     console.error('Unable to start server:', error);

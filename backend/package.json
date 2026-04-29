@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "start": "node server.js",
+    "start": "node dist/server.js",
+    "build": "tsc",
     "dev": "nodemon --exec ts-node server.js",
     "seed": "node seedData.js",
     "test-seed": "node testSeed.js",

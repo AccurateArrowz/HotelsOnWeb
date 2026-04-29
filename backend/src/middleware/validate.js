@@ -1,9 +1,8 @@
-import { Request, Response, NextFunction } from 'express';
-import { z, ZodObject, ZodRawShape } from 'zod';
-import { sendValidationError } from '../utils/apiResponse';
+const { z } = require('zod');
+const { sendValidationError } = require('../utils/apiResponse');
 
-export const validate = (schema: ZodObject<ZodRawShape>) => {
-  return async (req: Request, res: Response, next: NextFunction) => {
+const validate = (schema) => {
+  return async (req, res, next) => {
     try {
       await schema.parseAsync({
         body: req.body,
@@ -23,3 +22,5 @@ export const validate = (schema: ZodObject<ZodRawShape>) => {
     }
   };
 };
+
+module.exports = { validate };
