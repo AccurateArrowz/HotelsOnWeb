@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Loading } from '@shared/components';
 import {
   LayoutDashboard,
   CalendarDays,
@@ -217,7 +218,7 @@ const MyHotelPage = () => {
   if (hotelsLoading) {
     return (
       <div className="my-hotel-page loading">
-        <div className="loading-spinner">Loading your hotel...</div>
+        <Loading size="large" message="Loading your hotel..." />
       </div>
     );
   }

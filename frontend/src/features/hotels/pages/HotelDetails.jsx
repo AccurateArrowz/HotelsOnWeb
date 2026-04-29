@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useGetHotelByIdQuery } from '../hotelsApi';
 import { useAuth, LoginForm, SignupForm } from '@features/auth';
 import { BookingForm } from '@bookings/components';
-import { Modal } from '@shared/components';
+import { Modal, Loading, ImageCarousel } from '@shared/components';
 import './HotelDetails.css';
 import { MdPool, MdFamilyRestroom, MdLocalParking, MdSmokeFree, MdRestaurant, MdRoomService, MdLocalBar, MdFreeBreakfast, MdElevator, MdFitnessCenter, MdSpa, MdWifi } from 'react-icons/md';
 import { FaBed } from 'react-icons/fa';
@@ -23,7 +23,11 @@ const HotelDetailsPage = () => {
   const [selectedRoomType, setSelectedRoomType] = useState(null);
 
   if (loading) {
-    return <div className="hotel-details-page"><div className="loading">Loading hotel details...</div></div>;
+    return (
+      <div className="hotel-details-page">
+        <Loading size="large" message="Loading hotel details..." />
+      </div>
+    );
   }
 
   if (error) {
@@ -37,6 +41,11 @@ const HotelDetailsPage = () => {
 
   const primaryImage = hotel.images?.find(img => img.isPrimary)?.imageUrl || hotel.image;
   const otherImages = hotel.images?.filter(img => !img.isPrimary) || [];
+
+  // Prepare all images for carousel: primary first, then others
+  const allImages = primaryImage
+    ? [primaryImage, ...otherImages.map(img => img.imageUrl)]
+    : otherImages.map(img => img.imageUrl);
 
   // Map amenity names to appropriate icons from react-icons
   const amenityIcons = {
@@ -66,20 +75,13 @@ const HotelDetailsPage = () => {
   return (
     <div className="hotel-details-page">
       {/* Image Gallery */}
-      <div className="image-gallery">
-        <div className="primary-image">
-          <img src={primaryImage} alt={hotel.name} />
-        </div>
-        {otherImages.length > 0 && (
-          <div className="image-grid">
-            {otherImages.slice(0, 3).map((image, index) => (
-              <div key={image.id} className="grid-image">
-                <img src={image.imageUrl} alt={`${hotel.name} ${index + 2}`} />
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+      {allImages.length > 0 && (
+        <ImageCarousel
+          images={allImages}
+          alt={`${hotel.name} photo`}
+          className="mb-8"
+        />
+      )}
 
       {/* Hotel Info */}
       <div className="hotel-info-section">

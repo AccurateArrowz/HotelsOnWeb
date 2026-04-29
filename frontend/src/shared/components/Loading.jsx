@@ -1,6 +1,5 @@
-import React from 'react';
+import { Loader2 } from 'lucide-react';
 import PropTypes from 'prop-types';
-import { FiLoader } from 'react-icons/fi';
 
 /**
  * Responsive Loading component with customizable size and message
@@ -34,9 +33,10 @@ const Loading = ({
     <div className={`${containerClasses} ${className}`} role="status" aria-label="Loading">
       <div className="flex flex-col items-center justify-center space-y-4 p-8">
         {showIcon && (
-          <div className="animate-spin">
-            <FiLoader className={`${sizeClasses[size]} text-blue-600`} />
-          </div>
+          <Loader2
+            className={`${sizeClasses[size]} text-blue-600 animate-spin`}
+            aria-hidden="true"
+          />
         )}
         {message && (
           <p className={`${textSizes[size]} text-gray-600 text-center font-medium animate-pulse sm:text-sm xs:text-xs`}>

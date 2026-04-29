@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { FixedSizeList as List } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { HotelList } from '@features/hotels/components';
+import { Loading } from '@shared/components';
 import { useLazyGetHotelsQuery } from '../hotelsApi';
 import './HotelsPage.css';
 
@@ -132,7 +133,7 @@ const HotelsPage = () => {
         </select>
       </div>
       {loading && hotels.length === 0 && (
-        <div className="loading">Loading hotels for "{formatQueryName(query)}"...</div>
+        <Loading size="large" message={`Loading hotels for "${formatQueryName(query)}"...`} />
       )}
       {error && (
         <div className="error">
@@ -164,7 +165,7 @@ const HotelsPage = () => {
               </List>
             )}
           </AutoSizer>
-          {loading && <div className="loading more">Loading more hotels...</div>}
+          {loading && <Loading size="medium" message="Loading more hotels..." />}
         </div>
       )}
     </div>

@@ -1,5 +1,5 @@
 import { Routes, Route, useLocation } from 'react-router-dom';
-import { Navbar, Footer } from '@shared/components';
+import { Navbar, Footer, Loading } from '@shared/components';
 import { RequireAuth, RequireRole } from '@features/auth/RoleBasedComponents';
 import { Suspense, lazy } from 'react';
 import OwnerDashboard from '@features/owner/pages/OwnerDashboard';
@@ -12,7 +12,7 @@ import OwnerDashboard from '@features/owner/pages/OwnerDashboard';
 const Home = lazy(() => import('@app/pages/Home'));
 const HotelsPage = lazy(() => import('@features/hotels/pages/HotelsPage'));
 const HotelDetails = lazy(() => import('@features/hotels/pages/HotelDetails'));
-const DashboardPage = lazy(() => import('@features/user/pages/DashboardPage'));
+// const DashboardPage = lazy(() => import('@features/user/pages/DashboardPage'));
 const ListYourProperty = lazy(() => import('@features/owner/pages/ListYourProperty'));
 const Unauthorized = lazy(() => import('@app/pages/Unauthorized'));
 const MyHotel = lazy(() => import('@features/owner/pages/MyHotelPage'));
@@ -38,7 +38,7 @@ function App() {
       <Navbar />
       <main className="main-content">
         {/* Route-level code splitting with Suspense boundary */}
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<Loading size="large" fullScreen />}>
           <Routes>
             {/* Public routes */}
             <Route path="/" element={<Home />} />

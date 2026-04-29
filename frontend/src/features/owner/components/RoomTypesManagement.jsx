@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { Loading } from '@shared/components';
 import {
   useGetRoomTypesByHotelQuery,
   useCreateRoomTypeMutation,
@@ -138,7 +139,7 @@ const RoomTypesManagement = ({ hotelId }) => {
   if (isLoading) {
     return (
       <div className="room-types-management">
-        <div className="loading-state">Loading room types...</div>
+        <Loading size="large" message="Loading room types..." />
       </div>
     );
   }

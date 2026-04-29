@@ -1,4 +1,5 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { Loading } from '@shared/components';
 import {
   useGetRoomsByHotelQuery,
   useCreateRoomMutation,
@@ -165,7 +166,7 @@ const RoomManagement = ({ hotelId }) => {
   if (isLoading) {
     return (
       <div className="room-management">
-        <div className="loading-state">Loading rooms...</div>
+        <Loading size="large" message="Loading rooms..." />
       </div>
     );
   }
