@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Loading } from '@shared/components';
+import Spinner from '@shared/components/Spinner';
 import {
   useGetRoomTypesByHotelQuery,
   useCreateRoomTypeMutation,
@@ -10,9 +11,11 @@ import './RoomTypesManagement.css';
 
 const RoomTypesManagement = ({ hotelId }) => {
   const { data: roomTypes, isLoading, error } = useGetRoomTypesByHotelQuery(hotelId);
-  const [createRoomType] = useCreateRoomTypeMutation();
-  const [updateRoomType] = useUpdateRoomTypeMutation();
+  const [createRoomType, { isLoading: isCreating }] = useCreateRoomTypeMutation();
+  const [updateRoomType, { isLoading: isUpdating }] = useUpdateRoomTypeMutation();
   const [deleteRoomType] = useDeleteRoomTypeMutation();
+
+  const isSubmitting = isCreating || isUpdating;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingRoomType, setEditingRoomType] = useState(null);
@@ -330,8 +333,15 @@ const RoomTypesManagement = ({ hotelId }) => {
                 <button type="button" className="btn btn-outline" onClick={handleCloseModal}>
                   Cancel
                 </button>
-                <button type="submit" className="btn btn-primary">
-                  {editingRoomType ? 'Save Changes' : 'Create Room Type'}
+                <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+                  {isSubmitting ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <Spinner size="small" />
+                      <span>{editingRoomType ? 'Saving...' : 'Creating...'}</span>
+                    </div>
+                  ) : (
+                    editingRoomType ? 'Save Changes' : 'Create Room Type'
+                  )}
                 </button>
               </div>
             </form>

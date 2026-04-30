@@ -1,5 +1,6 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { Loading } from '@shared/components';
+import Spinner from '@shared/components/Spinner';
 import {
   useGetRoomsByHotelQuery,
   useCreateRoomMutation,
@@ -20,9 +21,11 @@ const statusConfig = {
 const RoomManagement = ({ hotelId }) => {
   const { data: rooms, isLoading, error } = useGetRoomsByHotelQuery(hotelId);
   const { data: roomTypes } = useGetRoomTypesByHotelQuery(hotelId);
-  const [createRoom] = useCreateRoomMutation();
-  const [updateRoom] = useUpdateRoomMutation();
+  const [createRoom, { isLoading: isCreating }] = useCreateRoomMutation();
+  const [updateRoom, { isLoading: isUpdating }] = useUpdateRoomMutation();
   const [deleteRoom] = useDeleteRoomMutation();
+
+  const isSubmitting = isCreating || isUpdating;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingRoom, setEditingRoom] = useState(null);
@@ -383,8 +386,15 @@ const RoomManagement = ({ hotelId }) => {
                 <button type="button" className="btn btn-outline" onClick={handleCloseModal}>
                   Cancel
                 </button>
-                <button type="submit" className="btn btn-primary">
-                  {editingRoom ? 'Save Changes' : 'Create Room'}
+                <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+                  {isSubmitting ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <Spinner size="small" />
+                      <span>{editingRoom ? 'Saving...' : 'Creating...'}</span>
+                    </div>
+                  ) : (
+                    editingRoom ? 'Save Changes' : 'Create Room'
+                  )}
                 </button>
               </div>
             </form>

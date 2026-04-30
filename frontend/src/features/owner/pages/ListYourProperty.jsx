@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth, RequireAuth, RequireRole, LoginForm } from '../../auth';
 import { Modal } from '../../../shared';
+import Spinner from '@shared/components/Spinner';
 import { uploadFiles } from '../../../services/mediaUpload';
 import { useCreateHotelRequestMutation } from '../hotelRequestsApi';
   
@@ -318,10 +319,20 @@ const ListYourProperty = () => {
             borderRadius: '4px',
             cursor: isSubmitting ? 'not-allowed' : 'pointer',
             fontSize: '1rem',
-            fontWeight: 'bold'
+            fontWeight: 'bold',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem'
           }}
         >
-          {isSubmitting ? 'Submitting...' : 'Submit Property Request'}
+          {isSubmitting ? (
+            <>
+              <Spinner size="small" />
+              <span>Submitting...</span>
+            </>
+          ) : (
+            'Submit Property Request'
+          )}
         </button>
       </form>
     </div>

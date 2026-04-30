@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import { useCreateBookingMutation, useProcessPaymentMutation } from '../bookingsApi';
 import Spinner from '@shared/components/Spinner';
 import '../../../styles/bookingModal.css';
@@ -7,29 +9,26 @@ const BookingForm = ({ hotel, roomType, onClose }) => {
   const [createBooking, { isLoading: isCreating }] = useCreateBookingMutation();
   const [processPayment, { isLoading: isPaying }] = useProcessPaymentMutation();
 
-  const [formData, setFormData] = useState({
-    checkInDate: '',
-    checkOutDate: '',
-    specialRequests: ''
-  });
+  const [dateRange, setDateRange] = useState([null, null]);
+  const [startDate, endDate] = dateRange;
+  const [specialRequests, setSpecialRequests] = useState('');
   const [error, setError] = useState('');
   const [booking, setBooking] = useState(null);
   const [paymentStep, setPaymentStep] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+  const handleSpecialRequestsChange = (e) => {
+    setSpecialRequests(e.target.value);
+  };
+
+  const formatDate = (date) => {
+    if (!date) return '';
+    return date.toISOString().split('T')[0];
   };
 
   const calculateNights = () => {
-    if (formData.checkInDate && formData.checkOutDate) {
-      const checkIn = new Date(formData.checkInDate);
-      const checkOut = new Date(formData.checkOutDate);
-      const diffTime = checkOut - checkIn;
+    if (startDate && endDate) {
+      const diffTime = endDate - startDate;
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
       return diffDays > 0 ? diffDays : 0;
     }
@@ -49,9 +48,9 @@ const BookingForm = ({ hotel, roomType, onClose }) => {
       const result = await createBooking({
         hotelId: hotel.id,
         roomTypeId: roomType.id,
-        checkInDate: formData.checkInDate,
-        checkOutDate: formData.checkOutDate,
-        specialRequests: formData.specialRequests,
+        checkInDate: formatDate(startDate),
+        checkOutDate: formatDate(endDate),
+        specialRequests: specialRequests,
       }).unwrap();
 
       setBooking(result);
@@ -79,11 +78,8 @@ const BookingForm = ({ hotel, roomType, onClose }) => {
   };
 
   const resetForm = () => {
-    setFormData({
-      checkInDate: '',
-      checkOutDate: '',
-      specialRequests: ''
-    });
+    setDateRange([null, null]);
+    setSpecialRequests('');
     setError('');
     setBooking(null);
     setPaymentStep(false);
@@ -109,8 +105,8 @@ const BookingForm = ({ hotel, roomType, onClose }) => {
             <p><strong>Booking Number:</strong> {booking?.bookingNumber}</p>
             <p><strong>Hotel:</strong> {hotel.name}</p>
             <p><strong>Room:</strong> {roomType.name}</p>
-            <p><strong>Check-in:</strong> {formData.checkInDate}</p>
-            <p><strong>Check-out:</strong> {formData.checkOutDate}</p>
+            <p><strong>Check-in:</strong> {formatDate(startDate)}</p>
+            <p><strong>Check-out:</strong> {formatDate(endDate)}</p>
             <p><strong>Total:</strong> Rs.{calculateTotal()}</p>
           </div>
           <button className="primary-button" onClick={handleClose}>
@@ -132,11 +128,11 @@ const BookingForm = ({ hotel, roomType, onClose }) => {
             </div>
             <div className="summary-item">
               <span>Check-in:</span>
-              <span>{formData.checkInDate}</span>
+              <span>{formatDate(startDate)}</span>
             </div>
             <div className="summary-item">
               <span>Check-out:</span>
-              <span>{formData.checkOutDate}</span>
+              <span>{formatDate(endDate)}</span>
             </div>
             <div className="summary-item">
               <span>Nights:</span>
@@ -171,11 +167,6 @@ const BookingForm = ({ hotel, roomType, onClose }) => {
                 disabled={isPaying}
               >
                 {isPaying ? (
-                  <>
-                    <span className="spinner"></span>
-                    Processing...
-                  </>
-                {paymentLoading ? (
                   <div className="flex items-center justify-center gap-2">
                     <Spinner size="small" />
                     <span>Processing...</span>
@@ -199,28 +190,19 @@ const BookingForm = ({ hotel, roomType, onClose }) => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="checkInDate">Check-in Date</label>
-            <input
-              id="checkInDate"
-              name="checkInDate"
-              type="date"
-              value={formData.checkInDate}
-              onChange={handleInputChange}
-              min={new Date().toISOString().split('T')[0]}
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="checkOutDate">Check-out Date</label>
-            <input
-              id="checkOutDate"
-              name="checkOutDate"
-              type="date"
-              value={formData.checkOutDate}
-              onChange={handleInputChange}
-              min={formData.checkInDate || new Date().toISOString().split('T')[0]}
-              required
+            <label htmlFor="dateRange">Select Dates</label>
+            <DatePicker
+              id="dateRange"
+              selectsRange
+              startDate={startDate}
+              endDate={endDate}
+              onChange={(update) => setDateRange(update)}
+              minDate={new Date()}
+              dateFormat="yyyy-MM-dd"
+              placeholderText="Click to select check-in and check-out dates"
+              className="date-picker-input"
+              popperPlacement="bottom-start"
+              monthsShown={2}
             />
           </div>
 
@@ -242,8 +224,8 @@ const BookingForm = ({ hotel, roomType, onClose }) => {
             <textarea
               id="specialRequests"
               name="specialRequests"
-              value={formData.specialRequests}
-              onChange={handleInputChange}
+              value={specialRequests}
+              onChange={handleSpecialRequestsChange}
               placeholder="Any special requests or preferences..."
               rows="3"
             />
@@ -264,11 +246,6 @@ const BookingForm = ({ hotel, roomType, onClose }) => {
               disabled={isCreating || calculateNights() <= 0}
             >
               {isCreating ? (
-                <>
-                  <span className="spinner"></span>
-                  Creating Booking...
-                </>
-              {loading ? (
                 <div className="flex items-center justify-center gap-2">
                   <Spinner size="small" />
                   <span>Creating Booking...</span>

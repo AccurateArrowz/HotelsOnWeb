@@ -1,8 +1,22 @@
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { Navbar, Footer, Loading } from '@shared/components';
 import { RequireAuth, RequireRole } from '@features/auth';
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy, useEffect } from 'react';
 import OwnerDashboard from '@features/owner/pages/OwnerDashboard';
+
+/**
+ * ScrollToTop - Resets window scroll position on route navigation.
+ * Prevents users landing at the bottom of new pages when switching routes.
+ */
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [pathname]);
+
+  return null;
+}
 
 // Route definitions use React Router v6 with lazy loading for code splitting
 // Protected routes wrap components with RequireAuth/RequireRole guards
@@ -36,7 +50,7 @@ function App() {
 
   return (
     <>
-
+      <ScrollToTop />
       <Navbar />
       <main className="main-content">
         {/* Route-level code splitting with Suspense boundary */}
