@@ -71,9 +71,18 @@ h1 {
   transition: border-color 0.25s;
 } */
 
+button {
+  cursor: pointer;
+}
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+button:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
 }
 
 /* App Layout */
