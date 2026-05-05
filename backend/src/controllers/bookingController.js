@@ -3,7 +3,9 @@ const BookingRoom = require('../models/BookingRoom');
 const Hotel = require('../models/Hotel');
 const RoomType = require('../models/RoomType');
 const User = require('../models/User');
+const availabilityService = require('../services/availabilityService');
 const { sendSuccess, sendBadRequest, sendNotFound, sendInternalError } = require('../utils/apiResponse');
+const { parseLocalDate } = require('@hotelsonweb/shared');
 
 const bookingController = {
   // Create a new booking
@@ -12,9 +14,9 @@ const bookingController = {
       const { hotelId, roomTypeId, checkInDate, checkOutDate, specialRequests } = req.body;
       const userId = req.user.id;
 
-      // Validate dates
-      const checkIn = new Date(checkInDate);
-      const checkOut = new Date(checkOutDate);
+      // Validate dates - parse YYYY-MM-DD as local dates to avoid UTC shift
+      const checkIn = parseLocalDate(checkInDate);
+      const checkOut = parseLocalDate(checkOutDate);
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
@@ -37,7 +39,19 @@ const bookingController = {
         return sendNotFound(res, 'Room type not found');
       }
 
-      // Calculate total amount (simplified calculation)
+      // Check room availability before creating booking
+      const availability = await availabilityService.checkRoomTypeAvailability(
+        hotelId,
+        roomTypeId,
+        checkInDate,
+        checkOutDate
+      );
+
+      if (!availability.available) {
+        return sendBadRequest(res, 'No rooms available for the selected dates');
+      }
+
+      // Calculate total amount
       const nights = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
       const totalAmount = roomType.basePrice * nights;
 
@@ -53,12 +67,14 @@ const bookingController = {
         paymentStatus: 'pending'
       });
 
-      // Create booking room entry
+      // Create booking room entry (roomId is null until assigned)
       await BookingRoom.create({
         bookingId: booking.id,
         roomTypeId,
-        quantity: 1,
-        pricePerNight: roomType.basePrice
+        roomId: null,
+        pricePerNight: roomType.basePrice,
+        numberOfNights: nights,
+        totalPrice: totalAmount,
       });
 
       // Fetch complete booking data

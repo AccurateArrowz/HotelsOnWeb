@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Star } from 'lucide-react';
 import styles from './HotelList.module.css';
 import { hotelFallbackImg } from '../../../assets';
 
@@ -28,22 +29,66 @@ const HotelList = ({ hotels }) => {
     return Math.floor(normalized * 3501 + 1500);
   };
 
-  // Helper function to render star rating
+  // Helper function to render star rating using Lucide icons
   const renderStars = (rating) => {
     // Ensure rating doesn't exceed 5 stars for display
     const displayRating = Math.min(rating, 5);
     const fullStars = Math.floor(displayRating);
-    const hasHalfStar = displayRating % 1 !== 0;
+    const hasHalfStar = displayRating % 1 >= 0.5;
     const emptyStars = Math.max(0, 5 - fullStars - (hasHalfStar ? 1 : 0));
 
     return (
       <div className={styles.starRating}>
+        {/* Full stars */}
         {[...Array(fullStars)].map((_, i) => (
-          <span key={`full-${i}`} className={styles.star}>★</span>
+          <Star
+            key={`full-${i}`}
+            size={18}
+            fill="#fbbf24"
+            stroke="#fbbf24"
+            strokeWidth={1.5}
+            aria-hidden="true"
+          />
         ))}
-        {hasHalfStar && <span className={styles.starHalf}>☆</span>}
+        {/* Half star */}
+        {hasHalfStar && (
+          <div style={{ position: 'relative', width: 18, height: 18 }}>
+            <Star
+              size={18}
+              fill="#e5e7eb"
+              stroke="#e5e7eb"
+              strokeWidth={1.5}
+              aria-hidden="true"
+            />
+            <div
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '50%',
+                overflow: 'hidden',
+              }}
+            >
+              <Star
+                size={18}
+                fill="#fbbf24"
+                stroke="#fbbf24"
+                strokeWidth={1.5}
+                aria-hidden="true"
+              />
+            </div>
+          </div>
+        )}
+        {/* Empty stars */}
         {[...Array(emptyStars)].map((_, i) => (
-          <span key={`empty-${i}`} className={styles.starEmpty}>☆</span>
+          <Star
+            key={`empty-${i}`}
+            size={18}
+            fill="#e5e7eb"
+            stroke="#e5e7eb"
+            strokeWidth={1.5}
+            aria-hidden="true"
+          />
         ))}
         <span className={styles.ratingText}>{rating}</span>
       </div>

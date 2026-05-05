@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth, RequireAuth, RequireRole, LoginForm } from '../../auth';
-import { Modal } from '../../../shared';
+import { Modal } from '@shared';
 import Spinner from '@shared/components/Spinner';
 import { uploadFiles } from '../../../services/mediaUpload';
 import { useCreateHotelRequestMutation } from '../hotelRequestsApi';

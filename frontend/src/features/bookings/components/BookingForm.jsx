@@ -3,6 +3,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useCreateBookingMutation, useProcessPaymentMutation } from '../bookingsApi';
 import Spinner from '@shared/components/Spinner';
+import { formatDate, calculateNights } from '@hotelsonweb/shared';
 import '../../../styles/bookingModal.css';
 
 const BookingForm = ({ hotel, roomType, onClose }) => {
@@ -21,22 +22,8 @@ const BookingForm = ({ hotel, roomType, onClose }) => {
     setSpecialRequests(e.target.value);
   };
 
-  const formatDate = (date) => {
-    if (!date) return '';
-    return date.toISOString().split('T')[0];
-  };
-
-  const calculateNights = () => {
-    if (startDate && endDate) {
-      const diffTime = endDate - startDate;
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      return diffDays > 0 ? diffDays : 0;
-    }
-    return 0;
-  };
-
   const calculateTotal = () => {
-    const nights = calculateNights();
+    const nights = calculateNights(startDate, endDate);
     return nights * roomType.basePrice;
   };
 
@@ -105,8 +92,8 @@ const BookingForm = ({ hotel, roomType, onClose }) => {
             <p><strong>Booking Number:</strong> {booking?.bookingNumber}</p>
             <p><strong>Hotel:</strong> {hotel.name}</p>
             <p><strong>Room:</strong> {roomType.name}</p>
-            <p><strong>Check-in:</strong> {formatDate(startDate)}</p>
-            <p><strong>Check-out:</strong> {formatDate(endDate)}</p>
+            <p><strong>Check-in:</strong> {startDate ? formatDate(startDate) : ''}</p>
+            <p><strong>Check-out:</strong> {endDate ? formatDate(endDate) : ''}</p>
             <p><strong>Total:</strong> Rs.{calculateTotal()}</p>
           </div>
           <button className="primary-button" onClick={handleClose}>
@@ -128,15 +115,15 @@ const BookingForm = ({ hotel, roomType, onClose }) => {
             </div>
             <div className="summary-item">
               <span>Check-in:</span>
-              <span>{formatDate(startDate)}</span>
+              <span>{startDate ? formatDate(startDate) : ''}</span>
             </div>
             <div className="summary-item">
               <span>Check-out:</span>
-              <span>{formatDate(endDate)}</span>
+              <span>{endDate ? formatDate(endDate) : ''}</span>
             </div>
             <div className="summary-item">
               <span>Nights:</span>
-              <span>{calculateNights()}</span>
+              <span>{calculateNights(startDate, endDate)}</span>
             </div>
             <div className="summary-item total">
               <span>Total:</span>
@@ -206,11 +193,11 @@ const BookingForm = ({ hotel, roomType, onClose }) => {
             />
           </div>
 
-          {calculateNights() > 0 && (
+          {calculateNights(startDate, endDate) > 0 && (
             <div className="booking-summary">
               <div className="summary-item">
                 <span>Nights:</span>
-                <span>{calculateNights()}</span>
+                <span>{calculateNights(startDate, endDate)}</span>
               </div>
               <div className="summary-item total">
                 <span>Total:</span>
@@ -243,7 +230,7 @@ const BookingForm = ({ hotel, roomType, onClose }) => {
             <button
               type="submit"
               className="primary-button"
-              disabled={isCreating || calculateNights() <= 0}
+              disabled={isCreating || calculateNights(startDate, endDate) <= 0}
             >
               {isCreating ? (
                 <div className="flex items-center justify-center gap-2">

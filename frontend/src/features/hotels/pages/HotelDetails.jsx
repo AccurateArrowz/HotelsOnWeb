@@ -5,8 +5,7 @@ import { useAuth, LoginForm, SignupForm } from '@features/auth';
 import { BookingForm } from '@bookings/components';
 import { Modal, Loading, ImageCarousel } from '@shared/components';
 import './HotelDetails.css';
-import { MdPool, MdFamilyRestroom, MdLocalParking, MdSmokeFree, MdRestaurant, MdRoomService, MdLocalBar, MdFreeBreakfast, MdElevator, MdFitnessCenter, MdSpa, MdWifi } from 'react-icons/md';
-import { FaBed } from 'react-icons/fa';
+import { Waves, Users, Car, CigaretteOff, UtensilsCrossed, Bell, Wine, Coffee, ArrowUpDown, Dumbbell, Sparkles, Wifi, Bed } from 'lucide-react';
 import RoomCard from '../components/RoomCard';
 
 const HotelDetailsPage = () => {
@@ -47,20 +46,20 @@ const HotelDetailsPage = () => {
     ? [primaryImage, ...otherImages.map(img => img.imageUrl)]
     : otherImages.map(img => img.imageUrl);
 
-  // Map amenity names to appropriate icons from react-icons
+  // Map amenity names to appropriate icons from lucide-react
   const amenityIcons = {
-    "Outdoor swimming pool": <MdPool />,
-    "Family rooms": <MdFamilyRestroom />,
-    "Free parking": <MdLocalParking />,
-    "Non-smoking rooms": <MdSmokeFree />,
-    "Restaurant": <MdRestaurant />,
-    "Room service": <MdRoomService />,
-    "Bar": <MdLocalBar />,
-    "Breakfast": <MdFreeBreakfast />,
-    "Elevator": <MdElevator />,
-    "Fitness center": <MdFitnessCenter />,
-    "Spa and wellness center": <MdSpa />,
-    "Wifi": <MdWifi />
+    "Outdoor swimming pool": <Waves />,
+    "Family rooms": <Users />,
+    "Free parking": <Car />,
+    "Non-smoking rooms": <CigaretteOff />,
+    "Restaurant": <UtensilsCrossed />,
+    "Room service": <Bell />,
+    "Bar": <Wine />,
+    "Breakfast": <Coffee />,
+    "Elevator": <ArrowUpDown />,
+    "Fitness center": <Dumbbell />,
+    "Spa and wellness center": <Sparkles />,
+    "Wifi": <Wifi />
   };
 
   const handleBookNow = (roomType) => {
@@ -103,7 +102,7 @@ const HotelDetailsPage = () => {
               {hotel.amenities.map((amenity, index) => (
                 <div key={index} className="amenity-item">
                   <span className="amenity-icon">
-                    {amenityIcons[amenity] || <FaBed />}
+                    {amenityIcons[amenity] || <Bed />}
                   </span>
                   <span className="amenity-name">{amenity}</span>
                 </div>

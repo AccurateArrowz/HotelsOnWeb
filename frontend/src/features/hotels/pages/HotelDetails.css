@@ -149,7 +149,7 @@
 /* Image Gallery */
 .hotel-carousel-wrapper {
   margin-bottom: 2rem;
-  min-height: 500px;
+  /* min-height: 500px; */
 }
 
 .image-gallery {

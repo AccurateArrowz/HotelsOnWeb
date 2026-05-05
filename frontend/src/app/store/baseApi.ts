@@ -48,7 +48,7 @@ const baseQueryWithResponseHandler = async (
   // Handle Render cold start notification on the very first request
   if (isFirstRequest) {
     isFirstRequest = false;
-    toast.info('The backend is hosted on Render free tier. First response can take 50-60 seconds.', 8000);
+    toast.info('The backend is hosted on Render free tier. First response can take upto 50-60 seconds.', 8000);
   }
 
   const result = await baseQuery(args, api, extraOptions);

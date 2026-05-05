@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react'
-import Modal from '../../shared/components/Modal';
+import { Modal } from '@shared/components';
 import LoginForm from './LoginForm';
 import SignupForm from './SignupForm';
 

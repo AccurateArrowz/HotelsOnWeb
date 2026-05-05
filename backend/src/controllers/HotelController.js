@@ -2,6 +2,20 @@ const { Hotel, HotelImage, RoomType, Room, HotelOwner } = require('../models');
 const { sendSuccess, sendBadRequest, sendNotFound, sendInternalError } = require('../utils/apiResponse');
 const { Op } = require('sequelize');
 
+const IMAGEKIT_BASE_URL = 'https://ik.imagekit.io/kbk987i3nx/hotels-on-web-images';
+
+//images that will be shared for all hotels
+const SHARED_IMAGES = [
+  'reception .jpg',
+  'room-1.jpg',
+  'room-2.jpg',
+  'room-3.jpg',
+  'room-4.jpg',
+  'washroom1.jpg',
+  'washrooom-2.jpg',
+  'pool.jpg'
+]; //written in array to show them in right order (first primaryImages-> reception -> room-> washroom -> pool)
+
 // Fetch hotel by ID, including images and rooms
 const getHotelById = async (req, res) => {
   try {
@@ -25,6 +39,34 @@ const getHotelById = async (req, res) => {
     const hotelJson = hotel.toJSON();
     hotelJson.images = hotelJson.images || [];
     hotelJson.roomTypes = hotelJson.roomTypes || [];
+
+    // Get primary image from database
+    const primaryImage = hotelJson.images.find(img => img.isPrimary);
+
+    // Build images array: primary image first, then shared images from ImageKit
+    const finalImages = [];
+    
+    if (primaryImage) {
+      finalImages.push({
+        id: primaryImage.id,
+        imageUrl: primaryImage.imageUrl,
+        isPrimary: true,
+        orderIndex: 0
+      });
+    }
+
+    // Append shared images from ImageKit in the specified order
+    SHARED_IMAGES.forEach((imageName, index) => {
+      finalImages.push({
+        id: `shared-${index}`,
+        imageUrl: `${IMAGEKIT_BASE_URL}/${imageName}`,
+        isPrimary: false,
+        orderIndex: primaryImage ? index + 1 : index
+      });
+    });
+
+    hotelJson.images = finalImages;
+
     return sendSuccess(res, { data: hotelJson });
   } catch (error) {
     console.error('Error fetching hotel:', error);
@@ -112,6 +154,7 @@ const getMyHotels = async (req, res) => {
       const hoData = ho.toJSON();
       return hoData.hotel;
     }).filter(hotel => hotel != null);
+    
     return sendSuccess(res, { data: hotels });
   } catch (error) {
     console.error('Error fetching owner hotels:', error);

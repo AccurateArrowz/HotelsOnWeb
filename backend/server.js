@@ -17,6 +17,7 @@ const bookingRoutes = require('./src/routes/bookingRoutes');
 const mediaRoutes = require('./src/routes/mediaRoutes');
 const roomTypeRoutes = require('./src/routes/roomTypeRoutes');
 const roomRoutes = require('./src/routes/roomRoutes');
+const availabilityRoutes = require('./src/routes/availabilityRoutes');
 
 // Middleware
 app.use(cors());
@@ -42,6 +43,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/hotel-requests', hotelRequestRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/media', mediaRoutes);
+app.use('/api', availabilityRoutes);
 
 // Initialize database and start server
 async function startServer() {

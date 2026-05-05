@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from './useAuth';
-import { Modal } from '../../shared';
+import { Modal } from '@shared';
 import LoginForm from './LoginForm';
 import SignupForm from './SignupForm';
 import './auth.css';
