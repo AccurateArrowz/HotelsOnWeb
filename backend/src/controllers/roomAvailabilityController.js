@@ -1,8 +1,8 @@
-const availabilityService = require('../services/availabilityService');
+const roomAvailabilityService = require('../services/roomAvailabilityService');
 const { sendSuccess, sendBadRequest, sendInternalError } = require('../utils/apiResponse');
 const { parseLocalDate } = require('@hotelsonweb/shared');
 
-const availabilityController = {
+const roomAvailabilityController = {
   /**
    * GET /hotels/:hotelId/availability
    * Query params: checkInDate, checkOutDate
@@ -33,7 +33,7 @@ const availabilityController = {
         return sendBadRequest(res, 'Check-in date cannot be in the past');
       }
 
-      const availability = await availabilityService.getAvailability(
+      const availability = await roomAvailabilityService.getAvailability(
         parseInt(hotelId, 10),
         checkInDate,
         checkOutDate
@@ -85,7 +85,7 @@ const availabilityController = {
         return sendBadRequest(res, 'Check-in date cannot be in the past');
       }
 
-      const availability = await availabilityService.checkRoomTypeAvailability(
+      const availability = await roomAvailabilityService.checkRoomTypeAvailability(
         parseInt(hotelId, 10),
         parseInt(roomTypeId, 10),
         checkInDate,
@@ -100,4 +100,4 @@ const availabilityController = {
   },
 };
 
-module.exports = availabilityController;
+module.exports = roomAvailabilityController;

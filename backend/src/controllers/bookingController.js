@@ -3,7 +3,7 @@ const BookingRoom = require('../models/BookingRoom');
 const Hotel = require('../models/Hotel');
 const RoomType = require('../models/RoomType');
 const User = require('../models/User');
-const availabilityService = require('../services/availabilityService');
+const roomAvailabilityService = require('../services/roomAvailabilityService');
 const { sendSuccess, sendBadRequest, sendNotFound, sendInternalError } = require('../utils/apiResponse');
 const { parseLocalDate } = require('@hotelsonweb/shared');
 
@@ -40,7 +40,7 @@ const bookingController = {
       }
 
       // Check room availability before creating booking
-      const availability = await availabilityService.checkRoomTypeAvailability(
+      const availability = await roomAvailabilityService.checkRoomTypeAvailability(
         hotelId,
         roomTypeId,
         checkInDate,

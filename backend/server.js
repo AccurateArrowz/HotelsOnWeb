@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const sequelize = require('./src/config/database');
 require('./src/models');
 
@@ -17,10 +18,19 @@ const bookingRoutes = require('./src/routes/bookingRoutes');
 const mediaRoutes = require('./src/routes/mediaRoutes');
 const roomTypeRoutes = require('./src/routes/roomTypeRoutes');
 const roomRoutes = require('./src/routes/roomRoutes');
-const availabilityRoutes = require('./src/routes/availabilityRoutes');
+const roomsAvailabilityRoutes = require('./src/routes/roomsAvailabilityRoutes');
 
 // Middleware
-app.use(cors());
+const corsOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+app.use(cors({
+  origin: corsOrigins,
+  credentials: true,
+}));
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static('uploads'));
@@ -43,7 +53,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/hotel-requests', hotelRequestRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/media', mediaRoutes);
-app.use('/api', availabilityRoutes);
+app.use('/api', roomsAvailabilityRoutes);
 
 // Initialize database and start server
 async function startServer() {
@@ -68,5 +78,4 @@ async function startServer() {
   }
 }
 
-startServer(); 
-
+startServer();

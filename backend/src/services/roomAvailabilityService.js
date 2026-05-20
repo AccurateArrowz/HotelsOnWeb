@@ -8,7 +8,7 @@ const { parseLocalDate } = require('@hotelsonweb/shared');
  * noOverlap = requestedCheckout <= existingCheckin || requestedCheckin >= existingCheckout
  * Therefore: overlap = NOT (noOverlap)
  */
-const availabilityService = {
+const roomAvailabilityService = {
   /**
    * Get availability for all room types at a hotel for given dates
    * @param {number} hotelId - Hotel ID
@@ -172,4 +172,4 @@ const availabilityService = {
   },
 };
 
-module.exports = availabilityService;
+module.exports = roomAvailabilityService;
