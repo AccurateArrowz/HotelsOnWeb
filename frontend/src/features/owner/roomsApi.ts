@@ -43,6 +43,7 @@ export const roomsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getRoomsByHotel: builder.query<Room[], number>({
       query: (hotelId) => `/hotels/${hotelId}/rooms`,
+      transformResponse: (response: { data: Room[] }) => response.data,
       providesTags: (result, _error, hotelId) =>
         result
           ? [
@@ -54,6 +55,7 @@ export const roomsApi = baseApi.injectEndpoints({
 
     getRoomById: builder.query<Room, { hotelId: number; roomId: number }>({
       query: ({ hotelId, roomId }) => `/hotels/${hotelId}/rooms/${roomId}`,
+      transformResponse: (response: { data: Room }) => response.data,
       providesTags: (_result, _error, { roomId }) => [{ type: 'Room', id: roomId }],
     }),
 
@@ -63,6 +65,7 @@ export const roomsApi = baseApi.injectEndpoints({
         method: 'POST',
         body: data,
       }),
+      transformResponse: (response: { data: Room }) => response.data,
       invalidatesTags: (_result, _error, { hotelId }) => [
         { type: 'Room', id: `HOTEL-${hotelId}` },
       ],
@@ -77,6 +80,7 @@ export const roomsApi = baseApi.injectEndpoints({
         method: 'PUT',
         body: data,
       }),
+      transformResponse: (response: { data: Room }) => response.data,
       invalidatesTags: (_result, _error, { hotelId, roomId }) => [
         { type: 'Room', id: roomId },
         { type: 'Room', id: `HOTEL-${hotelId}` },

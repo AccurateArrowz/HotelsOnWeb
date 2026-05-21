@@ -33,6 +33,7 @@ export const hotelRequestsApi = baseApi.injectEndpoints({
         method: 'POST',
         body,
       }),
+      transformResponse: (response: { data: CreateHotelRequestResponse }) => response.data,
     }),
   }),
 });

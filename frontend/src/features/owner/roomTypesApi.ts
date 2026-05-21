@@ -34,8 +34,9 @@ export const roomTypesApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getRoomTypesByHotel: builder.query<RoomType[], number>({
       query: (hotelId) => `/hotels/${hotelId}/room-types`,
-      providesTags: (result, _error, hotelId) => 
-        result 
+      transformResponse: (response: { data: RoomType[] }) => response.data,
+      providesTags: (result, _error, hotelId) =>
+        result
           ? [
               ...result.map(({ id }) => ({ type: 'RoomType' as const, id })),
               { type: 'RoomType', id: `HOTEL-${hotelId}` },
@@ -45,6 +46,7 @@ export const roomTypesApi = baseApi.injectEndpoints({
 
     getRoomTypeById: builder.query<RoomType, { hotelId: number; roomTypeId: number }>({
       query: ({ hotelId, roomTypeId }) => `/hotels/${hotelId}/room-types/${roomTypeId}`,
+      transformResponse: (response: { data: RoomType }) => response.data,
       providesTags: (_result, _error, { roomTypeId }) => [{ type: 'RoomType', id: roomTypeId }],
     }),
 
@@ -54,13 +56,14 @@ export const roomTypesApi = baseApi.injectEndpoints({
         method: 'POST',
         body: data,
       }),
+      transformResponse: (response: { data: RoomType }) => response.data,
       invalidatesTags: (_result, _error, { hotelId }) => [
         { type: 'RoomType', id: `HOTEL-${hotelId}` },
       ],
     }),
 
     updateRoomType: builder.mutation<
-      RoomType, 
+      RoomType,
       { hotelId: number; roomTypeId: number; data: UpdateRoomTypeRequest }
     >({
       query: ({ hotelId, roomTypeId, data }) => ({
@@ -68,6 +71,7 @@ export const roomTypesApi = baseApi.injectEndpoints({
         method: 'PUT',
         body: data,
       }),
+      transformResponse: (response: { data: RoomType }) => response.data,
       invalidatesTags: (_result, _error, { hotelId, roomTypeId }) => [
         { type: 'RoomType', id: roomTypeId },
         { type: 'RoomType', id: `HOTEL-${hotelId}` },

@@ -48,6 +48,7 @@ export const availabilityApi = baseApi.injectEndpoints({
         url: `/hotels/${hotelId}/availability`,
         params: { checkInDate, checkOutDate },
       }),
+      transformResponse: (response: { data: HotelAvailabilityResponse }) => response.data,
       providesTags: (_result, _error, { hotelId }) => [
         { type: 'Hotel', id: hotelId },
         'Booking',
@@ -63,6 +64,7 @@ export const availabilityApi = baseApi.injectEndpoints({
         url: `/hotels/${hotelId}/availability/${roomTypeId}`,
         params: { checkInDate, checkOutDate },
       }),
+      transformResponse: (response: { data: RoomTypeAvailabilityCheck }) => response.data,
       providesTags: (_result, _error, { hotelId, roomTypeId }) => [
         { type: 'RoomType', id: roomTypeId },
         { type: 'Hotel', id: hotelId },

@@ -5,7 +5,7 @@ import {
   useCancelBookingMutation,
   useProcessPaymentMutation,
 } from '../bookingsApi';
-import { Loading, Modal } from '@shared/components';
+import { Loading, Modal, TryAgainButton } from '@shared/components';
 
 const getStatusColor = (status) => {
   switch (status) {
@@ -42,10 +42,10 @@ const formatDate = (dateString) => {
 };
 
 export default function MyBookings() {
-  const { data: bookings, isLoading, error } = useGetUserBookingsQuery();
+  const { data: bookings, isLoading, error, refetch } = useGetUserBookingsQuery();
   const [cancelBooking, { isLoading: isCancelling }] = useCancelBookingMutation();
   const [processPayment, { isLoading: isProcessingPayment }] = useProcessPaymentMutation();
-  
+
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const [cancelModalOpen, setCancelModalOpen] = useState(false);
@@ -53,7 +53,7 @@ export default function MyBookings() {
 
   const handleCancelBooking = async () => {
     if (!selectedBooking) return;
-    
+
     try {
       setActionError('');
       await cancelBooking(selectedBooking.id).unwrap();
@@ -66,12 +66,12 @@ export default function MyBookings() {
 
   const handlePayment = async () => {
     if (!selectedBooking) return;
-    
+
     try {
       setActionError('');
-      await processPayment({ 
-        id: selectedBooking.id, 
-        paymentMethod: 'credit_card' 
+      await processPayment({
+        id: selectedBooking.id,
+        paymentMethod: 'credit_card'
       }).unwrap();
       setPaymentModalOpen(false);
       setSelectedBooking(null);
@@ -93,7 +93,8 @@ export default function MyBookings() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-xl font-semibold text-red-600 mb-2">Error Loading Bookings</h2>
-          <p className="text-gray-600">Unable to fetch your bookings. Please try again later.</p>
+          <p className="text-gray-600 mb-4">Unable to fetch your bookings.</p>
+          <TryAgainButton onClick={refetch} />
         </div>
       </div>
     );
@@ -130,7 +131,7 @@ export default function MyBookings() {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">My Bookings</h1>
-        
+
         <div className="space-y-6">
           {bookings.map((booking) => (
             <div
@@ -210,7 +211,7 @@ export default function MyBookings() {
                         Pay Now
                       </button>
                     )}
-                    
+
                     {booking.status !== 'cancelled' && booking.status !== 'completed' && (
                       <button
                         onClick={() => {
@@ -248,7 +249,7 @@ export default function MyBookings() {
               {actionError}
             </div>
           )}
-          
+
           {selectedBooking && (
             <div className="mb-6">
               <p className="text-gray-600 mb-2">
@@ -302,7 +303,7 @@ export default function MyBookings() {
               {actionError}
             </div>
           )}
-          
+
           <p className="text-gray-600 mb-6">
             Are you sure you want to cancel this booking? This action cannot be undone.
           </p>

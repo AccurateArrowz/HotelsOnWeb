@@ -26,6 +26,7 @@ export const ownerHotelsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getMyHotels: builder.query<OwnerHotel[], void>({
       query: () => '/hotels/owner/my-hotels',
+      transformResponse: (response: { data: OwnerHotel[] }) => response.data,
       providesTags: (result) =>
         result
           ? [
@@ -37,6 +38,7 @@ export const ownerHotelsApi = baseApi.injectEndpoints({
 
     getMyHotelById: builder.query<OwnerHotel, number>({
       query: (hotelId) => `/hotels/owner/my-hotels/${hotelId}`,
+      transformResponse: (response: { data: OwnerHotel }) => response.data,
       providesTags: (_result, _error, hotelId) => [{ type: 'Hotel', id: hotelId }],
     }),
   }),

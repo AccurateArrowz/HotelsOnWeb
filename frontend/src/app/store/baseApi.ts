@@ -13,6 +13,12 @@ interface ApiResponse<T> {
   success: boolean;
   data: T;
   message?: string;
+  pagination?: {
+    total: number;
+    limit: number;
+    offset: number;
+    hasMore: boolean;
+  };
 }
 
 interface ApiErrorResponse {
@@ -31,18 +37,36 @@ const baseQueryWithResponseHandler = async (
   api: BaseQueryApi,
   extraOptions: object
 ): Promise<BaseQueryResult> => {
-  const baseQuery = fetchBaseQuery({
+  // Get access token from Redux state
+  const accessToken = (api.getState() as { auth: { accessToken: string | null } }).auth.accessToken;
+
+  // Prepare fetch args with token in Authorization header
+  let fetchArgs = args;
+  if (typeof args === 'string') {
+    fetchArgs = {
+      url: args,
+      headers: {},
+    };
+  } else if (typeof args === 'object') {
+    fetchArgs = {
+      ...args,
+      headers: {
+        ...args.headers,
+      },
+    };
+  }
+
+  // Add Authorization header if token exists
+  if (accessToken && typeof fetchArgs === 'object') {
+    (fetchArgs as FetchArgs).headers = {
+      ...((fetchArgs as FetchArgs).headers || {}),
+      Authorization: `Bearer ${accessToken}`,
+    };
+  }
+
+  const rawBaseQuery = fetchBaseQuery({
     baseUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api',
-    prepareHeaders: (headers) => {
-      const user = localStorage.getItem('user');
-      if (user) {
-        const userData = JSON.parse(user) as { token?: string };
-        if (userData.token) {
-          headers.set('authorization', `Bearer ${userData.token}`);
-        }
-      }
-      return headers;
-    },
+    credentials: 'include',
   });
 
   // Handle Render cold start notification on the very first request
@@ -51,13 +75,57 @@ const baseQueryWithResponseHandler = async (
     toast.info('The backend is hosted on Render free tier. First response can take upto 50-60 seconds.', 8000);
   }
 
-  const result = await baseQuery(args, api, extraOptions);
+  let result = await rawBaseQuery(fetchArgs, api, extraOptions);
+
+  // Handle 401 Unauthorized - attempt to refresh token
+  if (result.error && result.error.status === 401) {
+    console.log('[BaseQuery] Received 401 - attempting to refresh token');
+
+    // Try to refresh the token
+    const refreshResult = await rawBaseQuery(
+      {
+        url: '/auth/refresh',
+        method: 'POST',
+      },
+      api,
+      extraOptions
+    );
+
+    if (refreshResult.data) {
+      const refreshData = refreshResult.data as any;
+      if (refreshData.success && refreshData.data?.accessToken) {
+        // Dispatch new token into Redux state
+        const newAccessToken = refreshData.data.accessToken;
+        const { setAccessToken } = await import('@features/auth/authSlice');
+        api.dispatch(setAccessToken(newAccessToken));
+
+        // Retry original request with new token
+        (fetchArgs as FetchArgs).headers = {
+          ...((fetchArgs as FetchArgs).headers || {}),
+          Authorization: `Bearer ${newAccessToken}`,
+        };
+
+        result = await rawBaseQuery(fetchArgs, api, extraOptions);
+      } else {
+        // Refresh token not in expected format, logout user
+        const { clearAccessToken } = await import('@features/auth/authSlice');
+        api.dispatch(clearAccessToken());
+        window.location.href = '/';
+      }
+    } else {
+      // Refresh failed, logout user
+      const { clearAccessToken } = await import('@features/auth/authSlice');
+      api.dispatch(clearAccessToken());
+      window.location.href = '/';
+    }
+  }
 
   // Handle standardized API response format
   if (result.data) {
     const responseData = result.data as ApiResponse<unknown>;
     if (responseData.success === true && 'data' in responseData) {
-      return { ...result, data: responseData.data } as BaseQueryResult;
+      // Preserve all top-level fields including success (e.g. pagination, message)
+      return { ...result, data: responseData } as BaseQueryResult;
     }
   }
 

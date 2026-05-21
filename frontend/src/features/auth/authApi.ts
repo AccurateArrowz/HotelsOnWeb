@@ -11,15 +11,23 @@ interface RegisterRequest {
   firstName: string;
   lastName: string;
   phone?: string;
+  role?: string;
 }
 
-interface AuthResponse {
+interface AuthUser {
   id: number;
   email: string;
   firstName: string;
   lastName: string;
+  phone?: string;
   role: string;
-  token: string;
+  roleId?: number;
+}
+
+interface AuthResponse {
+  user: AuthUser;
+  accessToken?: string;
+  token?: string;
 }
 
 export const authApi = baseApi.injectEndpoints({
@@ -30,6 +38,7 @@ export const authApi = baseApi.injectEndpoints({
         method: 'POST',
         body,
       }),
+      transformResponse: (response: { data: AuthResponse }) => response.data,
     }),
     register: builder.mutation<AuthResponse, RegisterRequest>({
       query: (body) => ({
@@ -37,8 +46,16 @@ export const authApi = baseApi.injectEndpoints({
         method: 'POST',
         body,
       }),
+      transformResponse: (response: { data: AuthResponse }) => response.data,
+    }),
+    refresh: builder.mutation<AuthResponse, void>({
+      query: () => ({
+        url: '/auth/refresh',
+        method: 'POST',
+      }),
+      transformResponse: (response: { data: AuthResponse }) => response.data,
     }),
   }),
 });
 
-export const { useLoginMutation, useRegisterMutation } = authApi;
+export const { useLoginMutation, useRegisterMutation, useRefreshMutation } = authApi;

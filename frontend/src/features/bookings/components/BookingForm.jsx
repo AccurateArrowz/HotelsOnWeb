@@ -49,7 +49,7 @@ const BookingForm = ({ hotel, roomType, onClose }) => {
 
   const handlePayment = async () => {
     if (!booking) return;
-    
+
     setError('');
 
     try {

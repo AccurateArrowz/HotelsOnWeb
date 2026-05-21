@@ -92,6 +92,7 @@ export const bookingsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getUserBookings: builder.query<Booking[], void>({
       query: () => '/bookings/user',
+      transformResponse: (response: { data: Booking[] }) => response.data,
       providesTags: (result) => {
         if (!result) return [{ type: 'Booking', id: 'LIST' }];
         return [
@@ -103,6 +104,7 @@ export const bookingsApi = baseApi.injectEndpoints({
 
     getBookingById: builder.query<Booking, number>({
       query: (id) => `/bookings/${id}`,
+      transformResponse: (response: { data: Booking }) => response.data,
       providesTags: (_result, _error, id) => [{ type: 'Booking', id }],
     }),
 
@@ -112,6 +114,7 @@ export const bookingsApi = baseApi.injectEndpoints({
         method: 'POST',
         body,
       }),
+      transformResponse: (response: { data: CreateBookingResponse }) => response.data,
       invalidatesTags: [{ type: 'Booking', id: 'LIST' }],
     }),
 
@@ -121,6 +124,7 @@ export const bookingsApi = baseApi.injectEndpoints({
         method: 'POST',
         body: { paymentMethod },
       }),
+      transformResponse: (response: { data: PaymentResponse }) => response.data,
       invalidatesTags: (_result, _error, { id }) => [{ type: 'Booking', id }],
     }),
 
@@ -129,6 +133,7 @@ export const bookingsApi = baseApi.injectEndpoints({
         url: `/bookings/${id}/cancel`,
         method: 'PATCH',
       }),
+      transformResponse: (response: { data: PaymentResponse }) => response.data,
       invalidatesTags: (_result, _error, id) => [{ type: 'Booking', id }],
     }),
   }),

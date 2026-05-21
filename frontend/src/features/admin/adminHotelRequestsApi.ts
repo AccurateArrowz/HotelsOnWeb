@@ -47,6 +47,7 @@ export const adminHotelRequestsApi = baseApi.injectEndpoints({
         url: '/hotel-requests/all',
         params: status ? { status } : undefined,
       }),
+      transformResponse: (response: { data: HotelRequest[] }) => response.data,
       providesTags: ['HotelRequest'],
     }),
 
@@ -59,6 +60,7 @@ export const adminHotelRequestsApi = baseApi.injectEndpoints({
         method: 'PATCH',
         body: { status, adminNotes },
       }),
+      transformResponse: (response: { data: UpdateHotelRequestStatusResponse }) => response.data,
       invalidatesTags: ['HotelRequest', 'Hotel'],
     }),
   }),

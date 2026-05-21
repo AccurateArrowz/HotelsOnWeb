@@ -17,35 +17,39 @@ interface Hotel {
 }
 
 interface GetHotelsParams {
-  q?: string;
-  page?: number;
+  search?: string;
   limit?: number;
+  offset?: number;
 }
 
-interface HotelsListResponse {
-  hotels: Hotel[];
-  pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-  };
+interface Pagination {
+  total: number;
+  limit: number;
+  offset: number;
+  hasMore: boolean;
+}
+
+export interface HotelsListResponse {
+  data: Hotel[];
+  pagination: Pagination;
 }
 
 export const hotelsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getHotels: builder.query<HotelsListResponse, GetHotelsParams | void>({
-      query: ({ q, page = 1, limit = 20 } = {}) => ({
+      query: ({ search, limit = 20, offset = 0 } = {}) => ({
         url: '/hotels',
-        params: { q, page, limit },
+        params: { search, limit, offset },
       }),
-      providesTags: (result) => {
-        if (!result) return [{ type: 'Hotel', id: 'LIST' }];
-        return [{ type: 'Hotel', id: 'LIST' }];
-      },
+      transformResponse: (response: { data: Hotel[]; pagination: Pagination }) => ({
+        data: response.data,
+        pagination: response.pagination,
+      }),
+      providesTags: () => [{ type: 'Hotel', id: 'LIST' }],
     }),
     getHotelById: builder.query<Hotel, number>({
       query: (id) => `/hotels/${id}`,
+      transformResponse: (response: { data: Hotel }) => response.data,
       providesTags: (_result, _error, id) => [{ type: 'Hotel', id }],
     }),
   }),
