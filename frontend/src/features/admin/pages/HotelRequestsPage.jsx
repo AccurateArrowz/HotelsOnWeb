@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo } from 'react';
-import { Loading } from '@shared';
+import { Loading, TryAgainButton } from '@shared';
 import {
   useGetHotelRequestsQuery,
   useUpdateHotelRequestStatusMutation,
@@ -251,13 +251,8 @@ export function HotelRequestsPage() {
     return (
       <div className="p-6">
         <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-          <p className="text-red-800">Failed to load hotel requests. Please try again.</p>
-          <button
-            onClick={refetch}
-            className="mt-2 px-4 py-2 text-sm font-medium text-red-700 bg-red-100 rounded-lg hover:bg-red-200"
-          >
-            Retry
-          </button>
+          <p className="text-red-800 mb-3">Failed to load hotel requests.</p>
+          <TryAgainButton onClick={refetch} variant="danger" size="sm" />
         </div>
       </div>
     );

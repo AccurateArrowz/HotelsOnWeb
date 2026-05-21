@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Loading } from '@shared/components';
+import { Loading, TryAgainButton } from '@shared/components';
 import Spinner from '@shared/components/Spinner';
 import {
   useGetRoomsByHotelQuery,
@@ -19,7 +19,7 @@ const statusConfig = {
 };
 
 const RoomManagement = ({ hotelId }) => {
-  const { data: rooms, isLoading, error } = useGetRoomsByHotelQuery(hotelId);
+  const { data: rooms, isLoading, error, refetch } = useGetRoomsByHotelQuery(hotelId);
   const { data: roomTypes } = useGetRoomTypesByHotelQuery(hotelId);
   const [createRoom, { isLoading: isCreating }] = useCreateRoomMutation();
   const [updateRoom, { isLoading: isUpdating }] = useUpdateRoomMutation();
@@ -179,9 +179,7 @@ const RoomManagement = ({ hotelId }) => {
       <div className="room-management">
         <div className="error-state">
           <p>Error loading rooms: {error.data?.message || 'Unknown error'}</p>
-          <button className="btn btn-primary" onClick={() => window.location.reload()}>
-            Retry
-          </button>
+          <TryAgainButton onClick={refetch} size="sm" />
         </div>
       </div>
     );

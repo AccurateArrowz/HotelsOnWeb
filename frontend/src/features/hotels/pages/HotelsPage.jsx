@@ -3,13 +3,22 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { FixedSizeList as List } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { HotelList } from '@features/hotels/components';
-import { Loading } from '@shared/components';
+import { Loading, TryAgainButton } from '@shared/components';
 import { toast } from '@shared/utils/toast';
 import { useLazyGetHotelsQuery } from '../hotelsApi';
 import './HotelsPage.css';
 
 const PAGE_SIZE = 20;
 const ITEM_HEIGHT = 225; // Updated height: 200px card + 25px gap
+
+const SORT_OPTIONS = [
+  { value: 'popularity', label: 'Popularity' },
+  { value: 'price-asc', label: 'Price (Low to High)' },
+  { value: 'price-desc', label: 'Price (High to Low)' },
+  { value: 'rating-desc', label: 'Highest Rated' },
+  { value: 'name-asc', label: 'Name (A-Z)' },
+  { value: 'name-desc', label: 'Name (Z-A)' }
+];
 
 const HotelsPage = () => {
   const { query } = useParams();
@@ -18,28 +27,35 @@ const HotelsPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [hasMore, setHasMore] = useState(true);
-  const [page, setPage] = useState(1);
+  const [offset, setOffset] = useState(0);
   const [retryCount, setRetryCount] = useState(0);
   const listRef = useRef();
-  const [sortBy, setSortBy] = useState('name-asc'); // Default sort
+  const [sortBy, setSortBy] = useState('popularity');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   const [triggerGetHotels] = useLazyGetHotelsQuery();
 
-  // Fetch hotels for the current query/page
+  // Fetch hotels for the current search — offset-based for infinite scroll
   const fetchMoreHotels = useCallback(async (IsInitialLoad = false) => {
     try {
       setLoading(true);
       setError(null);
-      const nextPage = IsInitialLoad ? 1 : page;
-      const hotelResponse = await triggerGetHotels({ q: query, page: nextPage, limit: PAGE_SIZE }).unwrap();
-      // console.log("API response:", hotelResponse);
+      const nextOffset = IsInitialLoad ? 0 : offset;
+      const result = await triggerGetHotels({
+        search: query,
+        limit: PAGE_SIZE,
+        offset: nextOffset
+      }).unwrap();
+      const newHotels = result?.data ?? [];
+      const pagination = result?.pagination;
       if (IsInitialLoad) {
-        setHotels(Array.isArray(hotelResponse) ? hotelResponse : []);
+        setHotels(newHotels);
       } else {
-        setHotels(prev => [...prev, ...(Array.isArray(hotelResponse) ? hotelResponse : [])]);
+        setHotels(prev => [...prev, ...newHotels]);
       }
-      setHasMore((Array.isArray(hotelResponse) ? hotelResponse.length : 0) === PAGE_SIZE);
-      setPage(nextPage + 1);
+      setHasMore(pagination?.hasMore ?? false);
+      setOffset(nextOffset + PAGE_SIZE);
     } catch (err) {
       const errorMessage = err?.data?.message || err?.error || err?.message || 'Failed to fetch hotels';
       setError(errorMessage);
@@ -47,30 +63,41 @@ const HotelsPage = () => {
     } finally {
       setLoading(false);
     }
-  }, [query, page, triggerGetHotels]);
+  }, [query, offset, triggerGetHotels]);
 
   // Initial load or city change
   useEffect(() => {
     setHotels([]);
-    setPage(1);
+    setOffset(0);
     setHasMore(true);
     fetchMoreHotels(true);
     // eslint-disable-next-line
   }, [query, retryCount]);
 
+  // Close dropdown on click outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   // Virtualized row renderer
   const Row = ({ index, style }) => {
     const hotel = sortedHotels[index];
     if (!hotel) return null;
-    
+
     const handleHotelClick = () => {
       navigate(`/hotels/id/${hotel.id}`);
     };
-    
+
     return (
-      <div 
-        style={style} 
-        key={hotel.id} 
+      <div
+        style={style}
+        key={hotel.id}
         className="virtual-hotel-row"
         onClick={handleHotelClick}
         role="button"
@@ -99,6 +126,8 @@ const HotelsPage = () => {
   // Sort hotels based on the current sort order
   const sortedHotels = [...hotels].sort((a, b) => {
     switch (sortBy) {
+      case 'popularity':
+        return (b.rating || 0) - (a.rating || 0);
       case 'price-asc':
         return (a.price || 0) - (b.price || 0);
       case 'price-desc':
@@ -108,8 +137,9 @@ const HotelsPage = () => {
       case 'name-desc':
         return b.name.localeCompare(a.name);
       case 'name-asc':
-      default:
         return a.name.localeCompare(b.name);
+      default:
+        return (b.rating || 0) - (a.rating || 0);
     }
   });
 
@@ -121,19 +151,63 @@ const HotelsPage = () => {
 
   return (
     <div className="city-hotels-page">
-      <div className="city-header">
-        <h1>Hotels for "{formatQueryName(query)}"</h1>
-        <p>{hotels.length} hotels found</p>
-      </div>
-      <div className="sort-options">
-        <label htmlFor="sort-by">Sort by: </label>
-        <select id="sort-by" value={sortBy} onChange={e => setSortBy(e.target.value)}>
-          <option value="name-asc">Name (A-Z)</option>
-          <option value="name-desc">Name (Z-A)</option>
-          <option value="price-asc">Price (Lowest to Highest)</option>
-          <option value="price-desc">Price (Highest to Lowest)</option>
-          <option value="rating-desc">Rating (Highest to Lowest)</option>
-        </select>
+      <div className="city-header-row">
+        <div className="city-header-info">
+          <h1>Hotels for "{formatQueryName(query)}"</h1>
+          <p>{hotels.length} hotels found</p>
+        </div>
+        <div className="sort-options" ref={dropdownRef}>
+          <span className="sort-label">Sort by:</span>
+          <div className="custom-dropdown">
+            <button
+              type="button"
+              className="dropdown-trigger"
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              aria-haspopup="listbox"
+              aria-expanded={isDropdownOpen}
+              aria-label="Sort hotels by"
+            >
+              {SORT_OPTIONS.find(opt => opt.value === sortBy)?.label}
+              <svg
+                className={`dropdown-arrow ${isDropdownOpen ? 'open' : ''}`}
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </button>
+            {isDropdownOpen && (
+              <ul className="dropdown-menu" role="listbox" aria-label="Sort options">
+                {SORT_OPTIONS.map((option) => (
+                  <li
+                    key={option.value}
+                    role="option"
+                    aria-selected={sortBy === option.value}
+                    className={`dropdown-item ${sortBy === option.value ? 'selected' : ''}`}
+                    onClick={() => {
+                      setSortBy(option.value);
+                      setIsDropdownOpen(false);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setSortBy(option.value);
+                        setIsDropdownOpen(false);
+                      }
+                    }}
+                    tabIndex={0}
+                  >
+                    {option.label}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
       </div>
       {loading && hotels.length === 0 && (
         <Loading size="large" message={`Loading hotels for "${formatQueryName(query)}"...`} />
@@ -141,9 +215,7 @@ const HotelsPage = () => {
       {error && (
         <div className="error">
           <span>Error: {error}</span>
-          <button className="try-again-btn" onClick={handleRetry}>
-            Try Again
-          </button>
+          <TryAgainButton onClick={handleRetry} variant="secondary" size="sm" />
         </div>
       )}
       {!loading && !error && hotels.length === 0 && (

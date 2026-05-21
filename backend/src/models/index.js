@@ -13,6 +13,7 @@ const RolePermission = require('./RolePermission');
 const HotelOwner = require('./HotelOwner');
 const HotelStaff = require('./HotelStaff');
 const HotelStaffPermission = require('./HotelStaffPermission');
+const RefreshToken = require('./RefreshToken');
 
 // User associations
 User.hasMany(Booking, { foreignKey: 'userId', as: 'bookings' });
@@ -81,6 +82,9 @@ Hotel.belongsToMany(User, { through: HotelOwner, foreignKey: 'hotelId', otherKey
 User.belongsTo(Role, { foreignKey: 'roleId', as: 'role' });
 Role.hasMany(User, { foreignKey: 'roleId', as: 'users' });
 
+User.hasMany(RefreshToken, { foreignKey: 'userId', as: 'refreshTokens' });
+RefreshToken.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+
 User.hasMany(HotelStaff, { foreignKey: 'userId', as: 'hotelStaffs' });
 HotelStaff.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 Hotel.hasMany(HotelStaff, { foreignKey: 'hotelId', as: 'hotelStaffs' });
@@ -112,4 +116,5 @@ module.exports = {
   HotelOwner,
   HotelStaff,
   HotelStaffPermission,
+  RefreshToken,
 };

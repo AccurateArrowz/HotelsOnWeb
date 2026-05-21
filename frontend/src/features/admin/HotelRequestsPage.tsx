@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Loading } from "@shared/components";
+import { Loading, TryAgainButton } from "@shared/components";
 import {
   useGetHotelRequestsQuery,
   useUpdateHotelRequestStatusMutation,
@@ -446,15 +446,10 @@ export default function HotelRequestsPage() {
     return (
       <div className="max-w-2xl mx-auto px-4 py-8">
         <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-lg p-6">
-          <p className="text-red-800 dark:text-red-400">
-            Failed to load hotel requests. Please try again.
+          <p className="text-red-800 dark:text-red-400 mb-3">
+            Failed to load hotel requests.
           </p>
-          <button
-            onClick={refetch}
-            className="mt-3 px-4 py-2 text-sm font-medium text-red-700 dark:text-red-400 bg-red-100 dark:bg-red-900/50 rounded-lg hover:bg-red-200 dark:hover:bg-red-900 transition-colors"
-          >
-            Retry
-          </button>
+          <TryAgainButton onClick={refetch} variant="danger" size="sm" />
         </div>
       </div>
     );

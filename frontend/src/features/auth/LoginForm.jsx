@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from './useAuth';
 import Spinner from '@shared/components/Spinner';
+import { getAuthErrorMessage } from './getAuthErrorMessage';
 import './authForms.css';
 
 const LoginForm = ({ onSuccess, onSwitchToSignup }) => {
@@ -19,7 +20,7 @@ const LoginForm = ({ onSuccess, onSwitchToSignup }) => {
       await login(email, password);
       onSuccess?.();
     } catch (err) {
-      setError('Failed to log in. Please check your credentials.');
+      setError(getAuthErrorMessage(err, 'Failed to log in. Please check your credentials and try again.'));
       console.log('login error: ', err);
     } finally {
       setLoading(false);

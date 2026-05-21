@@ -1,5 +1,7 @@
 import ImageKit from 'imagekit-javascript';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
+
 const getImageKitClient = () => {
   const publicKey = import.meta.env.VITE_IMAGEKIT_PUBLIC_KEY;
   const urlEndpoint = import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT;
@@ -13,12 +15,10 @@ const getImageKitClient = () => {
 
 export const uploadFile = async ({ file, fileName, folder }) => {
   const imagekit = getImageKitClient();
-  const user = localStorage.getItem('user');
-  const token = user ? JSON.parse(user)?.token : null;
 
-  const res = await fetch('http://localhost:3001/api/media/auth', {
+  const res = await fetch(`${API_BASE_URL}/media/auth`, {
     method: 'GET',
-    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    credentials: 'include',
   });
 
   if (!res.ok) {

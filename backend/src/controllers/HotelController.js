@@ -45,7 +45,7 @@ const getHotelById = async (req, res) => {
 
     // Build images array: primary image first, then shared images from ImageKit
     const finalImages = [];
-    
+
     if (primaryImage) {
       finalImages.push({
         id: primaryImage.id,
@@ -74,42 +74,53 @@ const getHotelById = async (req, res) => {
   }
 };
 
-const getAllHotelsByCity = async (req, res) => {
-    const query = req.query.q;
-    console.log(query);
-    if (!query || query.trim() === '') {
+const DEFAULT_LIMIT = 20;
+
+const getHotels = async (req, res) => {
+    const { search, limit = DEFAULT_LIMIT, offset = 0 } = req.query;
+    if (!search || search.trim() === '') {
       return sendBadRequest(res, 'Missing or invalid search query parameter');
     }
+    const parsedLimit = Math.min(parseInt(limit, 10) || DEFAULT_LIMIT, 100);
+    const parsedOffset = parseInt(offset, 10) || 0;
     try {
-      // Fetch hotels with their primary image only, searching by both city and hotel name
-      const hotels = await Hotel.findAll({
+      const { count, rows: hotels } = await Hotel.findAndCountAll({
         where: {
           [Op.or]: [
-            { city: { [Op.iLike]: `%${query}%` } },
-            { name: { [Op.iLike]: `%${query}%` } }
+            { city: { [Op.iLike]: `%${search}%` } },
+            { name: { [Op.iLike]: `%${search}%` } }
           ],
           isActive: true
         },
+        //fetching primary img only
         include: [{
           model: HotelImage,
           as: 'images',
           where: { isPrimary: true },
-          required: false, // Ensure hotels without primary image are included
+          required: false,
           attributes: ['id', 'imageUrl', 'isPrimary']
-        }]
+        }],
+        limit: parsedLimit,
+        offset: parsedOffset,
+        subQuery: false // needed so limit/offset apply to hotels, not joined rows
       });
-      // res.json(hotels);
-  
-      // if all imgs were fetched from cloud and only primary image is to be sent
+
       const hotelsWithPrimaryImg = hotels.map(hotel => {
         const hotelJson = hotel.toJSON();
         hotelJson.hotelImg = hotelJson.images && hotelJson.images.length > 0 ? hotelJson.images[0].imageUrl : null;
         delete hotelJson.images;
         return hotelJson;
       });
-      return sendSuccess(res, {data: hotelsWithPrimaryImg});
 
-      console.log(`[HOTEL_SEARCH] Response sent for query: ${query}`);
+      return sendSuccess(res, {
+        data: hotelsWithPrimaryImg,
+        pagination: {
+          total: count,
+          limit: parsedLimit,
+          offset: parsedOffset,
+          hasMore: parsedOffset + parsedLimit < count
+        }
+      });
     } catch (error) {
       console.error('Error fetching hotels by query:', error);
       return sendInternalError(res, 'Failed to fetch hotels by query');
@@ -154,7 +165,7 @@ const getMyHotels = async (req, res) => {
       const hoData = ho.toJSON();
       return hoData.hotel;
     }).filter(hotel => hotel != null);
-    
+
     return sendSuccess(res, { data: hotels });
   } catch (error) {
     console.error('Error fetching owner hotels:', error);
@@ -164,6 +175,6 @@ const getMyHotels = async (req, res) => {
 
 module.exports = {
   getHotelById,
-  getAllHotelsByCity,
+  getHotels,
   getMyHotels
 };

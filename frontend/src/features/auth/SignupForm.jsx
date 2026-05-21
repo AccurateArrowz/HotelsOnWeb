@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from './useAuth';
 import Spinner from '@shared/components/Spinner';
+import { getAuthErrorMessage } from './getAuthErrorMessage';
 import './authForms.css';
 
 const SignupForm = ({ onSuccess, onSwitchToLogin }) => {
@@ -66,7 +67,7 @@ const SignupForm = ({ onSuccess, onSwitchToLogin }) => {
       });
       onSuccess?.();
     } catch (err) {
-      setError(err.message || 'Failed to create an account. Please try again.');
+      setError(getAuthErrorMessage(err, 'Failed to create an account. Please try again.'));
     } finally {
       setLoading(false);
     }

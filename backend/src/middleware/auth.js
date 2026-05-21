@@ -14,6 +14,10 @@ const authenticateToken = async (req, res, next) => {
     
     // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    if (decoded.type && decoded.type !== 'access') {
+      return res.status(401).json({ error: 'Invalid token type.' });
+    }
     
     // Get user from database
     const user = await User.findByPk(decoded.id);

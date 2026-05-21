@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Loading } from '@shared/components';
+import { Loading, TryAgainButton } from '@shared/components';
 import {
   LayoutDashboard,
   CalendarDays,
@@ -185,7 +185,7 @@ const MyHotelPage = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const { hotel, hotelId, hotels, isLoading: hotelsLoading, error: hotelsError, switchHotel } = useActiveHotel();
+  const { hotel, hotelId, hotels, isLoading: hotelsLoading, error: hotelsError, switchHotel, refetch: refetchHotels } = useActiveHotel();
 
   const handleNavClick = (tabId) => {
     setActiveTab(tabId);
@@ -230,9 +230,7 @@ const MyHotelPage = () => {
         <div className="error-message">
           <h2>Failed to load hotel</h2>
           <p>{hotelsError.data?.message || 'An error occurred while fetching your hotel data.'}</p>
-          <button className="btn btn-primary" onClick={() => window.location.reload()}>
-            Retry
-          </button>
+          <TryAgainButton onClick={refetchHotels} size="md" />
         </div>
       </div>
     );
@@ -320,11 +318,11 @@ const MyHotelPage = () => {
           <div className="header-content">
             <h1>{navItems.find(n => n.id === activeTab)?.label}</h1>
             <p className="subtitle">
-              {new Date().toLocaleDateString('en-US', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'short', 
-                day: 'numeric' 
+              {new Date().toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
               })}
             </p>
           </div>

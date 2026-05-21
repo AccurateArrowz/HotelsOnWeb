@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Loading } from '@shared/components';
+import { Loading, TryAgainButton } from '@shared/components';
 import Spinner from '@shared/components/Spinner';
 import {
   useGetRoomTypesByHotelQuery,
@@ -10,7 +10,7 @@ import {
 import './RoomTypesManagement.css';
 
 const RoomTypesManagement = ({ hotelId }) => {
-  const { data: roomTypes, isLoading, error } = useGetRoomTypesByHotelQuery(hotelId);
+  const { data: roomTypes, isLoading, error, refetch } = useGetRoomTypesByHotelQuery(hotelId);
   const [createRoomType, { isLoading: isCreating }] = useCreateRoomTypeMutation();
   const [updateRoomType, { isLoading: isUpdating }] = useUpdateRoomTypeMutation();
   const [deleteRoomType] = useDeleteRoomTypeMutation();
@@ -152,9 +152,7 @@ const RoomTypesManagement = ({ hotelId }) => {
       <div className="room-types-management">
         <div className="error-state">
           <p>Error loading room types: {error.data?.message || 'Unknown error'}</p>
-          <button className="btn btn-primary" onClick={() => window.location.reload()}>
-            Retry
-          </button>
+          <TryAgainButton onClick={refetch} size="sm" />
         </div>
       </div>
     );

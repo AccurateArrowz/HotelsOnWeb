@@ -5,3 +5,4 @@ export { default as Footer } from './Footer';
 export { default as Navbar } from './Navbar';
 export { default as Modal } from './Modal';
 export { default as ImageCarousel } from './ImageCarousel';
+export { default as TryAgainButton } from './TryAgainButton';

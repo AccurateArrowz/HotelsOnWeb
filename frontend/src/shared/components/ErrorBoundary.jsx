@@ -1,4 +1,5 @@
 import React from 'react';
+import TryAgainButton from './TryAgainButton';
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -14,7 +15,7 @@ class ErrorBoundary extends React.Component {
   componentDidCatch(error, errorInfo) {
     // Log the error to console (in production, you'd send this to a logging service)
     console.error('Error caught by boundary:', error, errorInfo);
-    
+
     this.setState({
       error: error,
       errorInfo: errorInfo
@@ -42,13 +43,12 @@ class ErrorBoundary extends React.Component {
               <p className="text-sm text-gray-500 mb-4">
                 We're sorry, but something unexpected happened. Please try refreshing the page.
               </p>
-              <button
+              <TryAgainButton
                 onClick={() => window.location.reload()}
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
-                Refresh Page
-              </button>
-              
+                label="Refresh Page"
+                loadingLabel="Refreshing..."
+              />
+
               {/* Show error details in development */}
               {process.env.NODE_ENV === 'development' && this.state.error && (
                 <details className="mt-4 text-left">
@@ -72,4 +72,4 @@ class ErrorBoundary extends React.Component {
   }
 }
 
-export default ErrorBoundary; 
+export default ErrorBoundary;
