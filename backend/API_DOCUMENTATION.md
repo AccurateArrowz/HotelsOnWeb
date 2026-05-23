@@ -89,6 +89,70 @@ Most endpoints require authentication using JWT tokens. Include the token in the
 Authorization: Bearer <your-jwt-token>
 ```
 
+## Quick-Reference Endpoint Tables
+
+### Authentication
+| Endpoint | Method | Body | Response |
+|----------|--------|------|----------|
+| `/api/auth/register` | POST | `{ email, password, firstName, lastName }` | User + token |
+| `/api/auth/login` | POST | `{ email, password }` | User + token |
+
+### Hotels (Public)
+| Endpoint | Query Params | Response |
+|----------|--------------|----------|
+| `GET /api/hotels` | `city` (required) | Hotel list |
+| `GET /api/hotels/:id` | - | Hotel details with images, room types |
+| `GET /api/hotels/owner/my-hotels` | - | Owner's hotels (auth) |
+
+### Room Types (Auth Required)
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `GET /api/room-types?hotelId=X` | GET | List hotel's room types |
+| `POST /api/room-types` | POST | Create room type |
+| `GET /api/room-types/:id` | GET | Get single type |
+| `PUT /api/room-types/:id` | PUT | Update type |
+| `DELETE /api/room-types/:id` | DELETE | Remove type |
+
+### Rooms (Auth Required)
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `GET /api/rooms?hotelId=X` | GET | List rooms |
+| `POST /api/rooms` | POST | Create room |
+| `GET /api/rooms/:id` | GET | Get room details |
+| `PUT /api/rooms/:id` | PUT | Update room |
+| `DELETE /api/rooms/:id` | DELETE | Delete room |
+
+### Bookings (Auth Required)
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `POST /api/bookings` | POST | Create booking |
+| `GET /api/bookings/user` | GET | List user's bookings |
+| `GET /api/bookings/:id` | GET | Booking details |
+| `POST /api/bookings/:id/payment` | POST | Process payment (simulated) |
+| `PATCH /api/bookings/:id/cancel` | PATCH | Cancel booking |
+
+### Availability (Public)
+| Endpoint | Query Params | Response |
+|----------|--------------|----------|
+| `GET /api/hotels/:hotelId/availability` | `checkInDate`, `checkOutDate` (YYYY-MM-DD) | Availability per room type |
+
+> **Note:** The availability response caps `totalRooms` at **4 per room type**. This limits how many bookable slots are exposed publicly, regardless of how many physical rooms are configured for that type.
+
+### Hotel Requests (Owner/Admin)
+| Endpoint | Method | Access | Description |
+|----------|--------|--------|-------------|
+| `POST /api/hotel-requests/request` | POST | Owner | Submit hotel |
+| `GET /api/hotel-requests/my-requests` | GET | Owner | List my requests |
+| `GET /api/hotel-requests/all?status=X` | GET | Admin | List all requests |
+| `PATCH /api/hotel-requests/request/:id/status` | PATCH | Admin | Approve/reject |
+
+### Media (Auth Required)
+| Endpoint | Description |
+|----------|-------------|
+| `GET /api/media/auth` | Get ImageKit auth parameters |
+
+---
+
 ## API Endpoints
 
 ### Authentication
