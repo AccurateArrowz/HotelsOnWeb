@@ -77,9 +77,10 @@ const roomAvailabilityService = {
       });
     });
 
-    // Calculate availability for each room type
+    // Calculate availability for each room type (cap displayed rooms at 4)
+    const MAX_ROOMS_PER_TYPE = 4;
     const availability = roomTypes.map((roomType) => {
-      const totalRooms = (roomsByType[roomType.id] || []).length;
+      const totalRooms = Math.min((roomsByType[roomType.id] || []).length, MAX_ROOMS_PER_TYPE);
       const bookedRooms = bookedCounts[roomType.id] || 0;
       const availableRooms = Math.max(0, totalRooms - bookedRooms);
       const totalPrice = roomType.basePrice * nights;
@@ -103,73 +104,6 @@ const roomAvailabilityService = {
     return availability;
   },
 
-  /**
-   * Check if a specific room type is available for given dates
-   * @param {number} hotelId - Hotel ID
-   * @param {number} roomTypeId - Room Type ID
-   * @param {string} checkInDate - Check-in date (YYYY-MM-DD)
-   * @param {string} checkOutDate - Check-out date (YYYY-MM-DD)
-   * @returns {Promise<Object>} Availability status and details
-   */
-  checkRoomTypeAvailability: async (hotelId, roomTypeId, checkInDate, checkOutDate) => {
-    const roomType = await RoomType.findOne({
-      where: { id: roomTypeId, hotelId, isActive: true },
-      attributes: ['id', 'name', 'basePrice'],
-    });
-
-    if (!roomType) {
-      return { available: false, reason: 'Room type not found' };
-    }
-
-    const totalRooms = await Room.count({
-      where: { roomTypeId, hotelId, isActive: true },
-    });
-
-    if (totalRooms === 0) {
-      return { available: false, reason: 'No rooms configured for this room type' };
-    }
-
-    // Count overlapping bookings using: NOT (noOverlap condition)
-    const overlappingBookings = await Booking.count({
-      where: {
-        hotelId,
-        status: { [Op.notIn]: ['cancelled'] },
-        [Op.not]: {
-          [Op.or]: [
-            { checkOutDate: { [Op.lte]: checkInDate } },
-            { checkInDate: { [Op.gte]: checkOutDate } },
-          ],
-        },
-      },
-      include: [
-        {
-          model: BookingRoom,
-          as: 'bookingRooms',
-          where: { roomTypeId },
-          required: true,
-        },
-      ],
-    });
-
-    const availableRooms = totalRooms - overlappingBookings;
-    // Parse as local dates to avoid UTC shift
-    const checkIn = parseLocalDate(checkInDate);
-    const checkOut = parseLocalDate(checkOutDate);
-    const nights = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
-    const totalPrice = roomType.basePrice * nights;
-
-    return {
-      available: availableRooms > 0,
-      roomTypeId: roomType.id,
-      roomTypeName: roomType.name,
-      totalRooms,
-      bookedRooms: overlappingBookings,
-      availableRooms,
-      nights,
-      basePrice: parseFloat(roomType.basePrice),
-      totalPrice: parseFloat(totalPrice.toFixed(2)),
-    };
-  },
 };
 
 module.exports = roomAvailabilityService;

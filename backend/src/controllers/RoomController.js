@@ -22,6 +22,7 @@ exports.getRoomsByHotel = async (req, res) => {
 
     const rooms = await Room.findAll({
       where: { hotelId },
+      attributes: { exclude: ['createdAt', 'updatedAt', 'roomId'] },
       include: [
         {
           model: RoomType,
@@ -106,10 +107,12 @@ exports.getRoomById = async (req, res) => {
 
     const room = await Room.findOne({
       where: { id, hotelId },
+      attributes: { exclude: ['createdAt', 'updatedAt', 'roomId'] },
       include: [
         {
           model: RoomType,
-          as: 'roomType'
+          as: 'roomType',
+          attributes: { exclude: ['createdAt', 'updatedAt'] }
         }
       ]
     });
@@ -172,6 +175,7 @@ exports.createRoom = async (req, res) => {
 
     // Fetch complete room with room type info
     const roomWithType = await Room.findByPk(room.id, {
+      attributes: { exclude: ['createdAt', 'updatedAt', 'roomId'] },
       include: [{ model: RoomType, as: 'roomType', attributes: ['id', 'name', 'basePrice'] }]
     });
 
@@ -233,6 +237,7 @@ exports.updateRoom = async (req, res) => {
 
     // Fetch updated room with room type
     const updatedRoom = await Room.findByPk(room.id, {
+      attributes: { exclude: ['createdAt', 'updatedAt', 'roomId'] },
       include: [{ model: RoomType, as: 'roomType', attributes: ['id', 'name', 'basePrice'] }]
     });
 

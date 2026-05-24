@@ -19,7 +19,9 @@ const SHARED_IMAGES = [
 // Fetch hotel by ID, including images and rooms
 const getHotelById = async (req, res) => {
   try {
-    const hotel = await Hotel.findByPk(req.params.id, {
+    const hotel = await Hotel.findOne({
+      where: { id: req.params.id, isActive: true },
+      attributes: { exclude: ['createdAt', 'updatedAt', 'isActive'] },
       include: [
         {
           model: HotelImage,
@@ -29,6 +31,8 @@ const getHotelById = async (req, res) => {
         {
           model: RoomType,
           as: 'roomTypes',
+          where: { isActive: true },
+          required: false,
           attributes: { exclude: ['createdAt', 'updatedAt', 'isActive'] }
         }
       ]
@@ -109,6 +113,9 @@ const getHotels = async (req, res) => {
         const hotelJson = hotel.toJSON();
         hotelJson.hotelImg = hotelJson.images && hotelJson.images.length > 0 ? hotelJson.images[0].imageUrl : null;
         delete hotelJson.images;
+        delete hotelJson.createdAt;
+        delete hotelJson.updatedAt;
+        delete hotelJson.isActive;
         return hotelJson;
       });
 
@@ -134,10 +141,12 @@ const getMyHotels = async (req, res) => {
 
     const hotelOwners = await HotelOwner.findAll({
       where: { userId },
+      attributes: [],
       include: [
         {
           model: Hotel,
           as: 'hotel',
+          attributes: { exclude: ['createdAt', 'updatedAt'] },
           include: [
             {
               model: HotelImage,
@@ -148,12 +157,14 @@ const getMyHotels = async (req, res) => {
               model: RoomType,
               as: 'roomTypes',
               where: { isActive: true },
-              required: false
+              required: false,
+              attributes: { exclude: ['createdAt', 'updatedAt'] }
             },
             {
               model: Room,
               as: 'rooms',
-              required: false
+              required: false,
+              attributes: { exclude: ['createdAt', 'updatedAt', 'roomId'] }
             }
           ]
         }

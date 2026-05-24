@@ -22,18 +22,6 @@ export interface HotelAvailabilityResponse {
   roomTypes: RoomTypeAvailability[];
 }
 
-export interface RoomTypeAvailabilityCheck {
-  available: boolean;
-  roomTypeId: number;
-  roomTypeName: string;
-  totalRooms: number;
-  bookedRooms: number;
-  availableRooms: number;
-  nights: number;
-  basePrice: number;
-  totalPrice: number;
-}
-
 export interface AvailabilityQueryParams {
   hotelId: number;
   checkInDate: string;
@@ -55,27 +43,10 @@ export const availabilityApi = baseApi.injectEndpoints({
       ],
     }),
 
-    // GET /hotels/:hotelId/availability/:roomTypeId?checkInDate&checkOutDate
-    getRoomTypeAvailability: builder.query<
-      RoomTypeAvailabilityCheck,
-      AvailabilityQueryParams & { roomTypeId: number }
-    >({
-      query: ({ hotelId, roomTypeId, checkInDate, checkOutDate }) => ({
-        url: `/hotels/${hotelId}/availability/${roomTypeId}`,
-        params: { checkInDate, checkOutDate },
-      }),
-      transformResponse: (response: { data: RoomTypeAvailabilityCheck }) => response.data,
-      providesTags: (_result, _error, { hotelId, roomTypeId }) => [
-        { type: 'RoomType', id: roomTypeId },
-        { type: 'Hotel', id: hotelId },
-      ],
-    }),
   }),
 });
 
 export const {
   useGetHotelAvailabilityQuery,
   useLazyGetHotelAvailabilityQuery,
-  useGetRoomTypeAvailabilityQuery,
-  useLazyGetRoomTypeAvailabilityQuery,
 } = availabilityApi;

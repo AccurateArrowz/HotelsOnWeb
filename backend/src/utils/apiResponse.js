@@ -38,7 +38,7 @@ const sendConflict = (res, message = 'Conflict') => {
   return sendError(res, { message }, 409);
 };
 
-const sendInternalError = (res, message = 'Internal server error') => {
+const sendInternalError = (res, message = 'Internal Server Error') => {
   return sendError(res, { message }, 500);
 };
 

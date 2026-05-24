@@ -38,7 +38,7 @@
   width: 340px;
   flex-shrink: 0;
   position: sticky;
-  top: 2rem;
+  top: calc(64px + 1.5rem); /* navbar height (~64px) + gap */
 }
 
 /* ─── Hotel title + location ─────────────────────────────────────────────── */

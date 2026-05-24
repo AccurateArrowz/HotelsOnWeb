@@ -166,9 +166,9 @@ Register a new user account.
 **Request Body:**
 ```json
 {
-  "firstName": "John",
-  "lastName": "Doe",
-  "email": "john.doe@example.com",
+  "firstName": "Suresh",
+  "lastName": "Nepal",
+  "email": "suresh.nepal@example.com",
   "phone": "+1234567890",
   "password": "securePassword123",
   "role": "customer" // Optional: defaults to 'customer'
@@ -206,7 +206,7 @@ Authenticate a user and receive a JWT token.
 **Request Body:**
 ```json
 {
-  "email": "john.doe@example.com",
+  "email": "suresh.nepal@example.com",
   "password": "securePassword123"
 }
 ```
@@ -218,9 +218,9 @@ Authenticate a user and receive a JWT token.
   "message": "Login successful",
   "data": {
     "_id": 1,
-    "firstName": "John",
-    "lastName": "Doe",
-    "email": "john.doe@example.com",
+    "firstName": "Suresh",
+    "lastName": "Nepal",
+    "email": "suresh.nepal@example.com",
     "role": "customer",
     "roleId": 1,
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."

@@ -58,4 +58,4 @@ function createSequelizeInstance() {
 
 const sequelize = createSequelizeInstance();
 
-module.exports = sequelize; 
+module.exports = sequelize;
