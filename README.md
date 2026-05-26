@@ -100,6 +100,7 @@ A full-stack hotel booking platform connecting travelers with accommodations. Bu
 - `booking_rooms` junction table for multi-room bookings with per-room pricing
 - Custom hotel ID generation (acronym + random number for SEO-friendly URLs)
 - Soft deletes and status tracking for audit trails
+- Room availability per room type is capped at **5** to avoid over-exposure of inventory
 
 ---
 

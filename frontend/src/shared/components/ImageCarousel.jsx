@@ -25,11 +25,11 @@ export default function ImageCarousel({
     const updateVisibleSlides = () => {
       const width = window.innerWidth;
       setViewportWidth(width);
-      if (width >= 1280) {
+      if (width >= 1536) {
         setVisibleSlides(4);
       } else if (width >= 1024) {
         setVisibleSlides(3);
-      } else if (width >= 640) {
+      } else if (width >= 768) {
         setVisibleSlides(2);
       } else {
         setVisibleSlides(1);
@@ -136,7 +136,7 @@ export default function ImageCarousel({
             {images.map((image, index) => (
               <div
                 key={index}
-                className="w-full flex-shrink-0 px-1 sm:px-2 sm:w-1/2 lg:w-1/3 xl:w-1/4"
+                className="w-full flex-shrink-0 px-1 sm:px-2 md:w-1/2 lg:w-1/3 2xl:w-1/4"
                 role="group"
                 aria-roledescription="slide"
                 aria-label={`Slide ${index + 1} of ${slidesCount}`}
@@ -168,31 +168,6 @@ export default function ImageCarousel({
         )}
       </div>
 
-      {/* Dot indicators */}
-      {slidesCount > 1 && (
-        <div
-          className="mt-4 flex items-center justify-center gap-2"
-          role="tablist"
-          aria-label="Carousel navigation"
-        >
-          {images.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => goToSlide(index)}
-              className={`h-2.5 w-2.5 rounded-full transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 ${
-                index === currentIndex
-                  ? 'w-6 bg-blue-600'
-                  : 'bg-gray-300 hover:bg-gray-400'
-              }`}
-              role="tab"
-              aria-selected={index === currentIndex}
-              aria-label={`Go to slide ${index + 1}`}
-              type="button"
-            />
-          ))}
-        </div>
-      )}
-
       {/* Screen reader live region for slide announcements */}
       <div className="sr-only" aria-live="polite" aria-atomic="true">
         Showing slide {currentIndex + 1} of {slidesCount}
@@ -207,4 +182,3 @@ export default function ImageCarousel({
     </div>
   );
 }
-

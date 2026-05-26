@@ -1,5 +1,5 @@
 const SERVER_UNAVAILABLE_MESSAGE =
-  'Unable to connect to the server. Please make sure the backend is running and try again.';
+  'Unable to connect to the server. Please try again in a while.';
 
 const isServerUnavailableError = (error) => {
   const status = error?.status;

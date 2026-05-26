@@ -77,8 +77,8 @@ const roomAvailabilityService = {
       });
     });
 
-    // Calculate availability for each room type (cap displayed rooms at 4)
-    const MAX_ROOMS_PER_TYPE = 4;
+    // Calculate availability for each room type (cap displayed rooms at 5)
+    const MAX_ROOMS_PER_TYPE = 5;
     const availability = roomTypes.map((roomType) => {
       const totalRooms = Math.min((roomsByType[roomType.id] || []).length, MAX_ROOMS_PER_TYPE);
       const bookedRooms = bookedCounts[roomType.id] || 0;
