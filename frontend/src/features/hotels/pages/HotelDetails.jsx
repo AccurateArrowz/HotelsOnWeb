@@ -180,10 +180,11 @@ const HotelDetailsPage = () => {
 
   const mergedRoomTypes = baseRoomTypes.map((rt) => {
     const avail = availabilityMap[rt.id];
+    const totalAvailable = avail?.totalAvailable;
     return {
       ...rt,
-      availableRooms: avail ? avail.availableRooms : rt.totalRooms ?? null,
-      isAvailable: avail ? avail.isAvailable : true,
+      availableRooms: totalAvailable ?? rt.totalRooms ?? null,
+      isAvailable: totalAvailable == null ? true : totalAvailable > 0,
     };
   });
 

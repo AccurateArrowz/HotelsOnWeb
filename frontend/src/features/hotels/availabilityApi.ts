@@ -2,17 +2,20 @@ import { baseApi } from '@app/store/baseApi';
 
 export interface RoomTypeAvailability {
   roomTypeId: number;
-  name: string;
+  roomTypeName: string;
   description: string | null;
   basePrice: number;
-  adults: number;
-  children: number;
-  totalRooms: number;
-  bookedRooms: number;
-  availableRooms: number;
-  nights: number;
-  totalPrice: number;
-  isAvailable: boolean;
+  maxAdults: number;
+  maxChildren: number;
+  availableRooms: Array<{
+    id: number;
+    roomId: string;
+    roomNumber: string;
+    floor: number | null;
+    adults: number;
+    children: number;
+  }>;
+  totalAvailable: number;
 }
 
 export interface HotelAvailabilityResponse {

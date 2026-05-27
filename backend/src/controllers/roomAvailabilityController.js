@@ -12,7 +12,7 @@ const roomAvailabilityController = {
     try {
       const { hotelId } = req.params;
       const { checkInDate, checkOutDate } = req.query;
-      console.log('getAvailability called')
+      console.log('getHotelAvailability called')
 
       // Validate required parameters
       if (!checkInDate || !checkOutDate) {
