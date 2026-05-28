@@ -265,6 +265,31 @@
   gap: 0.3rem;
 }
 
+.room-capacity {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.55rem;
+}
+
+.room-capacity-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #4b5563;
+  font-size: 0.82rem;
+  font-weight: 500;
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  padding: 0.24rem 0.6rem;
+}
+
+.room-capacity-item svg {
+  flex-shrink: 0;
+  color: #3d5af1;
+}
+
 /* ─── Room type chips ────────────────────────────────────────────────────── */
 .room-type-chip {
   display: inline-flex;
@@ -414,6 +439,13 @@
   cursor: not-allowed;
   box-shadow: none;
   transform: none;
+}
+
+.sidebar-no-charge {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #6e7ca0;
+  margin: 0;
 }
 
 /* ─── Sidebar card ───────────────────────────────────────────────────────── */
@@ -572,13 +604,6 @@
   transform: translateY(0);
 }
 
-.sidebar-no-charge {
-  text-align: center;
-  font-size: 0.8rem;
-  color: #6e7ca0;
-  margin: 0;
-}
-
 /* ─── Loading / error / not-found states ─────────────────────────────────── */
 .loading,
 .error,
@@ -594,6 +619,11 @@
   flex-direction: column;
   align-items: center;
   gap: 1rem;
+}
+
+.error-actions {
+  display: flex;
+  justify-content: center;
 }
 
 /* ─── Responsive ─────────────────────────────────────────────────────────── */

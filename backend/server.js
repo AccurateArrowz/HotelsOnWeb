@@ -21,15 +21,39 @@ const roomRoutes = require('./src/routes/roomRoutes');
 const roomsAvailabilityRoutes = require('./src/routes/roomsAvailabilityRoutes');
 
 // Middleware
-const corsOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173')
-  .split(',')
-  .map((origin) => origin.trim())
-  .filter(Boolean);
+const isProduction = process.env.NODE_ENV === 'production';
 
-app.use(cors({
-  origin: corsOrigins,
+const parseOrigins = (value = '') =>
+  value
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+
+const corsOrigins = new Set(parseOrigins(process.env.CORS_ORIGIN));
+
+if (!isProduction) {
+  for (const origin of ['http://localhost:5173', 'http://localhost:3000', 'http://localhost:3001']) {
+    corsOrigins.add(origin);
+  }
+}
+
+const corsOptions = {
+  origin(origin, callback) {
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    if (corsOrigins.has(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error(`CORS origin not allowed: ${origin}`));
+  },
   credentials: true,
-}));
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

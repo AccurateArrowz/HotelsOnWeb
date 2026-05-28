@@ -157,6 +157,7 @@ router.post('/register', validate(registerSchema), register);
 | `PORT` | No | Server port (default: 3001) |
 | `NODE_ENV` | No | Environment (development/production) |
 | `JWT_SECRET` | Yes | JWT signing secret |
+| `CORS_ORIGIN` | No | Comma-separated allowed frontend origins |
 | `IMAGEKIT_PUBLIC_KEY` | Yes | ImageKit public key |
 | `IMAGEKIT_PRIVATE_KEY` | Yes | ImageKit private key |
 | `IMAGEKIT_URL_ENDPOINT` | Yes | ImageKit URL endpoint |

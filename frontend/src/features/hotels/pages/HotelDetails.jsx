@@ -10,7 +10,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import './HotelDetails.css';
 import {
   Waves, Users, Car, CigaretteOff, UtensilsCrossed, Bell,
-  Wine, Coffee, ArrowUpDown, Dumbbell, Sparkles, Wifi, Bed,
+  Wine, Coffee, ArrowUpDown, Dumbbell, Sparkles, Wifi, Bed, Baby,
   MapPin, Check,
 } from 'lucide-react';
 import { formatDate, calculateNights } from '@hotelsonweb/shared';
@@ -138,7 +138,9 @@ const HotelDetailsPage = () => {
       <div className="hotel-details-page">
         <div className="error">
           <span>{message}</span>
-          <TryAgainButton onClick={refetch} variant="secondary" size="sm" />
+          <div className="error-actions">
+            <TryAgainButton onClick={refetch} variant="secondary" size="sm" />
+          </div>
         </div>
       </div>
     );
@@ -191,16 +193,26 @@ const HotelDetailsPage = () => {
   // ── Handlers ───────────────────────────────────────────────────────────────
   const handleRoomCountChange = (roomTypeId, value) => {
     if (!checkIn || !checkOut) {
-      setDatesError('Please select check-in and check-out dates first.');
+      setDatesError('Please select checkin and checkout dates first');
       scrollToError(errorRef);
       return;
     }
     setRoomCounts((prev) => ({ ...prev, [roomTypeId]: Number(value) }));
   };
 
+  const handleRoomDropdownAttempt = (event) => {
+    if (checkIn && checkOut) {
+      return;
+    }
+
+    event.preventDefault();
+    setDatesError('Please select checkin and checkout dates first');
+    scrollToError(errorRef);
+  };
+
   const handleSelectRoom = (roomType) => {
     if (!checkIn || !checkOut) {
-      setDatesError('Please select check-in and check-out dates first.');
+      setDatesError('Please select checkin and checkout dates first');
       scrollToError(errorRef);
       return;
     }
@@ -220,13 +232,6 @@ const HotelDetailsPage = () => {
       return;
     }
     setBookingModalOpen(true);
-  };
-
-  const handleDropdownClick = () => {
-    if (!checkIn || !checkOut) {
-      setDatesError('Please select check-in and check-out dates first.');
-      scrollToError(errorRef);
-    }
   };
 
   // ── Render ─────────────────────────────────────────────────────────────────
@@ -308,7 +313,9 @@ const HotelDetailsPage = () => {
                   <tbody>
                     {mergedRoomTypes.map((roomType) => {
                       const chips = getRoomChips(roomType.name);
-                      const count = roomCounts[roomType.id] ?? 1;
+                      const adultCapacity = roomType.adults ?? roomType.maxAdults ?? null;
+                      const childrenCapacity = roomType.children ?? roomType.maxChildren ?? null;
+                      const count = roomCounts[roomType.id] ?? '';
                       const isSelected = selectedRoomType?.id === roomType.id;
                       const maxRooms = (checkIn && checkOut && roomType.availableRooms != null)
                         ? Math.max(1, roomType.availableRooms)
@@ -330,6 +337,20 @@ const HotelDetailsPage = () => {
                                 </span>
                               ))}
                             </div>
+                            <div className="room-capacity">
+                              {adultCapacity != null && (
+                                <span className="room-capacity-item">
+                                  <Users size={14} />
+                                  <span>{adultCapacity} Adult{adultCapacity !== 1 ? 's' : ''}</span>
+                                </span>
+                              )}
+                              {childrenCapacity != null && (
+                                <span className="room-capacity-item">
+                                  <Baby size={14} />
+                                  <span>{childrenCapacity} Child{childrenCapacity !== 1 ? 'ren' : ''}</span>
+                                </span>
+                              )}
+                            </div>
                           </td>
 
                           {/* Price */}
@@ -346,11 +367,16 @@ const HotelDetailsPage = () => {
                               <select
                                 className="rooms-select"
                                 value={count}
-                                disabled={!checkIn || !checkOut}
-                                onClick={handleDropdownClick}
+                                onMouseDown={handleRoomDropdownAttempt}
+                                onKeyDown={(event) => {
+                                  if ((!checkIn || !checkOut) && ['Enter', ' ', 'ArrowDown', 'ArrowUp'].includes(event.key)) {
+                                    handleRoomDropdownAttempt(event);
+                                  }
+                                }}
                                 onChange={(e) => handleRoomCountChange(roomType.id, e.target.value)}
                                 aria-label={`Number of ${roomType.name} rooms`}
                               >
+                                {!checkIn || !checkOut ? <option value="" disabled hidden /> : null}
                                 {Array.from({ length: maxRooms }, (_, i) => i + 1).map((n) => (
                                   <option key={n} value={n}>{n}</option>
                                 ))}

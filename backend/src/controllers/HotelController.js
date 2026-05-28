@@ -42,7 +42,16 @@ const getHotelById = async (req, res) => {
     }
     const hotelJson = hotel.toJSON();
     hotelJson.images = hotelJson.images || [];
-    hotelJson.roomTypes = hotelJson.roomTypes || [];
+    // Keep hotel details endpoint lean: include room-type summary only, not individual rooms.
+    hotelJson.roomTypes = (hotelJson.roomTypes || []).map((roomType) => ({
+      id: roomType.id,
+      hotelId: roomType.hotelId,
+      name: roomType.name,
+      description: roomType.description,
+      basePrice: roomType.basePrice,
+      adults: roomType.adults,
+      children: roomType.children
+    }));
 
     // Get primary image from database
     const primaryImage = hotelJson.images.find(img => img.isPrimary);

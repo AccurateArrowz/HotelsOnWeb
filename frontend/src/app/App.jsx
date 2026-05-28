@@ -58,7 +58,7 @@ function App() {
           <Routes>
             {/* Public routes */}
             <Route path="/" element={<Home />} />
-            <Route path="hotels/:query" element={<HotelsPage />} />
+            <Route path="/hotels/:query" element={<HotelsPage />} />
             <Route path="/hotels/id/:id" element={<HotelDetails />} />
 
             {/* Protected routes */}
@@ -109,4 +109,3 @@ function App() {
 }
 
 export default App;
-

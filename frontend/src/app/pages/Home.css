@@ -388,7 +388,7 @@ display: flex;
 
 .feature-hero-item:hover {
   box-shadow: 0 12px 36px rgba(44,62,80,0.16);
-  transform: translateY(-6px) scale(1.035);
+  /* transform: translateY(-6px) scale(1.035); */
   border: 2px solid #e0e7ff;
   z-index: 2;
 }

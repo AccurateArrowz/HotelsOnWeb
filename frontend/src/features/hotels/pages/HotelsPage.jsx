@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { FixedSizeList as List } from 'react-window';
-import AutoSizer from 'react-virtualized-auto-sizer';
 import { HotelList } from '@features/hotels/components';
 import { Loading, TryAgainButton } from '@shared/components';
 import { toast } from '@shared/utils/toast';
@@ -9,8 +7,6 @@ import { useLazyGetHotelsQuery } from '../hotelsApi';
 import './HotelsPage.css';
 
 const PAGE_SIZE = 20;
-const ITEM_HEIGHT = 225; // Updated height: 200px card + 25px gap
-
 const SORT_OPTIONS = [
   { value: 'popularity', label: 'Popularity' },
   { value: 'price-asc', label: 'Price (Low to High)' },
@@ -29,19 +25,19 @@ const HotelsPage = () => {
   const [hasMore, setHasMore] = useState(true);
   const [offset, setOffset] = useState(0);
   const [retryCount, setRetryCount] = useState(0);
-  const listRef = useRef();
   const [sortBy, setSortBy] = useState('popularity');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const loadMoreRef = useRef(null);
 
   const [triggerGetHotels] = useLazyGetHotelsQuery();
 
   // Fetch hotels for the current search — offset-based for infinite scroll
-  const fetchMoreHotels = useCallback(async (IsInitialLoad = false) => {
+  const fetchMoreHotels = useCallback(async (isInitialLoad = false) => {
     try {
       setLoading(true);
       setError(null);
-      const nextOffset = IsInitialLoad ? 0 : offset;
+      const nextOffset = isInitialLoad ? 0 : offset;
       const result = await triggerGetHotels({
         search: query,
         limit: PAGE_SIZE,
@@ -49,7 +45,7 @@ const HotelsPage = () => {
       }).unwrap();
       const newHotels = result?.data ?? [];
       const pagination = result?.pagination;
-      if (IsInitialLoad) {
+      if (isInitialLoad) {
         setHotels(newHotels);
       } else {
         setHotels(prev => [...prev, ...newHotels]);
@@ -74,6 +70,28 @@ const HotelsPage = () => {
     // eslint-disable-next-line
   }, [query, retryCount]);
 
+  useEffect(() => {
+    if (!loadMoreRef.current) return undefined;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (entry?.isIntersecting && !loading && hasMore && hotels.length > 0) {
+          fetchMoreHotels();
+        }
+      },
+      {
+        root: null,
+        rootMargin: '400px 0px',
+        threshold: 0.1
+      }
+    );
+
+    observer.observe(loadMoreRef.current);
+
+    return () => observer.disconnect();
+  }, [fetchMoreHotels, hasMore, hotels.length, loading]);
+
   // Close dropdown on click outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -84,42 +102,6 @@ const HotelsPage = () => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-
-  // Virtualized row renderer
-  const Row = ({ index, style }) => {
-    const hotel = sortedHotels[index];
-    if (!hotel) return null;
-
-    const handleHotelClick = () => {
-      navigate(`/hotels/id/${hotel.id}`);
-    };
-
-    return (
-      <div
-        style={style}
-        key={hotel.id}
-        className="virtual-hotel-row"
-        onClick={handleHotelClick}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            handleHotelClick();
-          }
-        }}
-      >
-        <HotelList hotels={[hotel]} />
-      </div>
-    );
-  };
-
-  // Infinite loader
-  const handleScroll = ({ scrollOffset, scrollHeight, clientHeight }) => {
-    if (!loading && hasMore && scrollOffset + clientHeight >= scrollHeight - ITEM_HEIGHT * 2) {
-      fetchMoreHotels();
-    }
-  };
 
   const formatQueryName = name => name.charAt(0).toUpperCase() + name.slice(1);
 
@@ -225,22 +207,29 @@ const HotelsPage = () => {
         </div>
       )}
       {!error && hotels.length > 0 && (
-        <div className="hotels-virtual-list">
-          <AutoSizer>
-            {({ height, width }) => (
-              <List
-                height={height}
-                itemCount={sortedHotels.length}
-                itemSize={ITEM_HEIGHT}
-                width={width}
-                onScroll={handleScroll}
-                ref={listRef}
-              >
-                {Row}
-              </List>
-            )}
-          </AutoSizer>
+        <div className="hotels-list">
+          {sortedHotels.map((hotel) => (
+            <div
+              key={hotel.id}
+              className="hotel-list-row"
+              onClick={() => navigate(`/hotels/id/${hotel.id}`)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  navigate(`/hotels/id/${hotel.id}`);
+                }
+              }}
+            >
+              <HotelList hotels={[hotel]} />
+            </div>
+          ))}
+          <div ref={loadMoreRef} className="hotels-load-more-trigger" aria-hidden="true" />
           {loading && <Loading size="medium" message="Loading more hotels..." />}
+          {!hasMore && hotels.length > 0 && (
+            <p className="hotels-end-message">You've reached the end of the list.</p>
+          )}
         </div>
       )}
     </div>

@@ -91,11 +91,33 @@
   font-size: 1.1rem;
 }
 
-.hotels-virtual-list {
-  height: 70vh;
-  min-height: 400px;
+.hotels-list {
+  display: grid;
+  gap: 1rem;
   width: 100%;
-  position: relative;
+  padding-bottom: 2rem;
+}
+
+.hotel-list-row {
+  cursor: pointer;
+}
+
+.hotel-list-row:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 4px;
+  border-radius: 12px;
+}
+
+.hotels-load-more-trigger {
+  width: 100%;
+  height: 1px;
+}
+
+.hotels-end-message {
+  text-align: center;
+  color: #6b7280;
+  font-size: 0.95rem;
+  margin: 0.5rem 0 0;
 }
 
 /* Sort Options - Custom Dropdown */

@@ -131,7 +131,8 @@
 }
 
 .attribution-link {
-  color: #60a5fa; /* text-blue-400 */
+  /* color: #60a5fa; text-blue-400 */
+  color: #7393ba;
   text-decoration: none;
   transition: color 0.2s ease; /* transition-colors */
 }
