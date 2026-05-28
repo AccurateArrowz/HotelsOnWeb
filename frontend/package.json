@@ -58,6 +58,7 @@
     "vite-plugin-checker": "^0.12.0"
   },
   "optionalDependencies": {
-  "lightningcss-linux-x64-gnu": "1.x"
-}
+    "lightningcss-linux-x64-gnu": "1.x",
+    "@tailwindcss/oxide-linux-x64-gnu": "4.2.4"
+  }
 }
