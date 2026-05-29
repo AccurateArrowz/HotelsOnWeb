@@ -157,17 +157,13 @@ const SignupForm = ({ onSuccess, onSwitchToLogin }) => {
             id="password"
             type="password"
             name="password"
-            placeholder="Create a strong password (min 8 characters)"
+            placeholder="Create a strong password"
             value={formData.password}
             onChange={handleChange}
             minLength="8"
             required
             aria-required="true"
-            aria-describedby="password-requirements"
           />
-          <p id="password-requirements" className="helper-text">
-            Must be at least 8 characters long
-          </p>
         </div>
 
         <div className="form-group">

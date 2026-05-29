@@ -91,6 +91,7 @@ const DEFAULT_LIMIT = 20;
 
 const getHotels = async (req, res) => {
     const { search, limit = DEFAULT_LIMIT, offset = 0 } = req.query;
+    console.log('getHotels called');
     if (!search || search.trim() === '') {
       return sendBadRequest(res, 'Missing or invalid search query parameter');
     }

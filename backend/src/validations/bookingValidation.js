@@ -1,12 +1,17 @@
 const { z } = require('zod');
 
+const roomSelectionSchema = z.object({
+  roomTypeId: z.number().int().positive('Room Type ID must be a positive integer'),
+  quantity: z.number().int().positive('Quantity must be at least 1'),
+});
+
 const createBookingSchema = z.object({
   body: z.object({
     hotelId: z.number().int().positive('Hotel ID must be a positive integer'),
-    roomTypeId: z.number().int().positive('Room Type ID must be a positive integer'),
     checkInDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Check-in date must be in YYYY-MM-DD format'),
     checkOutDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Check-out date must be in YYYY-MM-DD format'),
     specialRequests: z.string().max(500, 'Special requests must not exceed 500 characters').optional(),
+    roomSelections: z.array(roomSelectionSchema).min(1, 'At least one room type must be selected'),
   }).refine((data) => {
     const checkIn = new Date(data.checkInDate);
     const checkOut = new Date(data.checkOutDate);

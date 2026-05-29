@@ -11,13 +11,13 @@ import { hotelFallbackImg } from '../../../assets';
 const HotelList = ({ hotels }) => {
   if (!hotels || hotels.length === 0) return null;
 
-  // Helper function to generate consistent random rating between 6-10 based on hotel ID
+  // Helper function to generate a consistent rating between 3.0 and 5.0 based on hotel ID.
   const generateRandomRating = (hotelId) => {
     // Use hotel ID as seed for consistent random values
     const seed = hotelId.toString().split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
     const random = (seed * 9301 + 49297) % 233280;
     const normalized = random / 233280;
-    return (normalized * 4 + 6).toFixed(1);
+    return (normalized * 2 + 3).toFixed(1);
   };
 
   // Helper function to generate consistent random price between 1500-5000 based on hotel ID
@@ -31,8 +31,8 @@ const HotelList = ({ hotels }) => {
 
   // Helper function to render star rating using Lucide icons
   const renderStars = (rating) => {
-    // Ensure rating doesn't exceed 5 stars for display
-    const displayRating = Math.min(rating, 5);
+    // Clamp rating to the expected 1-5 display range, with a floor of 3 for this UI.
+    const displayRating = Math.min(Math.max(Number(rating) || 0, 3), 5);
     const fullStars = Math.floor(displayRating);
     const hasHalfStar = displayRating % 1 >= 0.5;
     const emptyStars = Math.max(0, 5 - fullStars - (hasHalfStar ? 1 : 0));
@@ -114,6 +114,9 @@ const HotelList = ({ hotels }) => {
             <div className={styles.hotelMainInfo}>
               <h2 className={styles.hotelName}>{hotel.name}</h2>
               <div className={styles.hotelAddress}>{hotel.street}</div>
+              {hotel.description && (
+                <p className={styles.hotelDescription}>{hotel.description}</p>
+              )}
             </div>
             <div className={styles.hotelDetails}>
               <div className={styles.ratingContainer}>
@@ -139,6 +142,7 @@ HotelList.propTypes = {
       hotelImg: PropTypes.string,
       rating: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
       price: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      description: PropTypes.string,
     })
   ),
 };

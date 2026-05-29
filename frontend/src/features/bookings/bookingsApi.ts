@@ -46,7 +46,12 @@ export interface Booking {
 
 export interface CreateBookingRequest {
   hotelId: number;
-  roomTypeId: number;
+  roomSelections?: Array<{
+    roomTypeId: number;
+    quantity: number;
+  }>;
+  roomTypeId?: number;
+  quantity?: number;
   checkInDate: string;
   checkOutDate: string;
   specialRequests?: string;
@@ -68,8 +73,9 @@ export interface CreateBookingResponse {
   };
   bookingRooms: Array<{
     roomTypeId: number;
-    quantity: number;
     pricePerNight: number;
+    numberOfNights: number;
+    totalPrice: number;
     roomType: {
       name: string;
       basePrice: number;

@@ -2,17 +2,64 @@ const Booking = require('../models/Booking');
 const BookingRoom = require('../models/BookingRoom');
 const Hotel = require('../models/Hotel');
 const RoomType = require('../models/RoomType');
+const Room = require('../models/Room');
 const User = require('../models/User');
-const roomAvailabilityService = require('../services/roomAvailabilityService');
 const { sendSuccess, sendBadRequest, sendNotFound, sendInternalError } = require('../utils/apiResponse');
 const { parseLocalDate } = require('@hotelsonweb/shared');
+const { Op } = require('sequelize');
+
+const getAvailableRoomsForType = async ({ hotelId, roomTypeId, checkInDate, checkOutDate }) => {
+  return Room.findAll({
+    where: {
+      hotelId,
+      roomTypeId,
+      isActive: true,
+      status: 'available',
+    },
+    include: [
+      {
+        model: RoomType,
+        as: 'roomType',
+        attributes: ['id', 'name', 'basePrice'],
+      },
+    ],
+    attributes: ['id', 'roomId', 'roomNumber', 'floor', 'adults', 'children'],
+    order: [['roomNumber', 'ASC']],
+  }).then(async (rooms) => {
+    if (rooms.length === 0) return [];
+
+    const bookedRooms = await BookingRoom.findAll({
+      where: {
+        roomId: { [Op.in]: rooms.map((room) => room.id) },
+      },
+      include: [
+        {
+          model: Booking,
+          as: 'booking',
+          where: {
+            hotelId,
+            status: { [Op.in]: ['confirmed', 'pending'] },
+            checkInDate: { [Op.lt]: checkOutDate },
+            checkOutDate: { [Op.gt]: checkInDate },
+          },
+          attributes: ['id'],
+        },
+      ],
+      attributes: ['roomId'],
+    });
+
+    const bookedRoomIds = new Set(bookedRooms.map((bookingRoom) => bookingRoom.roomId));
+    return rooms.filter((room) => !bookedRoomIds.has(room.id));
+  });
+};
 
 const bookingController = {
   // Create a new booking
   createBooking: async (req, res) => {
     try {
-      const { hotelId, roomTypeId, checkInDate, checkOutDate, specialRequests } = req.body;
+      const { hotelId, roomSelections, checkInDate, checkOutDate, specialRequests } = req.body;
       const userId = req.user.id;
+      const normalizedSelections = roomSelections;
 
       // Validate dates - parse YYYY-MM-DD as local dates to avoid UTC shift
       const checkIn = parseLocalDate(checkInDate);
@@ -34,26 +81,58 @@ const bookingController = {
         return sendNotFound(res, 'Hotel not found');
       }
 
-      const roomType = await RoomType.findByPk(roomTypeId);
-      if (!roomType) {
-        return sendNotFound(res, 'Room type not found');
-      }
-
-      // Check room availability before creating booking
-      const availability = await roomAvailabilityService.checkRoomTypeAvailability(
-        hotelId,
-        roomTypeId,
-        checkInDate,
-        checkOutDate
-      );
-
-      if (!availability.available) {
-        return sendBadRequest(res, 'No rooms available for the selected dates');
-      }
-
-      // Calculate total amount
       const nights = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
-      const totalAmount = roomType.basePrice * nights;
+      const roomTypeIds = [...new Set(normalizedSelections.map((selection) => selection.roomTypeId))];
+      const roomTypes = await RoomType.findAll({
+        where: {
+          id: roomTypeIds,
+          hotelId,
+        }
+      });
+
+      if (roomTypes.length !== roomTypeIds.length) {
+        return sendNotFound(res, 'One or more room types were not found');
+      }
+
+      const roomTypeMap = new Map(roomTypes.map((roomType) => [roomType.id, roomType]));
+      const bookingLineItems = [];
+      let totalAmount = 0;
+
+      for (const selection of normalizedSelections) {
+        const selectedRoomType = roomTypeMap.get(selection.roomTypeId);
+        if (!selectedRoomType) {
+          return sendNotFound(res, 'Room type not found');
+        }
+
+        const roomsRequested = Number(selection.quantity || 1);
+        if (roomsRequested < 1) {
+          return sendBadRequest(res, 'Room quantity must be at least 1');
+        }
+
+        const availableRooms = await getAvailableRoomsForType({
+          hotelId,
+          roomTypeId: selection.roomTypeId,
+          checkInDate,
+          checkOutDate,
+        });
+
+        if (availableRooms.length < roomsRequested) {
+          return sendBadRequest(
+            res,
+            `Only ${availableRooms.length} room(s) available for ${selectedRoomType.name}`
+          );
+        }
+
+        const lineTotal = Number(selectedRoomType.basePrice) * roomsRequested * nights;
+        totalAmount += lineTotal;
+        bookingLineItems.push({
+          roomType: selectedRoomType,
+          quantity: roomsRequested,
+          pricePerNight: selectedRoomType.basePrice,
+          totalPrice: lineTotal,
+          assignedRooms: availableRooms.slice(0, roomsRequested),
+        });
+      }
 
       // Create booking
       const booking = await Booking.create({
@@ -67,15 +146,18 @@ const bookingController = {
         paymentStatus: 'pending'
       });
 
-      // Create booking room entry (roomId is null until assigned)
-      await BookingRoom.create({
-        bookingId: booking.id,
-        roomTypeId,
-        roomId: null,
-        pricePerNight: roomType.basePrice,
-        numberOfNights: nights,
-        totalPrice: totalAmount,
-      });
+      const bookingRoomRows = bookingLineItems.flatMap((item) =>
+        item.assignedRooms.map((room) => ({
+          bookingId: booking.id,
+          roomTypeId: item.roomType.id,
+          roomId: room.id,
+          pricePerNight: item.pricePerNight,
+          numberOfNights: nights,
+          totalPrice: Number(item.pricePerNight) * nights,
+        }))
+      );
+
+      await BookingRoom.bulkCreate(bookingRoomRows);
 
       // Fetch complete booking data
       const completeBooking = await Booking.findByPk(booking.id, {

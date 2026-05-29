@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom';
 import { useGetHotelByIdQuery } from '../hotelsApi';
 import { useLazyGetHotelAvailabilityQuery } from '../availabilityApi';
 import { useAuth, LoginForm, SignupForm } from '@features/auth';
-import { BookingForm } from '@bookings/components';
 import { Modal, Loading, ImageCarousel, TryAgainButton } from '@shared/components';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -11,7 +10,7 @@ import './HotelDetails.css';
 import {
   Waves, Users, Car, CigaretteOff, UtensilsCrossed, Bell,
   Wine, Coffee, ArrowUpDown, Dumbbell, Sparkles, Wifi, Bed, Baby,
-  MapPin, Check,
+  MapPin, Check, CreditCard, ShieldCheck, BadgeCheck, Banknote,
 } from 'lucide-react';
 import { formatDate, calculateNights } from '@hotelsonweb/shared';
 
@@ -73,6 +72,10 @@ const HotelDetailsPage = () => {
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [signupModalOpen, setSignupModalOpen] = useState(false);
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState('credit_card');
+  const [paymentInProgress, setPaymentInProgress] = useState(false);
+  const [bookingConfirmed, setBookingConfirmed] = useState(false);
+  const [confirmationNumber, setConfirmationNumber] = useState('');
 
   // ── Booking state ──────────────────────────────────────────────────────────
   const [selectedRoomType, setSelectedRoomType] = useState(null);
@@ -89,6 +92,7 @@ const HotelDetailsPage = () => {
   // ── Refs for scrolling to errors ───────────────────────────────────────────
   const errorRef = useRef(null);
   const tableRef = useRef(null);
+  const bookingTimerRef = useRef(null);
 
   // Scroll to error banner whenever it appears
   useEffect(() => {
@@ -96,6 +100,14 @@ const HotelDetailsPage = () => {
       errorRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }, [datesError, roomError]);
+
+  useEffect(() => {
+    return () => {
+      if (bookingTimerRef.current) {
+        window.clearTimeout(bookingTimerRef.current);
+      }
+    };
+  }, []);
 
   const SERVICE_FEE = 250;
 
@@ -193,7 +205,7 @@ const HotelDetailsPage = () => {
   // ── Handlers ───────────────────────────────────────────────────────────────
   const handleRoomCountChange = (roomTypeId, value) => {
     if (!checkIn || !checkOut) {
-      setDatesError('Please select checkin and checkout dates first');
+      setDatesError('Please select dates from the right sidebar first');
       scrollToError(errorRef);
       return;
     }
@@ -206,13 +218,13 @@ const HotelDetailsPage = () => {
     }
 
     event.preventDefault();
-    setDatesError('Please select checkin and checkout dates first');
+    setDatesError('Please select dates from the right sidebar first');
     scrollToError(errorRef);
   };
 
   const handleSelectRoom = (roomType) => {
     if (!checkIn || !checkOut) {
-      setDatesError('Please select checkin and checkout dates first');
+      setDatesError('Please select dates from the right sidebar first');
       scrollToError(errorRef);
       return;
     }
@@ -231,7 +243,38 @@ const HotelDetailsPage = () => {
       setLoginModalOpen(true);
       return;
     }
+    setBookingConfirmed(false);
+    setConfirmationNumber('');
+    setPaymentMethod('credit_card');
     setBookingModalOpen(true);
+  };
+
+  const handleConfirmBooking = async () => {
+    setPaymentInProgress(true);
+    setRoomError('');
+
+    if (bookingTimerRef.current) {
+      window.clearTimeout(bookingTimerRef.current);
+    }
+
+    bookingTimerRef.current = window.setTimeout(() => {
+      const bookingCode = `BK-${Math.floor(100000 + Math.random() * 900000)}`;
+      setConfirmationNumber(bookingCode);
+      setBookingConfirmed(true);
+      setPaymentInProgress(false);
+      bookingTimerRef.current = null;
+    }, 1400);
+  };
+
+  const handleCloseBookingModal = () => {
+    if (bookingTimerRef.current) {
+      window.clearTimeout(bookingTimerRef.current);
+      bookingTimerRef.current = null;
+    }
+    setBookingModalOpen(false);
+    setPaymentInProgress(false);
+    setBookingConfirmed(false);
+    setConfirmationNumber('');
   };
 
   // ── Render ─────────────────────────────────────────────────────────────────
@@ -490,7 +533,7 @@ const HotelDetailsPage = () => {
             )}
 
             {/* Book Now button */}
-            <button className="sidebar-book-btn" onClick={handleBookNow}>
+            <button type="button" className="sidebar-book-btn" onClick={handleBookNow}>
               Book Now
             </button>
             <p className="sidebar-no-charge">You won't be charged yet</p>
@@ -531,16 +574,136 @@ const HotelDetailsPage = () => {
 
       <Modal
         isOpen={bookingModalOpen}
-        onClose={() => setBookingModalOpen(false)}
+        onClose={handleCloseBookingModal}
         size="lg"
-        className="booking-modal"
+        className="booking-confirmation-modal"
       >
-        <BookingForm
-          hotel={hotel}
-          roomType={selectedRoomType}
-          onClose={() => setBookingModalOpen(false)}
-        />
+        <div className="booking-confirmation">
+          <div className="booking-confirmation__hero">
+            <div className="booking-confirmation__icon-wrap">
+              {bookingConfirmed ? <BadgeCheck size={28} /> : <CreditCard size={28} />}
+            </div>
+            <div>
+              <p className="booking-confirmation__eyebrow">
+                {bookingConfirmed ? 'Booking confirmed' : 'Secure payment'}
+              </p>
+              <h2 className="booking-confirmation__title">
+                {bookingConfirmed ? 'Your stay is locked in' : 'Choose a payment option'}
+              </h2>
+              <p className="booking-confirmation__subtitle">
+                {bookingConfirmed
+                  ? 'This is a local simulation. No payment was sent to the server.'
+                  : 'Review the trip summary below, then simulate a completed booking.'}
+              </p>
+            </div>
+          </div>
+
+          <div className="booking-confirmation__grid">
+            <section className="booking-confirmation__panel booking-confirmation__panel--summary">
+              <h3>Trip summary</h3>
+              <div className="booking-confirmation__line">
+                <span>Hotel</span>
+                <strong>{hotel.name}</strong>
+              </div>
+              <div className="booking-confirmation__line">
+                <span>Room</span>
+                <strong>{selectedRoomType?.name}</strong>
+              </div>
+              <div className="booking-confirmation__line">
+                <span>Dates</span>
+                <strong>{checkIn && checkOut ? `${formatDate(checkIn)} → ${formatDate(checkOut)}` : 'Not selected'}</strong>
+              </div>
+              <div className="booking-confirmation__line">
+                <span>Nights</span>
+                <strong>{nights}</strong>
+              </div>
+              <div className="booking-confirmation__line booking-confirmation__line--total">
+                <span>Total due</span>
+                <strong>Rs.{total.toLocaleString()}</strong>
+              </div>
+            </section>
+
+            <section className="booking-confirmation__panel">
+              {!bookingConfirmed ? (
+                <>
+                  <h3>Payment method</h3>
+                  <div className="payment-options">
+                    <button
+                      type="button"
+                      className={`payment-option ${paymentMethod === 'credit_card' ? 'payment-option--active' : ''}`}
+                      onClick={() => setPaymentMethod('credit_card')}
+                    >
+                      <CreditCard size={18} />
+                      <span>
+                        <strong>Credit card</strong>
+                        <small>Instant approval simulation</small>
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      className={`payment-option ${paymentMethod === 'bank_transfer' ? 'payment-option--active' : ''}`}
+                      onClick={() => setPaymentMethod('bank_transfer')}
+                    >
+                      <Banknote size={18} />
+                      <span>
+                        <strong>Bank transfer</strong>
+                        <small>Queued but confirmed here</small>
+                      </span>
+                    </button>
+                  </div>
+
+                  <div className="booking-confirmation__note">
+                    <ShieldCheck size={18} />
+                    <span>Payment Simulation only.</span>
+                  </div>
+
+                  <div className="booking-confirmation__actions">
+                    <button
+                      type="button"
+                      className="secondary-button booking-confirmation__secondary"
+                      onClick={handleCloseBookingModal}
+                      disabled={paymentInProgress}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      className="primary-button booking-confirmation__primary"
+                      onClick={handleConfirmBooking}
+                      disabled={paymentInProgress}
+                    >
+                      {paymentInProgress ? 'Processing...' : `Pay Rs.${total.toLocaleString()}`}
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <div className="booking-confirmation__success">
+                  <div className="booking-confirmation__success-badge">
+                    <BadgeCheck size={30} />
+                  </div>
+                  <h3>Booking confirmed</h3>
+                  <p>
+                    Confirmation number <strong>{confirmationNumber}</strong>
+                  </p>
+                  <p>
+                    {selectedRoomType?.name} at {hotel.name} is ready for your dates.
+                  </p>
+                  <div className="booking-confirmation__success-actions">
+                    <button
+                      type="button"
+                      className="primary-button booking-confirmation__primary"
+                      onClick={handleCloseBookingModal}
+                    >
+                      Done
+                    </button>
+                  </div>
+                </div>
+              )}
+            </section>
+          </div>
+        </div>
       </Modal>
+
     </div>
   );
 };

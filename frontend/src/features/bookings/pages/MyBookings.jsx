@@ -183,8 +183,10 @@ export default function MyBookings() {
                 {booking.bookingRooms && booking.bookingRooms.length > 0 && (
                   <div className="mt-4 pt-4 border-t border-gray-200">
                     <p className="text-sm text-gray-600">
-                      <span className="font-medium">Room:</span>{' '}
-                      {booking.bookingRooms[0].roomType?.name || 'Standard Room'}
+                      <span className="font-medium">Rooms:</span>{' '}
+                      {booking.bookingRooms
+                        .map((bookingRoom) => bookingRoom.roomType?.name || 'Standard Room')
+                        .join(', ')}
                     </p>
                   </div>
                 )}
