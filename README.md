@@ -15,6 +15,7 @@ A full-stack hotel booking platform connecting travelers with accommodations. Bu
 
 - **Frontend**: [Visit Site](https://hotels-on-web.vercel.app/)
 - **Backend API**: [API Link](https://hotelsonweb.onrender.com/api)
+- **Screenshots**: [Project screenshots](./docs/screenshots/)
 
 > **Note**: Backend hosted on Render free tier—cold start may take 30-60 seconds.
 
@@ -280,5 +281,4 @@ MIT License - feel free to use this project for learning or building your own bo
 
 - [LinkedIn](http://www.linkedin.com/in/sujay-shrestha-8a846b358)
 - Email: sujayshresth10@gmail.com
-
 

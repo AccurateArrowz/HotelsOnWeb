@@ -422,7 +422,7 @@ export default function HotelRequestsPage() {
   // Loading state
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[#FCF8F5]">
+      <div className="flex items-center justify-center min-h-screen bg-[]">
         <Loading size="large" message="Loading hotel requests..." />
       </div>
     );
@@ -431,7 +431,7 @@ export default function HotelRequestsPage() {
   // Error state
   if (isError) {
     return (
-      <div className="p-6 min-h-screen bg-[#FCF8F5] flex items-center justify-center">
+      <div className="p-6 min-h-screen bg-[] flex items-center justify-center">
         <div className="bg-red-50 border border-red-200 rounded-2xl p-6 max-w-md w-full shadow-sm text-center">
           <p className="text-red-800 text-lg font-semibold mb-4">
             Failed to load hotel requests.
@@ -443,7 +443,7 @@ export default function HotelRequestsPage() {
   }
 
   return (
-    <div className="p-4 md:p-8 lg:p-12 bg-[#FCF8F5] min-h-screen">
+    <div className="p-4 md:p-8 lg:p-12 bg-[] min-h-screen">
       <div className="max-w-5xl mx-auto">
         {/* Page header */}
         <div className="mb-8">
