@@ -8,24 +8,29 @@ const ProfileModal = ({onClose}) => {
 
   return (
     <Modal isModalOpen={true} onClose={onClose} size="sm" className="profile-modal">
+      <h2 className='text-center'>Profile</h2>
       <div className="profile-info">
-          <h2 className='text-center'>Profile</h2>
-          <div><strong>Name:</strong> {user.firstName} {user.lastName}</div>
-          <div><strong>Email:</strong> {user.email}</div>
-          {user.phone && <div><strong>Phone:</strong> {user.phone}</div>}
-          <div><strong>Role:</strong> {user.role}</div>
+        <div><strong>Name:</strong> {user.firstName} {user.lastName}</div>
+        <div><strong>Email:</strong> {user.email}</div>
         </div>
       <div className="profile-actions" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
         <Link 
-          to="/my-bookings" 
+          to="/profile" 
           className="primary-button text-center" 
           onClick={onClose}
           style={{ textDecoration: 'none' }}
         >
-          My Bookings
+          View Profile
         </Link>
-        <button className="secondary-button" onClick={() => { logout(); 
-          onClose(); }}>Logout</button>
+        <button
+          className="secondary-button"
+          onClick={() => {
+            logout();
+            onClose();
+          }}
+        >
+          Logout
+        </button>
       </div>
     </Modal>
   );

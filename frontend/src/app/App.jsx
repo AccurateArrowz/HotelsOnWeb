@@ -30,7 +30,7 @@ const HotelDetails = lazy(() => import('@features/hotels/pages/HotelDetails'));
 const ListYourProperty = lazy(() => import('@features/owner/pages/ListYourProperty'));
 const Unauthorized = lazy(() => import('@app/pages/Unauthorized'));
 const MyHotel = lazy(() => import('@features/owner/pages/MyHotelPage'));
-const HotelRequestsPage = lazy(() => import('@features/admin/HotelRequestsPage'));
+const HotelRequestsPage = lazy(() => import('@/features/admin/pages/HotelRequestsPage'));
 const ProfilePage = lazy(() => import('@features/auth/pages/ProfilePage'));
 const MyBookings = lazy(() => import('@features/bookings/pages/MyBookings'));
 

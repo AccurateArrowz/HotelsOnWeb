@@ -76,7 +76,7 @@ const ProfilePage = () => {
                   {userInitials}
                 </div>
                 <div className="text-center sm:text-left sm:mb-2">
-                  <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+                  <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-slate-900 via-blue-700 to-sky-600 bg-clip-text text-transparent">
                     {user.firstName} {user.lastName}
                   </h1>
                   <p className="text-gray-500 capitalize">{user.role} Account</p>

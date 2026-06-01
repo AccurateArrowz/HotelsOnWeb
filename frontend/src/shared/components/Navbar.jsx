@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { AuthButton, ProfileModal, useAuth } from '@features/auth';
-import { User } from 'lucide-react';
 import './Navbar.css';
 
 const Navbar = () => {
@@ -46,7 +45,6 @@ const Navbar = () => {
                   <>
                   <Link to="/dashboard" onClick={closeMobileMenu}>Admin Dashboard</Link>
                   {/* <Link to="/admin/users">Manage Users</Link> */}
-                  <Link to="/admin/hotels" onClick={closeMobileMenu}>Manage Hotels</Link>
                   <Link to="/admin/hotel-requests" onClick={closeMobileMenu}>Hotel Requests</Link>
                 </>
           }
@@ -54,15 +52,6 @@ const Navbar = () => {
             {!isAuthenticated && <AuthButton />}
             {isAuthenticated && (
               <>
-                <Link
-                  to="/profile"
-                  className="profile-link-btn"
-                  aria-label="Go to profile page"
-                  onClick={closeMobileMenu}
-                >
-                  <User size={20} aria-hidden="true" />
-                  <span className="profile-link-label">Profile</span>
-                </Link>
                 <button
                   className="account-menu-btn"
                   onClick={() => setIsProfileModalOpen(true)}
