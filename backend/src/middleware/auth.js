@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { User, Role } = require('../models');
+const { User, Role } = require('../../models');
 
 // Middleware to authenticate token and attach user to request
 const authenticateToken = async (req, res, next) => {

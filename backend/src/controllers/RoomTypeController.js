@@ -1,4 +1,4 @@
-const { RoomType, Room, Hotel, HotelOwner } = require('../models');
+const { RoomType, Room, Hotel, HotelOwner } = require('../../models');
 const { sendSuccess, sendBadRequest, sendNotFound, sendInternalError, sendForbidden } = require('../utils/apiResponse');
 
 // Get all room types for a hotel

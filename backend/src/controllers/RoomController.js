@@ -1,4 +1,4 @@
-const { Room, RoomType, Hotel, Booking, BookingRoom, HotelOwner, User } = require('../models');
+const { Room, RoomType, Hotel, Booking, BookingRoom, HotelOwner, User } = require('../../models');
 const { sendSuccess, sendBadRequest, sendNotFound, sendInternalError, sendForbidden } = require('../utils/apiResponse');
 const { Op } = require('sequelize');
 

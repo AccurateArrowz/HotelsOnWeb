@@ -1,4 +1,4 @@
-const { HotelRequest, HotelRequestImage, User } = require('../models');
+const { HotelRequest, HotelRequestImage, User } = require('../../models');
 const { sendSuccess, sendBadRequest, sendNotFound, sendInternalError } = require('../utils/apiResponse');
 
 // Create a new hotel listing request
@@ -201,7 +201,7 @@ exports.updateHotelRequestStatus = async (req, res) => {
     // If approved, create the actual hotel
     let createdHotel = null;
     if (status === 'approved') {
-      const { Hotel, HotelImage, HotelOwner } = require('../models');
+      const { Hotel, HotelImage, HotelOwner } = require('../../models');
 
       createdHotel = await Hotel.create({
         name: hotelRequest.name,

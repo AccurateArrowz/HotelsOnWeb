@@ -1,24 +1,28 @@
 {
   "compilerOptions": {
-    "module": "CommonJS",
-    "target": "ESNext",
-    "sourceMap": true,
-    "declaration": true,
-    "declarationMap": true,
-    "strict": true,
+    "target": "ES2022",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "lib": ["ES2022"],
+    "strict": false,
+    "noImplicitAny": false,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node",
-    "outDir": "./dist",
-    "rootDir": ".",
-    "baseUrl": ".",
-    "allowJs": true,
     "resolveJsonModule": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "allowJs": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "baseUrl": ".",
     "paths": {
-      "@hotelsonweb/shared": ["../shared/dist"]
+      "@/*": ["src/*"]
     }
   },
-  "include": ["src/**/*", "server.js"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "migrations", "seeders", "rough_v1.js", "roughRoomsAvailiblity.js"]
 }

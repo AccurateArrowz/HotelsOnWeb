@@ -22,6 +22,9 @@
     "build": "tsup src/index.ts --format esm,cjs --dts --out-dir dist",
     "dev": "tsup src/index.ts --format esm,cjs --dts --out-dir dist --watch"
   },
+  "dependencies": {
+    "zod": "^3.22.4"
+  },
   "devDependencies": {
     "tsup": "^8.0.0",
     "typescript": "^5.4.0"

@@ -1,9 +1,9 @@
-const Booking = require('../models/Booking');
-const BookingRoom = require('../models/BookingRoom');
-const Hotel = require('../models/Hotel');
-const RoomType = require('../models/RoomType');
-const Room = require('../models/Room');
-const User = require('../models/User');
+const Booking = require('../../models/Booking');
+const BookingRoom = require('../../models/BookingRoom');
+const Hotel = require('../../models/Hotel');
+const RoomType = require('../../models/RoomType');
+const Room = require('../../models/Room');
+const User = require('../../models/User');
 const { sendSuccess, sendBadRequest, sendNotFound, sendInternalError } = require('../utils/apiResponse');
 const { parseLocalDate } = require('@hotelsonweb/shared');
 const { Op } = require('sequelize');

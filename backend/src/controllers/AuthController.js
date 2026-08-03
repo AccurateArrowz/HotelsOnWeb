@@ -1,8 +1,8 @@
-const User = require('../models/User');
-const RefreshToken = require('../models/RefreshToken');
+const User = require('../../models/User');
+const RefreshToken = require('../../models/RefreshToken');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
-const { Role } = require('../models');
+const { Role } = require('../../models');
 const {
   sendSuccess,
   sendConflict,       // ⚠️  Add this to your apiResponse utils if not already present

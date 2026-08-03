@@ -12,31 +12,56 @@ http://localhost:3001/api
 
 ### Standard Response Format (TypeScript)
 
-The API uses TypeScript and Zod for response standardization and validation.
+The API uses TypeScript types for response standardization. All response types are defined in the shared package and can be imported by both frontend and backend.
 
-#### Response Schemas
+#### Response Types
 
 ```typescript
-import { z } from 'zod';
+import {
+  SuccessResponse,
+  ErrorResponse,
+  ErrorDetail,
+  ApiResponse,
+} from '@hotelsonweb/shared';
 
-export const SuccessResponseSchema = z.object({
-  success: z.literal(true),
-  message: z.string().optional(),
-  data: z.any().optional(),
-  meta: z.record(z.string(), z.any()).optional(),
-});
+// Success Response
+interface SuccessResponse<T = any> {
+  success: true;
+  message?: string;
+  data?: T;
+  meta?: Record<string, any>;
+}
 
-export const ErrorDetailSchema = z.object({
-  field: z.string(),
-  message: z.string(),
-});
+// Error Detail
+interface ErrorDetail {
+  field: string;
+  message: string;
+}
 
-export const ErrorResponseSchema = z.object({
-  success: z.literal(false),
-  message: z.string(),
-  errors: z.array(ErrorDetailSchema).optional(),
-});
+// Error Response
+interface ErrorResponse {
+  success: false;
+  message: string;
+  errors?: ErrorDetail[];
+}
+
+// Union type for any API response
+type ApiResponse<T = any> = SuccessResponse<T> | ErrorResponse;
 ```
+
+**Available Response Types in `@hotelsonweb/shared`:**
+- `SuccessResponse<T>` - Generic success response with typed data
+- `ErrorResponse` - Error response with optional error details
+- `ErrorDetail` - Individual error detail object
+- `ApiResponse<T>` - Union type for any API response
+- `AuthResponseData` - Auth endpoint response data
+- `HotelDetails` - Hotel details response
+- `HotelSearchResult` - Hotel search result
+- `RoomAvailability` - Room availability data
+- `BookingData` - Booking information
+- `PaymentData` - Payment information
+- `HotelRequestData` - Hotel request information
+- `MediaAuthResponse` - Media authentication response
 
 ### Request Validation (Zod)
 

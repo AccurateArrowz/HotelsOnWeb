@@ -1,0 +1,44 @@
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  PrimaryKey,
+  AutoIncrement,
+  AllowNull,
+  BelongsToMany,
+  HasMany,
+} from 'sequelize-typescript';
+import Role from './Role';
+import RolePermission from './RolePermission';
+import HotelStaffPermission from './HotelStaffPermission';
+
+@Table({
+  tableName: 'Permissions',
+  timestamps: true,
+})
+export default class Permission extends Model {
+  @PrimaryKey
+  @AutoIncrement
+  @Column(DataType.INTEGER)
+  declare id: number;
+
+  @AllowNull(false)
+  @Column(DataType.STRING)
+  declare name: string;
+
+  @AllowNull(true)
+  @Column(DataType.TEXT)
+  declare description: string | null;
+
+  @BelongsToMany(() => Role, {
+    through: RolePermission,
+    foreignKey: 'permissionId',
+    otherKey: 'roleId',
+    as: 'roles',
+  })
+  declare roles?: Role[];
+
+  @HasMany(() => HotelStaffPermission, { foreignKey: 'permissionId', as: 'hotelStaffPermissions' })
+  declare hotelStaffPermissions?: HotelStaffPermission[];
+}

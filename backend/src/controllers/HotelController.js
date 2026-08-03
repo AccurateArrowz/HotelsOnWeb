@@ -1,4 +1,4 @@
-const { Hotel, HotelImage, RoomType, Room, HotelOwner } = require('../models');
+const { Hotel, HotelImage, RoomType, Room, HotelOwner } = require('../../models');
 const { sendSuccess, sendBadRequest, sendNotFound, sendInternalError } = require('../utils/apiResponse');
 const { Op } = require('sequelize');
 
@@ -19,8 +19,13 @@ const SHARED_IMAGES = [
 // Fetch hotel by ID, including images and rooms
 const getHotelById = async (req, res) => {
   try {
+    const hotelId = Number.parseInt(req.params.id, 10);
+    if (!Number.isInteger(hotelId)) {
+      return sendBadRequest(res, 'Hotel ID must be a numeric value');
+    }
+
     const hotel = await Hotel.findOne({
-      where: { id: req.params.id, isActive: true },
+      where: { id: hotelId, isActive: true },
       attributes: { exclude: ['createdAt', 'updatedAt', 'isActive'] },
       include: [
         {
@@ -90,8 +95,7 @@ const getHotelById = async (req, res) => {
 const DEFAULT_LIMIT = 20;
 
 const getHotels = async (req, res) => {
-    const { search, limit = DEFAULT_LIMIT, offset = 0 } = req.query;
-    console.log('getHotels called');
+    const { search, limit = DEFAULT_LIMIT, offset = 0 } = req.query; //'search' is alternate term for queryString / q
     if (!search || search.trim() === '') {
       return sendBadRequest(res, 'Missing or invalid search query parameter');
     }
