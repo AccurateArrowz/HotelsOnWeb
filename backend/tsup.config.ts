@@ -1,26 +1,25 @@
 import { defineConfig } from 'tsup';
+import { glob } from 'glob';
 
-export default defineConfig({
-  entry: {
-    server: 'src/server.ts',
-    app: 'src/app.ts',
-    'models/User': 'src/models/User.ts',
-    'models/Hotel': 'src/models/Hotel.ts',
-    'models/HotelImage': 'src/models/HotelImage.ts',
-    'models/RoomType': 'src/models/RoomType.ts',
-    'models/Room': 'src/models/Room.ts',
-    'models/Booking': 'src/models/Booking.ts',
-    'models/BookingRoom': 'src/models/BookingRoom.ts',
-    'models/HotelRequest': 'src/models/HotelRequest.ts',
-    'models/HotelRequestImage': 'src/models/HotelRequestImage.ts',
-    'models/Role': 'src/models/Role.ts',
-    'models/Permission': 'src/models/Permission.ts',
-    'models/RolePermission': 'src/models/RolePermission.ts',
-    'models/HotelOwner': 'src/models/HotelOwner.ts',
-    'models/HotelStaff': 'src/models/HotelStaff.ts',
-    'models/HotelStaffPermission': 'src/models/HotelStaffPermission.ts',
-    'models/RefreshToken': 'src/models/RefreshToken.ts',
-  },
+// Get all TypeScript files except node_modules
+const getEntries = async () => {
+  const files = await glob('src/**/*.ts', {
+    ignore: ['node_modules/**', 'dist/**'],
+  });
+
+  const entries: Record<string, string> = {};
+
+  for (const file of files) {
+    // Convert src/path/to/file.ts to path/to/file
+    const key = file.replace(/^src\//, '').replace(/\.ts$/, '');
+    entries[key] = file;
+  }
+
+  return entries;
+};
+
+export default defineConfig(async () => ({
+  entry: await getEntries(),
   format: ['cjs'],
   target: 'es2022',
   outDir: 'dist',
@@ -34,4 +33,4 @@ export default defineConfig({
       js: 'require("reflect-metadata");',
     };
   },
-});
+}));

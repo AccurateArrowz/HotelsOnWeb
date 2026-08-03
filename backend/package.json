@@ -20,6 +20,7 @@
     "dotenv": "^17.2.0",
     "express": "^5.1.0",
     "express-validator": "^7.2.1",
+    "glob": "^13.0.6",
     "imagekit": "^5.0.0",
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.1",
@@ -28,6 +29,7 @@
     "reflect-metadata": "^0.1.14",
     "sequelize": "^6.37.7",
     "sequelize-typescript": "^2.1.6",
+    "tsconfig-paths": "^4.2.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {

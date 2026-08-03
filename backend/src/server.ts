@@ -1,7 +1,16 @@
 import 'reflect-metadata';
 import dotenv from 'dotenv';
+import { register } from 'tsconfig-paths';
 
 dotenv.config();
+
+// Register path aliases
+register({
+  baseUrl: __dirname,
+  paths: {
+    '@/*': ['./*'],
+  },
+});
 
 const app = require('./app');
 

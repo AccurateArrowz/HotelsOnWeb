@@ -55,24 +55,35 @@ app.get('/api/health', (req, res) => {
 // Initialize database and routes
 app.initialize = async () => {
   // Load dependencies after app is created
-  const sequelize = require('./src/config/database.js');
-  const hotelRoutes = require('./src/routes/hotelRoutes.cjs');
-  const authRoutes = require('./src/routes/authRoutes.cjs');
-  const hotelRequestRoutes = require('./src/routes/hotelRequestRoutes.cjs');
-  const bookingRoutes = require('./src/routes/bookingRoutes.cjs');
-  const mediaRoutes = require('./src/routes/mediaRoutes.cjs');
+  // Load models first
+  require('./models/index.js');
+  const { getSequelize } = require('./config/database.js');
+  const sequelize = getSequelize();
+  
+  // Import new TypeScript modules
+  const { authRoutes } = require('./modules/auth');
+  const { hotelRoutes } = require('./modules/hotel');
+  const { roomRoutes } = require('./modules/room');
+  const { bookingRoutes } = require('./modules/booking');
+  const { hotelRequestRoutes } = require('./modules/hotel-request');
+  const { mediaRoutes } = require('./modules/media');
+  const { rbacRoutes } = require('./modules/rbac');
+
+  // Load old CJS routes (for backward compatibility)
   const roomTypeRoutes = require('./src/routes/roomTypeRoutes.cjs');
-  const roomRoutes = require('./src/routes/roomRoutes.cjs');
   const roomsAvailabilityRoutes = require('./src/routes/roomsAvailabilityRoutes.cjs');
 
-  // API routes
-  app.use('/api/hotels', hotelRoutes);
-  app.use('/api/hotels/:hotelId/room-types', roomTypeRoutes);
-  app.use('/api/hotels/:hotelId/rooms', roomRoutes);
+  // API routes - New TypeScript modules
   app.use('/api/auth', authRoutes);
-  app.use('/api/hotel-requests', hotelRequestRoutes);
+  app.use('/api/hotels', hotelRoutes);
+  app.use('/api/hotels/:hotelId/rooms', roomRoutes);
   app.use('/api/bookings', bookingRoutes);
+  app.use('/api/hotel-requests', hotelRequestRoutes);
   app.use('/api/media', mediaRoutes);
+  app.use('/api/rbac', rbacRoutes);
+
+  // Legacy CJS routes (for backward compatibility)
+  app.use('/api/hotels/:hotelId/room-types', roomTypeRoutes);
   app.use('/api', roomsAvailabilityRoutes);
 
   // Initialize database
