@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { RoomController } from './room.controller';
-import { authenticateToken } from '@/common/middleware/auth.middleware';
+import { authenticateToken } from '@/middleware/auth.middleware';
 
 const router = Router({ mergeParams: true });
 const roomController = new RoomController();

@@ -5,6 +5,7 @@
 export * from './auth';
 export * from './hotel';
 export * from './room';
+export * from './roomType';
 export * from './booking';
 export * from './hotel-request';
 export * from './media';

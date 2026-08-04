@@ -61,29 +61,29 @@ app.initialize = async () => {
   const sequelize = getSequelize();
   
   // Import new TypeScript modules
-  const { authRoutes } = require('./modules/auth');
-  const { hotelRoutes } = require('./modules/hotel');
-  const { roomRoutes } = require('./modules/room');
-  const { bookingRoutes } = require('./modules/booking');
-  const { hotelRequestRoutes } = require('./modules/hotel-request');
-  const { mediaRoutes } = require('./modules/media');
-  const { rbacRoutes } = require('./modules/rbac');
+  const { authRoutes } = require('./features/auth');
+  const { hotelRoutes } = require('./features/hotel');
+  const { roomRoutes } = require('./features/room');
+  const { roomTypeRoutes } = require('./features/roomType');
+  const { bookingRoutes } = require('./features/booking');
+  const { hotelRequestRoutes } = require('./features/hotel-request');
+  const { mediaRoutes } = require('./features/media');
+  const { rbacRoutes } = require('./features/rbac');
 
   // Load old CJS routes (for backward compatibility)
-  const roomTypeRoutes = require('./src/routes/roomTypeRoutes.cjs');
   const roomsAvailabilityRoutes = require('./src/routes/roomsAvailabilityRoutes.cjs');
 
   // API routes - New TypeScript modules
   app.use('/api/auth', authRoutes);
   app.use('/api/hotels', hotelRoutes);
   app.use('/api/hotels/:hotelId/rooms', roomRoutes);
+  app.use('/api/hotels/:hotelId/room-types', roomTypeRoutes);
   app.use('/api/bookings', bookingRoutes);
   app.use('/api/hotel-requests', hotelRequestRoutes);
   app.use('/api/media', mediaRoutes);
   app.use('/api/rbac', rbacRoutes);
 
   // Legacy CJS routes (for backward compatibility)
-  app.use('/api/hotels/:hotelId/room-types', roomTypeRoutes);
   app.use('/api', roomsAvailabilityRoutes);
 
   // Initialize database

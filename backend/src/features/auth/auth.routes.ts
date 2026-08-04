@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { AuthController } from './auth.controller';
-import { authenticateToken } from '@/common/middleware/auth.middleware';
-import { validateBody } from '@/common/middleware/validate.middleware';
+import { authenticateToken } from '@/middleware/auth.middleware';
+import { validateBody } from '@/middleware/validate.middleware';
 import { loginSchema, registerSchema } from '@hotelsonweb/shared';
 
 const router = Router();

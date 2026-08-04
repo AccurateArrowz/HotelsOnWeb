@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { MediaController } from './media.controller';
-import { authenticateToken } from '@/common/middleware/auth.middleware';
+import { authenticateToken } from '@/middleware/auth.middleware';
 
 const router = Router();
 const mediaController = new MediaController();

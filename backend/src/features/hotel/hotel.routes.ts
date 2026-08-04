@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { HotelController } from './hotel.controller';
-import { authenticateToken, requireRole } from '@/common/middleware/auth.middleware';
+import { authenticateToken, requireRole } from '@/middleware/auth.middleware';
 
 const router = Router();
 const hotelController = new HotelController();
