@@ -1,9 +1,9 @@
-# Backend TypeScript + ESM Migration Plan
+# Backend TypeScript 
 
 **Status**: Phase 0 ✅ Complete, Phase 1 ✅ Complete, Phase 2 ✅ Complete, Phase 3 ✅ Complete, Phase 4 ✅ Complete, Phase 5 ✅ Complete
 
 ## Overview
-Migrating HotelsOnWeb backend from plain JavaScript to TypeScript with ESM support, implementing layered architecture (service + repository layers), and moving shared validation schemas to the shared package.
+Migrating HotelsOnWeb backend from plain JavaScript to TypeScript , implementing layered architecture (service + repository layers), and moving shared validation schemas to the shared package.
 
 ## Decisions Locked In
 - **Migration approach**: Incremental — app stays runnable throughout

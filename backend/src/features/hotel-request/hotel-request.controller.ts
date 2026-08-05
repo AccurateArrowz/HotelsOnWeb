@@ -32,7 +32,7 @@ export class HotelRequestController {
    * Get request by ID
    */
   getRequestById = asyncHandler(async (req: Request, res: Response) => {
-    const requestId = parseInt(req.params.id);
+    const requestId = parseInt(req.params.id as string);
 
     if (!Number.isInteger(requestId)) {
       throw HttpError.badRequest('Request ID must be a numeric value');
@@ -72,7 +72,7 @@ export class HotelRequestController {
 
     return ApiResponseHandler.created(res, request);
   });
-
+  
   /**
    * PUT /hotel-requests/:id
    * Update request
@@ -82,7 +82,7 @@ export class HotelRequestController {
       throw HttpError.unauthorized();
     }
 
-    const requestId = parseInt(req.params.id);
+    const requestId = parseInt(req.params.id as string);
 
     if (!Number.isInteger(requestId)) {
       throw HttpError.badRequest('Request ID must be a numeric value');
@@ -98,7 +98,7 @@ export class HotelRequestController {
    * Approve request
    */
   approveRequest = asyncHandler(async (req: Request, res: Response) => {
-    const requestId = parseInt(req.params.id);
+    const requestId = parseInt(req.params.id as string);
 
     if (!Number.isInteger(requestId)) {
       throw HttpError.badRequest('Request ID must be a numeric value');
@@ -114,7 +114,7 @@ export class HotelRequestController {
    * Reject request
    */
   rejectRequest = asyncHandler(async (req: Request, res: Response) => {
-    const requestId = parseInt(req.params.id);
+    const requestId = parseInt(req.params.id as string);
     const { reason } = req.body;
 
     if (!Number.isInteger(requestId)) {
@@ -133,7 +133,7 @@ export class HotelRequestController {
   getRequestsByStatus = asyncHandler(async (req: Request, res: Response) => {
     const { status } = req.params;
 
-    const requests = await this.hotelRequestService.getRequestsByStatus(status);
+    const requests = await this.hotelRequestService.getRequestsByStatus(status as string);
 
     return ApiResponseHandler.success(res, requests);
   });
@@ -203,7 +203,7 @@ export class HotelRequestController {
       throw HttpError.unauthorized();
     }
 
-    const requestId = parseInt(req.params.id);
+    const requestId = parseInt(req.params.id as string);
 
     if (!Number.isInteger(requestId)) {
       throw HttpError.badRequest('Request ID must be a numeric value');

@@ -25,7 +25,7 @@ export class HotelController {
 
     const result = await this.hotelService.getHotels(search as string, limitNum, offsetNum);
 
-    return ApiResponseHandler.successWithPagination(res, result.data, result.pagination);
+    return ApiResponseHandler.successWithPagination(res, result.data, 'Hotels retrieved successfully', result.pagination);
   });
 
   /**
@@ -33,7 +33,7 @@ export class HotelController {
    * Get hotel by ID
    */
   getHotelById = asyncHandler(async (req: Request, res: Response) => {
-    const hotelId = parseInt(req.params.id);
+    const hotelId = parseInt(req.params.id as string);
 
     if (!Number.isInteger(hotelId)) {
       throw HttpError.badRequest('Hotel ID must be a numeric value');
@@ -85,7 +85,7 @@ export class HotelController {
       throw HttpError.unauthorized();
     }
 
-    const hotelId = parseInt(req.params.id);
+    const hotelId = parseInt(req.params.id as string);
 
     if (!Number.isInteger(hotelId)) {
       throw HttpError.badRequest('Hotel ID must be a numeric value');
@@ -105,7 +105,7 @@ export class HotelController {
       throw HttpError.unauthorized();
     }
 
-    const hotelId = parseInt(req.params.id);
+    const hotelId = parseInt(req.params.id as string);
 
     if (!Number.isInteger(hotelId)) {
       throw HttpError.badRequest('Hotel ID must be a numeric value');
@@ -121,7 +121,7 @@ export class HotelController {
    * Get hotels by owner
    */
   getHotelsByOwner = asyncHandler(async (req: Request, res: Response) => {
-    const ownerId = parseInt(req.params.ownerId);
+    const ownerId = parseInt(req.params.ownerId as string);
 
     if (!Number.isInteger(ownerId)) {
       throw HttpError.badRequest('Owner ID must be a numeric value');

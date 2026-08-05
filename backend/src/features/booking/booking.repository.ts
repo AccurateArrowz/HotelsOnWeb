@@ -70,6 +70,26 @@ export class BookingRepository extends BaseRepository<Booking> {
   }
 
   /**
+   * Find bookings for a hotel that overlap a given date range (excluding cancelled)
+   * overlap = NOT (existing checkout <= requested checkin OR existing checkin >= requested checkout)
+   */
+  async findOverlappingBookings(hotelId: number, checkInDate: string | Date, checkOutDate: string | Date): Promise<Booking[]> {
+    return this.findAll({
+      where: {
+        hotelId,
+        status: { [Op.notIn]: ['cancelled'] },
+        [Op.not]: {
+          [Op.or]: [
+            { checkOutDate: { [Op.lte]: checkInDate } },
+            { checkInDate: { [Op.gte]: checkOutDate } },
+          ],
+        },
+      },
+      include: [{ association: 'bookingRooms' }],
+    });
+  }
+
+  /**
    * Find bookings within date range
    */
   async findByDateRange(startDate: Date, endDate: Date): Promise<Booking[]> {

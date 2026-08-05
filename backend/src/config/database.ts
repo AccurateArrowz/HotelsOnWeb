@@ -1,14 +1,11 @@
 import { Sequelize } from 'sequelize-typescript';
 import pg from 'pg';
 import dotenv from 'dotenv';
-import path from 'path';
+import { models } from '../models';
 
 dotenv.config();
 
 const isProduction = process.env.NODE_ENV === 'production';
-
-// Get the models directory path - works in both ESM and CJS
-const modelsDir = path.join(process.cwd(), 'dist', 'models');
 
 function validateIndividualConfig() {
   const required = ['DB_NAME', 'DB_USER', 'DB_PASSWORD', 'DB_HOST'];
@@ -54,13 +51,8 @@ function createSequelizeInstance(): Sequelize {
     );
   }
 
-  // Manually load models from the compiled dist/models directory
-  try {
-    const models = require('../models/index.js');
-    // Models are already registered with Sequelize via decorators
-  } catch (error) {
-    console.warn('Could not load models from dist/models:', error);
-  }
+  // Add models to the Sequelize instance
+  sequelize.addModels(models);
 
   return sequelize;
 }

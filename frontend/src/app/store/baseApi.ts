@@ -8,24 +8,25 @@ import {
   type QueryReturnValue,
 } from '@reduxjs/toolkit/query/react';
 import { toast } from '@shared/utils/toast';
+import { SuccessResponse, ErrorResponse } from '@hotelsonweb/shared';
 
-interface ApiResponse<T> {
-  success: boolean;
-  data: T;
-  message?: string;
-  pagination?: {
-    total: number;
-    limit: number;
-    offset: number;
-    hasMore: boolean;
-  };
-}
+// interface SuccessResponse<T> {
+//   success: boolean;
+//   data: T;
+//   message?: string;
+//   pagination?: {
+//     total: number;
+//     limit: number;
+//     offset: number;
+//     hasMore: boolean;
+//   };
+// }
 
-interface ApiErrorResponse {
-  success: false;
-  message: string;
-  errors?: Record<string, string[]> | null;
-}
+// interface ErrorResponse {
+//   success: false;
+//   message: string;
+//   errors?: Record<string, string[]> | null;
+// }
 
 type BaseQueryResult = QueryReturnValue<unknown, FetchBaseQueryError, FetchBaseQueryMeta>;
 
@@ -122,7 +123,7 @@ const baseQueryWithResponseHandler = async (
 
   // Handle standardized API response format
   if (result.data) {
-    const responseData = result.data as ApiResponse<unknown>;
+    const responseData = result.data as SuccessResponse<unknown>;
     if (responseData.success === true && 'data' in responseData) {
       // Preserve all top-level fields including success (e.g. pagination, message)
       return { ...result, data: responseData } as BaseQueryResult;
@@ -131,7 +132,7 @@ const baseQueryWithResponseHandler = async (
 
   // Handle error responses
   if (result.error) {
-    const errorData = result.error.data as ApiErrorResponse | undefined;
+    const errorData = result.error.data as ErrorResponse | undefined;
     if (errorData && typeof errorData === 'object') {
       if (errorData.success === false) {
         return {

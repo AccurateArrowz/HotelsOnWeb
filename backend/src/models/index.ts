@@ -1,21 +1,27 @@
 /**
  * Model index - exports all models for convenience
- * Models are auto-loaded by sequelize-typescript via the models directory
+ * Models must be added to the Sequelize instance via database.ts
  */
 
-export { default as User } from './User';
-export { default as Hotel } from './Hotel';
-export { default as HotelImage } from './HotelImage';
-export { default as RoomType } from './RoomType';
-export { default as Room } from './Room';
-export { default as Booking } from './Booking';
-export { default as BookingRoom } from './BookingRoom';
-export { default as HotelRequest } from './HotelRequest';
-export { default as HotelRequestImage } from './HotelRequestImage';
-export { default as Role } from './Role';
-export { default as Permission } from './Permission';
-export { default as RolePermission } from './RolePermission';
-export { default as HotelOwner } from './HotelOwner';
-export { default as HotelStaff } from './HotelStaff';
-export { default as HotelStaffPermission } from './HotelStaffPermission';
-export { default as RefreshToken } from './RefreshToken';
+import User from './User';
+import Hotel from './Hotel';
+import HotelImage from './HotelImage';
+import RoomType from './RoomType';
+import Room from './Room';
+import Booking from './Booking';
+import BookingRoom from './BookingRoom';
+import HotelRequest from './HotelRequest';
+import HotelRequestImage from './HotelRequestImage';
+import Role from './Role';
+import Permission from './Permission';
+import RolePermission from './RolePermission';
+import HotelOwner from './HotelOwner';
+import HotelStaff from './HotelStaff';
+import HotelStaffPermission from './HotelStaffPermission';
+import RefreshToken from './RefreshToken';
+
+export { User, Hotel, HotelImage, RoomType, Room, Booking, BookingRoom, HotelRequest, HotelRequestImage, Role, Permission, RolePermission, HotelOwner, HotelStaff, HotelStaffPermission, RefreshToken };
+
+export const models = [User, Hotel, HotelImage, RoomType, Room, Booking, BookingRoom, HotelRequest, HotelRequestImage, Role, Permission, RolePermission, HotelOwner, HotelStaff, HotelStaffPermission, RefreshToken];
+
+export default models;

@@ -83,6 +83,6 @@ export class RoomRepository extends BaseRepository<Room> {
    * Bulk update room status
    */
   async bulkUpdateStatus(roomIds: number[], status: string): Promise<number> {
-    return this.model.update({ status }, { where: { id: { [Op.in]: roomIds } } }).then((result) => result[0]);
+    return this.model.update({ status }, { where: { id: { [Op.in]: roomIds } } }).then((result: [number, Room[]]) => result[0]);
   }
 }

@@ -27,12 +27,20 @@ export default class RefreshToken extends Model {
   declare userId: number;
 
   @AllowNull(false)
-  @Column(DataType.TEXT)
-  declare token: string;
+  @Column(DataType.STRING)
+  declare tokenHash: string;
 
   @AllowNull(false)
   @Column(DataType.DATE)
   declare expiresAt: Date;
+
+  @AllowNull(true)
+  @Column(DataType.DATE)
+  declare revokedAt: Date | null;
+
+  @AllowNull(true)
+  @Column(DataType.INTEGER)
+  declare replacedByTokenId: number | null;
 
   @BelongsTo(() => User, { foreignKey: 'userId', as: 'user' })
   declare user?: User;

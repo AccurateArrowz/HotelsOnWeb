@@ -10,11 +10,11 @@ export class AuthRepository extends BaseRepository<RefreshToken> {
   }
 
   /**
-   * Find refresh token by token string
+   * Find refresh token by token hash
    */
-  async findByToken(token: string): Promise<RefreshToken | null> {
+  async findByTokenHash(tokenHash: string): Promise<RefreshToken | null> {
     return this.findOne({
-      where: { token },
+      where: { tokenHash },
       include: [{ association: 'user' }],
     });
   }

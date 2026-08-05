@@ -14,9 +14,11 @@ export const errorMiddleware = (
 ) => {
   console.error('[ERROR]', error);
 
-  // Handle custom HttpError
-  if (error instanceof HttpError) {
-    return ApiResponseHandler.error(res, error.message, error.statusCode, error.details);
+  // Handle custom HttpError (check by name as well to avoid instanceof issues across modules)
+  if (error instanceof HttpError || error.name === 'HttpError') {
+    const statusCode = (error as HttpError).statusCode || 500;
+    const details = (error as HttpError).details;
+    return ApiResponseHandler.error(res, error.message, statusCode, details);
   }
 
   // Handle validation errors

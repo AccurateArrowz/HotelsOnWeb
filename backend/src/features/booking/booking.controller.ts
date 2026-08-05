@@ -32,7 +32,7 @@ export class BookingController {
    * Get booking by ID
    */
   getBookingById = asyncHandler(async (req: Request, res: Response) => {
-    const bookingId = parseInt(req.params.id);
+    const bookingId = parseInt(req.params.id as string);
 
     if (!Number.isInteger(bookingId)) {
       throw HttpError.badRequest('Booking ID must be a numeric value');
@@ -83,7 +83,7 @@ export class BookingController {
       throw HttpError.unauthorized();
     }
 
-    const bookingId = parseInt(req.params.id);
+    const bookingId = parseInt(req.params.id as string);
 
     if (!Number.isInteger(bookingId)) {
       throw HttpError.badRequest('Booking ID must be a numeric value');
@@ -103,7 +103,7 @@ export class BookingController {
       throw HttpError.unauthorized();
     }
 
-    const bookingId = parseInt(req.params.id);
+    const bookingId = parseInt(req.params.id as string);
 
     if (!Number.isInteger(bookingId)) {
       throw HttpError.badRequest('Booking ID must be a numeric value');
@@ -123,7 +123,7 @@ export class BookingController {
       throw HttpError.unauthorized();
     }
 
-    const bookingId = parseInt(req.params.id);
+    const bookingId = parseInt(req.params.id as string);
 
     if (!Number.isInteger(bookingId)) {
       throw HttpError.badRequest('Booking ID must be a numeric value');
@@ -143,7 +143,7 @@ export class BookingController {
       throw HttpError.unauthorized();
     }
 
-    const bookingId = parseInt(req.params.id);
+    const bookingId = parseInt(req.params.id as string);
 
     if (!Number.isInteger(bookingId)) {
       throw HttpError.badRequest('Booking ID must be a numeric value');
@@ -159,7 +159,7 @@ export class BookingController {
    * Get bookings by hotel
    */
   getBookingsByHotel = asyncHandler(async (req: Request, res: Response) => {
-    const hotelId = parseInt(req.params.hotelId);
+    const hotelId = parseInt(req.params.hotelId as string);
 
     if (!Number.isInteger(hotelId)) {
       throw HttpError.badRequest('Hotel ID must be a numeric value');
@@ -177,7 +177,7 @@ export class BookingController {
   getBookingsByStatus = asyncHandler(async (req: Request, res: Response) => {
     const { status } = req.params;
 
-    const bookings = await this.bookingService.getBookingsByStatus(status);
+    const bookings = await this.bookingService.getBookingsByStatus(status as string);
 
     return ApiResponseHandler.success(res, bookings);
   });
@@ -223,7 +223,7 @@ export class BookingController {
       throw HttpError.unauthorized();
     }
 
-    const bookingId = parseInt(req.params.id);
+    const bookingId = parseInt(req.params.id as string);
     const { roomIds } = req.body;
 
     if (!Number.isInteger(bookingId)) {
@@ -248,8 +248,8 @@ export class BookingController {
       throw HttpError.unauthorized();
     }
 
-    const bookingId = parseInt(req.params.id);
-    const roomId = parseInt(req.params.roomId);
+    const bookingId = parseInt(req.params.id as string);
+    const roomId = parseInt(req.params.roomId as string);
 
     if (!Number.isInteger(bookingId) || !Number.isInteger(roomId)) {
       throw HttpError.badRequest('Booking ID and Room ID must be numeric values');

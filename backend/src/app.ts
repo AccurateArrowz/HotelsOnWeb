@@ -1,6 +1,8 @@
 import express, { Express } from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import morgan from 'morgan';
+import { errorMiddleware } from './middleware/error.middleware';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -33,12 +35,13 @@ const corsOptions = {
   credentials: true,
 };
 
-const app: Express = express();
+const app: Express & { initialize?: () => Promise<void> } = express();
 
 // Middleware
 app.options(/.*/, cors(corsOptions));
 app.use(cors(corsOptions));
 app.use(cookieParser());
+app.use(morgan(isProduction ? 'combined' : 'dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -55,8 +58,6 @@ app.get('/api/health', (req, res) => {
 // Initialize database and routes
 app.initialize = async () => {
   // Load dependencies after app is created
-  // Load models first
-  require('./models/index.js');
   const { getSequelize } = require('./config/database.js');
   const sequelize = getSequelize();
   
@@ -65,26 +66,25 @@ app.initialize = async () => {
   const { hotelRoutes } = require('./features/hotel');
   const { roomRoutes } = require('./features/room');
   const { roomTypeRoutes } = require('./features/roomType');
+  const { availabilityRoutes } = require('./features/availability');
   const { bookingRoutes } = require('./features/booking');
   const { hotelRequestRoutes } = require('./features/hotel-request');
   const { mediaRoutes } = require('./features/media');
   const { rbacRoutes } = require('./features/rbac');
-
-  // Load old CJS routes (for backward compatibility)
-  const roomsAvailabilityRoutes = require('./src/routes/roomsAvailabilityRoutes.cjs');
 
   // API routes - New TypeScript modules
   app.use('/api/auth', authRoutes);
   app.use('/api/hotels', hotelRoutes);
   app.use('/api/hotels/:hotelId/rooms', roomRoutes);
   app.use('/api/hotels/:hotelId/room-types', roomTypeRoutes);
+  app.use('/api/hotels/:hotelId/availability', availabilityRoutes);
   app.use('/api/bookings', bookingRoutes);
   app.use('/api/hotel-requests', hotelRequestRoutes);
   app.use('/api/media', mediaRoutes);
   app.use('/api/rbac', rbacRoutes);
 
-  // Legacy CJS routes (for backward compatibility)
-  app.use('/api', roomsAvailabilityRoutes);
+  // Global error handler (must be after all routes)
+  app.use(errorMiddleware);
 
   // Initialize database
   const dbConnectStart = Date.now();

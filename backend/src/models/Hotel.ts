@@ -70,12 +70,7 @@ export default class Hotel extends Model {
   @HasMany(() => HotelOwner, { foreignKey: 'hotelId', as: 'hotelOwners' })
   declare hotelOwners?: HotelOwner[];
 
-  @BelongsToMany(() => User, {
-    through: HotelOwner,
-    foreignKey: 'hotelId',
-    otherKey: 'userId',
-    as: 'owners',
-  })
+  @BelongsToMany(() => User, () => HotelOwner, 'hotelId', 'userId')
   declare owners?: User[];
 
   @HasMany(() => HotelStaff, { foreignKey: 'hotelId', as: 'hotelStaffs' })

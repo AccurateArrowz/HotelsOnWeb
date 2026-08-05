@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 import { AuthRepository } from './auth.repository';
 import { HttpError } from '@/common/http-error';
 import User from '@/models/User';
@@ -28,8 +29,8 @@ export class AuthService {
         lastName: user.lastName,
         roleId: user.roleId,
       },
-      this.jwtSecret,
-      { expiresIn: this.jwtExpiry }
+      this.jwtSecret as string,
+      { expiresIn: this.jwtExpiry } as any
     );
   }
 
@@ -37,16 +38,19 @@ export class AuthService {
    * Generate refresh token
    */
   async generateRefreshToken(userId: number): Promise<string> {
-    const token = jwt.sign({ userId }, this.jwtSecret, {
+    const token = jwt.sign({ userId }, this.jwtSecret as string, {
       expiresIn: this.refreshTokenExpiry,
-    });
+    } as any);
 
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 7); // 7 days
 
+    // Hash the token before storing for security
+    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+
     await this.authRepository.create({
       userId,
-      token,
+      tokenHash,
       expiresAt,
     });
 
@@ -58,7 +62,9 @@ export class AuthService {
    */
   async verifyRefreshToken(token: string): Promise<{ userId: number }> {
     try {
-      const refreshToken = await this.authRepository.findByToken(token);
+      // Hash the token to match stored hash
+      const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+      const refreshToken = await this.authRepository.findByTokenHash(tokenHash);
 
       if (!refreshToken) {
         throw HttpError.unauthorized('Invalid refresh token');
@@ -80,7 +86,8 @@ export class AuthService {
    * Revoke refresh token (logout)
    */
   async revokeRefreshToken(token: string): Promise<void> {
-    const refreshToken = await this.authRepository.findByToken(token);
+    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+    const refreshToken = await this.authRepository.findByTokenHash(tokenHash);
     if (refreshToken) {
       await this.authRepository.delete(refreshToken.id);
     }

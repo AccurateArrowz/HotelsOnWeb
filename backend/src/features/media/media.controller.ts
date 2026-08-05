@@ -18,7 +18,7 @@ export class MediaController {
    * Get hotel images
    */
   getHotelImages = asyncHandler(async (req: Request, res: Response) => {
-    const hotelId = parseInt(req.params.hotelId);
+    const hotelId = parseInt(req.params.hotelId as string);
 
     if (!Number.isInteger(hotelId)) {
       throw HttpError.badRequest('Hotel ID must be a numeric value');
@@ -34,7 +34,7 @@ export class MediaController {
    * Get hotel image by ID
    */
   getHotelImageById = asyncHandler(async (req: Request, res: Response) => {
-    const imageId = parseInt(req.params.imageId);
+    const imageId = parseInt(req.params.imageId as string);
 
     if (!Number.isInteger(imageId)) {
       throw HttpError.badRequest('Image ID must be a numeric value');
@@ -54,7 +54,7 @@ export class MediaController {
       throw HttpError.unauthorized();
     }
 
-    const hotelId = parseInt(req.params.hotelId);
+    const hotelId = parseInt(req.params.hotelId as string);
     const { imageUrl, isPrimary = false, orderIndex = 0 } = req.body;
 
     if (!Number.isInteger(hotelId)) {
@@ -83,7 +83,7 @@ export class MediaController {
       throw HttpError.unauthorized();
     }
 
-    const imageId = parseInt(req.params.imageId);
+    const imageId = parseInt(req.params.imageId as string);
 
     if (!Number.isInteger(imageId)) {
       throw HttpError.badRequest('Image ID must be a numeric value');
@@ -103,7 +103,7 @@ export class MediaController {
       throw HttpError.unauthorized();
     }
 
-    const imageId = parseInt(req.params.imageId);
+    const imageId = parseInt(req.params.imageId as string);
 
     if (!Number.isInteger(imageId)) {
       throw HttpError.badRequest('Image ID must be a numeric value');
@@ -123,8 +123,8 @@ export class MediaController {
       throw HttpError.unauthorized();
     }
 
-    const hotelId = parseInt(req.params.hotelId);
-    const imageId = parseInt(req.params.imageId);
+    const hotelId = parseInt(req.params.hotelId as string);
+    const imageId = parseInt(req.params.imageId as string);
 
     if (!Number.isInteger(hotelId) || !Number.isInteger(imageId)) {
       throw HttpError.badRequest('Hotel ID and Image ID must be numeric values');
@@ -140,7 +140,7 @@ export class MediaController {
    * Get hotel request images
    */
   getHotelRequestImages = asyncHandler(async (req: Request, res: Response) => {
-    const requestId = parseInt(req.params.requestId);
+    const requestId = parseInt(req.params.requestId as string);
 
     if (!Number.isInteger(requestId)) {
       throw HttpError.badRequest('Request ID must be a numeric value');
@@ -156,7 +156,7 @@ export class MediaController {
    * Get hotel request image by ID
    */
   getHotelRequestImageById = asyncHandler(async (req: Request, res: Response) => {
-    const imageId = parseInt(req.params.imageId);
+    const imageId = parseInt(req.params.imageId as string);
 
     if (!Number.isInteger(imageId)) {
       throw HttpError.badRequest('Image ID must be a numeric value');
@@ -176,7 +176,7 @@ export class MediaController {
       throw HttpError.unauthorized();
     }
 
-    const requestId = parseInt(req.params.requestId);
+    const requestId = parseInt(req.params.requestId as string);
     const { imageUrl, orderIndex = 0 } = req.body;
 
     if (!Number.isInteger(requestId)) {
@@ -204,7 +204,7 @@ export class MediaController {
       throw HttpError.unauthorized();
     }
 
-    const imageId = parseInt(req.params.imageId);
+    const imageId = parseInt(req.params.imageId as string);
 
     if (!Number.isInteger(imageId)) {
       throw HttpError.badRequest('Image ID must be a numeric value');
@@ -224,7 +224,7 @@ export class MediaController {
       throw HttpError.unauthorized();
     }
 
-    const imageId = parseInt(req.params.imageId);
+    const imageId = parseInt(req.params.imageId as string);
 
     if (!Number.isInteger(imageId)) {
       throw HttpError.badRequest('Image ID must be a numeric value');

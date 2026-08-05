@@ -5,7 +5,7 @@ import { z } from 'zod';
  */
 export const LoginSchema = z.object({
   email: z.string().email('Invalid email format'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  password: z.string(),
 });
 
 /**
@@ -24,24 +24,6 @@ export const RegisterSchema = z.object({
  */
 export const RefreshSchema = z.object({}).optional();
 
-/**
- * Express request wrapper schemas for middleware validation
- */
-export const loginSchema = z.object({
-  body: LoginSchema,
-});
-
-export const registerSchema = z.object({
-  body: RegisterSchema,
-});
-
-export const refreshSchema = z.object({
-  body: RefreshSchema,
-});
-
-/**
- * Inferred types from schemas
- */
 export type LoginInput = z.infer<typeof LoginSchema>;
 export type RegisterInput = z.infer<typeof RegisterSchema>;
 export type RefreshInput = z.infer<typeof RefreshSchema>;

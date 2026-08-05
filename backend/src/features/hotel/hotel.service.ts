@@ -31,13 +31,14 @@ export class HotelService {
    */
   async getHotels(search?: string, limit: number = 20, offset: number = 0) {
     const { hotels, total } = await this.hotelRepository.findActiveHotels(search, limit, offset);
+    const page = Math.floor(offset / limit) + 1;
 
     return {
       data: hotels.map((hotel) => this.formatHotelResponse(hotel)),
       pagination: {
         total,
+        page,
         limit,
-        offset,
         pages: Math.ceil(total / limit),
       },
     };

@@ -28,7 +28,7 @@ export class RbacController {
    * Get role by ID
    */
   getRoleById = asyncHandler(async (req: Request, res: Response) => {
-    const roleId = parseInt(req.params.id);
+    const roleId = parseInt(req.params.id as string);
 
     if (!Number.isInteger(roleId)) {
       throw HttpError.badRequest('Role ID must be a numeric value');
@@ -46,7 +46,7 @@ export class RbacController {
   getRoleByName = asyncHandler(async (req: Request, res: Response) => {
     const { name } = req.params;
 
-    const role = await this.rbacService.getRoleByName(name);
+    const role = await this.rbacService.getRoleByName(name as string);
 
     return ApiResponseHandler.success(res, role);
   });
@@ -72,7 +72,7 @@ export class RbacController {
    * Update role
    */
   updateRole = asyncHandler(async (req: Request, res: Response) => {
-    const roleId = parseInt(req.params.id);
+    const roleId = parseInt(req.params.id as string);
 
     if (!Number.isInteger(roleId)) {
       throw HttpError.badRequest('Role ID must be a numeric value');
@@ -88,7 +88,7 @@ export class RbacController {
    * Delete role
    */
   deleteRole = asyncHandler(async (req: Request, res: Response) => {
-    const roleId = parseInt(req.params.id);
+    const roleId = parseInt(req.params.id as string);
 
     if (!Number.isInteger(roleId)) {
       throw HttpError.badRequest('Role ID must be a numeric value');
@@ -114,7 +114,7 @@ export class RbacController {
    * Get permission by ID
    */
   getPermissionById = asyncHandler(async (req: Request, res: Response) => {
-    const permissionId = parseInt(req.params.id);
+    const permissionId = parseInt(req.params.id as string);
 
     if (!Number.isInteger(permissionId)) {
       throw HttpError.badRequest('Permission ID must be a numeric value');
@@ -132,7 +132,7 @@ export class RbacController {
   getPermissionByName = asyncHandler(async (req: Request, res: Response) => {
     const { name } = req.params;
 
-    const permission = await this.rbacService.getPermissionByName(name);
+    const permission = await this.rbacService.getPermissionByName(name as string);
 
     return ApiResponseHandler.success(res, permission);
   });
@@ -158,7 +158,7 @@ export class RbacController {
    * Update permission
    */
   updatePermission = asyncHandler(async (req: Request, res: Response) => {
-    const permissionId = parseInt(req.params.id);
+    const permissionId = parseInt(req.params.id as string);
 
     if (!Number.isInteger(permissionId)) {
       throw HttpError.badRequest('Permission ID must be a numeric value');
@@ -174,7 +174,7 @@ export class RbacController {
    * Delete permission
    */
   deletePermission = asyncHandler(async (req: Request, res: Response) => {
-    const permissionId = parseInt(req.params.id);
+    const permissionId = parseInt(req.params.id as string);
 
     if (!Number.isInteger(permissionId)) {
       throw HttpError.badRequest('Permission ID must be a numeric value');
@@ -190,8 +190,8 @@ export class RbacController {
    * Assign permission to role
    */
   assignPermissionToRole = asyncHandler(async (req: Request, res: Response) => {
-    const roleId = parseInt(req.params.roleId);
-    const permissionId = parseInt(req.params.permissionId);
+    const roleId = parseInt(req.params.roleId as string);
+    const permissionId = parseInt(req.params.permissionId as string);
 
     if (!Number.isInteger(roleId) || !Number.isInteger(permissionId)) {
       throw HttpError.badRequest('Role ID and Permission ID must be numeric values');
@@ -207,8 +207,8 @@ export class RbacController {
    * Remove permission from role
    */
   removePermissionFromRole = asyncHandler(async (req: Request, res: Response) => {
-    const roleId = parseInt(req.params.roleId);
-    const permissionId = parseInt(req.params.permissionId);
+    const roleId = parseInt(req.params.roleId as string);
+    const permissionId = parseInt(req.params.permissionId as string);
 
     if (!Number.isInteger(roleId) || !Number.isInteger(permissionId)) {
       throw HttpError.badRequest('Role ID and Permission ID must be numeric values');
@@ -224,7 +224,7 @@ export class RbacController {
    * Get role permissions
    */
   getRolePermissions = asyncHandler(async (req: Request, res: Response) => {
-    const roleId = parseInt(req.params.roleId);
+    const roleId = parseInt(req.params.roleId as string);
 
     if (!Number.isInteger(roleId)) {
       throw HttpError.badRequest('Role ID must be a numeric value');
@@ -240,7 +240,7 @@ export class RbacController {
    * Bulk assign permissions to role
    */
   bulkAssignPermissionsToRole = asyncHandler(async (req: Request, res: Response) => {
-    const roleId = parseInt(req.params.roleId);
+    const roleId = parseInt(req.params.roleId as string);
     const { permissionIds } = req.body;
 
     if (!Number.isInteger(roleId)) {

@@ -31,12 +31,7 @@ export default class Permission extends Model {
   @Column(DataType.TEXT)
   declare description: string | null;
 
-  @BelongsToMany(() => Role, {
-    through: RolePermission,
-    foreignKey: 'permissionId',
-    otherKey: 'roleId',
-    as: 'roles',
-  })
+  @BelongsToMany(() => Role, () => RolePermission, 'permissionId', 'roleId')
   declare roles?: Role[];
 
   @HasMany(() => HotelStaffPermission, { foreignKey: 'permissionId', as: 'hotelStaffPermissions' })

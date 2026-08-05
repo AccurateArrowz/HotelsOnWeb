@@ -18,7 +18,7 @@ export class RoomTypeController {
    * Get room types by hotel
    */
   getRoomTypesByHotel = asyncHandler(async (req: Request, res: Response) => {
-    const hotelId = parseInt(req.params.hotelId);
+    const hotelId = parseInt(req.params.hotelId as string);
 
     if (!Number.isInteger(hotelId)) {
       throw HttpError.badRequest('Hotel ID must be a numeric value');
@@ -34,7 +34,7 @@ export class RoomTypeController {
    * Get room type by ID
    */
   getRoomTypeById = asyncHandler(async (req: Request, res: Response) => {
-    const roomTypeId = parseInt(req.params.id);
+    const roomTypeId = parseInt(req.params.id as string);
 
     if (!Number.isInteger(roomTypeId)) {
       throw HttpError.badRequest('Room type ID must be a numeric value');
@@ -54,7 +54,7 @@ export class RoomTypeController {
       throw HttpError.unauthorized();
     }
 
-    const hotelId = parseInt(req.params.hotelId);
+    const hotelId = parseInt(req.params.hotelId as string);
 
     if (!Number.isInteger(hotelId)) {
       throw HttpError.badRequest('Hotel ID must be a numeric value');
@@ -77,7 +77,7 @@ export class RoomTypeController {
       throw HttpError.unauthorized();
     }
 
-    const roomTypeId = parseInt(req.params.id);
+    const roomTypeId = parseInt(req.params.id as string);
 
     if (!Number.isInteger(roomTypeId)) {
       throw HttpError.badRequest('Room type ID must be a numeric value');
@@ -97,7 +97,7 @@ export class RoomTypeController {
       throw HttpError.unauthorized();
     }
 
-    const roomTypeId = parseInt(req.params.id);
+    const roomTypeId = parseInt(req.params.id as string);
 
     if (!Number.isInteger(roomTypeId)) {
       throw HttpError.badRequest('Room type ID must be a numeric value');
