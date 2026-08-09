@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import { AuthRepository } from './auth.repository';
 import { HttpError } from '@/common/http-error';
-import User from '@/models/User';
+import User from '@/features/auth/models/User';
 
 /**
  * Auth service for authentication and token management

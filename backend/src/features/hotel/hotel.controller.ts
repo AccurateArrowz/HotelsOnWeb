@@ -160,4 +160,18 @@ export class HotelController {
 
     return ApiResponseHandler.success(res, stats);
   });
+
+  /**
+   * GET /hotels/owner/my-hotels
+   * Get current user's owned hotels (authenticated owner only)
+   */
+  getMyHotels = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    if (!req.userId) {
+      throw HttpError.unauthorized();
+    }
+
+    const hotels = await this.hotelService.getHotelsByOwner(req.userId);
+
+    return ApiResponseHandler.success(res, hotels);
+  });
 }

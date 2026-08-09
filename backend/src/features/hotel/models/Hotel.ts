@@ -10,11 +10,11 @@ import {
   BelongsToMany,
 } from 'sequelize-typescript';
 import HotelImage from './HotelImage';
-import RoomType from './RoomType';
-import Room from './Room';
-import Booking from './Booking';
+import RoomType from '@/features/roomType/models/RoomType';
+import Room from '@/features/room/models/Room';
+import Booking from '@/features/booking/models/Booking';
 import HotelOwner from './HotelOwner';
-import User from './User';
+import User from '@/features/auth/models/User';
 import HotelStaff from './HotelStaff';
 import HotelStaffPermission from './HotelStaffPermission';
 

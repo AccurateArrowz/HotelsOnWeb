@@ -1,7 +1,7 @@
 import { HotelRepository } from './hotel.repository';
 import { HttpError } from '@/common/http-error';
-import Hotel from '@/models/Hotel';
-import HotelImage from '@/models/HotelImage';
+import Hotel from '@/features/hotel/models/Hotel';
+import HotelImage from '@/features/hotel/models/HotelImage';
 
 const IMAGEKIT_BASE_URL = 'https://ik.imagekit.io/kbk987i3nx/hotels-on-web-images';
 

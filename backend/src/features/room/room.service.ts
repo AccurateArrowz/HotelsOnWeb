@@ -1,6 +1,6 @@
 import { RoomRepository } from './room.repository';
 import { HttpError } from '@/common/http-error';
-import Room from '@/models/Room';
+import Room from '@/features/room/models/Room';
 
 /**
  * Room service for room operations

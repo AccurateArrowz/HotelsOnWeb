@@ -28,16 +28,22 @@ router.get('/stats', hotelController.getStatistics);
 router.get('/search', hotelController.searchHotels);
 
 /**
- * GET /hotels/:id
- * Get hotel by ID
+ * GET /hotels/owner/my-hotels
+ * Get current user's owned hotels (authenticated owner only)
  */
-router.get('/:id', hotelController.getHotelById);
+router.get('/owner/my-hotels', authenticateToken, hotelController.getMyHotels);
 
 /**
  * GET /hotels/owner/:ownerId
  * Get hotels by owner
  */
 router.get('/owner/:ownerId', hotelController.getHotelsByOwner);
+
+/**
+ * GET /hotels/:id
+ * Get hotel by ID
+ */
+router.get('/:id', hotelController.getHotelById);
 
 /**
  * Protected routes

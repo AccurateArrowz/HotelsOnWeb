@@ -1,5 +1,5 @@
 import { BaseRepository } from '@/common/base.repository';
-import Hotel from '@/models/Hotel';
+import Hotel from '@/features/hotel/models/Hotel';
 import { Op } from 'sequelize';
 
 /**

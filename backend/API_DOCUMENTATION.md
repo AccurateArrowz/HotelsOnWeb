@@ -176,6 +176,17 @@ Authorization: Bearer <your-jwt-token>
 |----------|-------------|
 | `GET /api/media/auth` | Get ImageKit auth parameters |
 
+### Staff Invitations (Owner/Public)
+| Endpoint | Method | Access | Description |
+|----------|--------|--------|-------------|
+| `POST /api/hotels/:hotelId/staff-invitations` | POST | Owner | Create and send invitation |
+| `GET /api/hotels/:hotelId/staff-invitations` | GET | Owner | Get pending invitations |
+| `POST /api/hotels/:hotelId/staff-invitations/:invitationId/resend` | POST | Owner | Resend invitation email |
+| `DELETE /api/hotels/:hotelId/staff-invitations/:invitationId` | DELETE | Owner | Cancel invitation |
+| `GET /api/staff-invitations/:token` | GET | Public | Get invitation details by token |
+| `POST /api/staff-invitations/:token/accept` | POST | Public | Accept invitation and create account |
+| `POST /api/staff-invitations/:token/decline` | POST | Public | Decline invitation |
+
 ---
 
 ## API Endpoints
@@ -746,6 +757,221 @@ Get authentication parameters for direct image upload to media provider.
 
 **Error Responses:**
 - `500 Internal Server Error`: Failed to generate authentication parameters
+
+### Staff Invitations
+
+#### Create and Send Staff Invitation
+
+Create and send a staff invitation to a new team member.
+
+**Endpoint:** `POST /hotels/:hotelId/staff-invitations`
+
+**Authentication:** Required (Bearer token)
+
+**Authorization:** Hotel owner only
+
+**Request Body:**
+```json
+{
+  "invitedEmail": "staff@example.com",
+  "roleId": 4
+}
+```
+
+**Success Response (201):**
+```json
+{
+  "success": true,
+  "message": "Staff invitation created and sent successfully",
+  "data": {
+    "id": 1,
+    "email": "staff@example.com",
+    "role": 4,
+    "status": "pending",
+    "createdAt": "2024-01-15T10:30:00Z"
+  }
+}
+```
+
+**Error Responses:**
+- `400 Bad Request`: Invalid email or role ID
+- `401 Unauthorized`: Authentication required
+- `403 Forbidden`: User is not the hotel owner
+- `409 Conflict`: Invitation already exists for this email
+
+#### Get Pending Invitations
+
+Retrieve all pending staff invitations for a hotel with pagination support.
+
+**Endpoint:** `GET /hotels/:hotelId/staff-invitations`
+
+**Authentication:** Required (Bearer token)
+
+**Authorization:** Hotel owner only
+
+**Query Parameters:**
+- `limit` (optional, default: 20, max: 100) - Number of results per page
+- `offset` (optional, default: 0) - Number of results to skip
+
+**Success Response (200):**
+```json
+{
+  "success": true,
+  "message": "Staff invitations retrieved successfully",
+  "data": [
+    {
+      "id": 1,
+      "email": "staff@example.com",
+      "role": 4,
+      "status": "pending",
+      "createdAt": "2024-01-15T10:30:00Z"
+    }
+  ],
+  "meta": {
+    "pagination": {
+      "total": 5,
+      "page": 1,
+      "limit": 20,
+      "pages": 1
+    }
+  }
+}
+```
+
+**Error Responses:**
+- `401 Unauthorized`: Authentication required
+- `403 Forbidden`: User is not the hotel owner
+- `404 Not Found`: Hotel not found
+
+#### Resend Invitation Email
+
+Resend the invitation email to a staff member.
+
+**Endpoint:** `POST /hotels/:hotelId/staff-invitations/:invitationId/resend`
+
+**Authentication:** Required (Bearer token)
+
+**Authorization:** Hotel owner only
+
+**Success Response (200):**
+```json
+{
+  "success": true,
+  "message": "Staff invitation resent successfully"
+}
+```
+
+**Error Responses:**
+- `401 Unauthorized`: Authentication required
+- `403 Forbidden`: User is not the hotel owner
+- `404 Not Found`: Invitation not found
+
+#### Cancel Invitation
+
+Cancel a pending staff invitation.
+
+**Endpoint:** `DELETE /hotels/:hotelId/staff-invitations/:invitationId`
+
+**Authentication:** Required (Bearer token)
+
+**Authorization:** Hotel owner only
+
+**Success Response (200):**
+```json
+{
+  "success": true,
+  "message": "Staff invitation cancelled successfully"
+}
+```
+
+**Error Responses:**
+- `401 Unauthorized`: Authentication required
+- `403 Forbidden`: User is not the hotel owner
+- `404 Not Found`: Invitation not found
+
+#### Get Invitation Details by Token
+
+Retrieve invitation details using the invitation token (public endpoint for accept page).
+
+**Endpoint:** `GET /staff-invitations/:token`
+
+**Authentication:** Not required
+
+**Success Response (200):**
+```json
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "email": "staff@example.com",
+    "hotelName": "Grand Hotel",
+    "roleName": "Manager",
+    "inviterName": "John Doe"
+  }
+}
+```
+
+**Error Responses:**
+- `404 Not Found`: Invalid or expired token
+
+#### Accept Invitation and Create Account
+
+Accept a staff invitation and create a user account.
+
+**Endpoint:** `POST /staff-invitations/:token/accept`
+
+**Authentication:** Not required
+
+**Request Body:**
+```json
+{
+  "token": "invitation_token_here",
+  "firstName": "Jane",
+  "lastName": "Smith",
+  "password": "securePassword123",
+  "phone": "+1234567890"
+}
+```
+
+**Success Response (201):**
+```json
+{
+  "success": true,
+  "message": "Invitation accepted successfully",
+  "data": {
+    "user": {
+      "id": 5,
+      "email": "staff@example.com",
+      "firstName": "Jane",
+      "lastName": "Smith"
+    }
+  }
+}
+```
+
+**Error Responses:**
+- `400 Bad Request`: Invalid input data
+- `404 Not Found`: Invalid or expired token
+- `409 Conflict`: User already exists with this email
+
+#### Decline Invitation
+
+Decline a staff invitation (token-based, no authentication required).
+
+**Endpoint:** `POST /staff-invitations/:token/decline`
+
+**Authentication:** Not required
+
+**Success Response (200):**
+```json
+{
+  "success": true,
+  "message": "Invitation declined successfully"
+}
+```
+
+**Error Responses:**
+- `404 Not Found`: Invalid or expired token
 
 ## Error Handling
 

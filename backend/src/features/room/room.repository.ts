@@ -1,5 +1,5 @@
 import { BaseRepository } from '@/common/base.repository';
-import Room from '@/models/Room';
+import Room from '@/features/room/models/Room';
 import { Op } from 'sequelize';
 
 /**

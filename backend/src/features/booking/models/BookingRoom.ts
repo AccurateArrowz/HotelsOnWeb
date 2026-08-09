@@ -10,8 +10,8 @@ import {
   BelongsTo,
 } from 'sequelize-typescript';
 import Booking from './Booking';
-import Room from './Room';
-import RoomType from './RoomType';
+import Room from '@/features/room/models/Room';
+import RoomType from '@/features/roomType/models/RoomType';
 
 @Table({
   tableName: 'BookingRooms',

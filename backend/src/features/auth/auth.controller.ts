@@ -4,7 +4,7 @@ import { AuthService } from './auth.service';
 import { ApiResponseHandler, asyncHandler, AuthenticatedRequest } from '@/common';
 import { HttpError } from '@/common/http-error';
 import { LoginInput, RegisterInput } from '@hotelsonweb/shared';
-import User from '@/models/User';
+import User from '@/features/auth/models/User';
 
 /**
  * Auth controller for authentication endpoints

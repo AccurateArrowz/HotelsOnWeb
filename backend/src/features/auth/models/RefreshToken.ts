@@ -9,7 +9,7 @@ import {
   ForeignKey,
   BelongsTo,
 } from 'sequelize-typescript';
-import User from './User';
+import User from '../../../models/User';
 
 @Table({
   tableName: 'RefreshTokens',

@@ -10,9 +10,9 @@ import {
   BelongsTo,
   HasMany,
 } from 'sequelize-typescript';
-import Hotel from './Hotel';
-import RoomType from './RoomType';
-import BookingRoom from './BookingRoom';
+import Hotel from '@/features/hotel/models/Hotel';
+import RoomType from '../../roomType/models/RoomType';
+import BookingRoom from '@/features/booking/models/BookingRoom';
 
 @Table({
   tableName: 'Rooms',

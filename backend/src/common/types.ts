@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import User from '../models/User';
+import User from '../features/auth/models/User';
 
 /**
  * Extended Express Request with authenticated user context

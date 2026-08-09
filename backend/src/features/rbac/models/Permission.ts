@@ -11,7 +11,7 @@ import {
 } from 'sequelize-typescript';
 import Role from './Role';
 import RolePermission from './RolePermission';
-import HotelStaffPermission from './HotelStaffPermission';
+import HotelStaffPermission from '@/features/hotel/models/HotelStaffPermission';
 
 @Table({
   tableName: 'Permissions',

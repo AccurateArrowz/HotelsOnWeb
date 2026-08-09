@@ -1,5 +1,5 @@
 import { BaseRepository } from '@/common/base.repository';
-import RefreshToken from '@/models/RefreshToken';
+import RefreshToken from '@/features/auth/models/RefreshToken';
 
 /**
  * Auth repository for refresh token operations

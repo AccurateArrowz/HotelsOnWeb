@@ -10,7 +10,7 @@ import {
   BelongsTo,
   HasMany,
 } from 'sequelize-typescript';
-import User from './User';
+import User from '@/features/auth/models/User';
 import HotelRequestImage from './HotelRequestImage';
 
 @Table({

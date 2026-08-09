@@ -1,6 +1,6 @@
 import { BaseRepository } from '@/common/base.repository';
-import HotelImage from '@/models/HotelImage';
-import HotelRequestImage from '@/models/HotelRequestImage';
+import HotelImage from '@/features/hotel/models/HotelImage';
+import HotelRequestImage from '@/features/hotel-request/models/HotelRequestImage';
 
 /**
  * Media repository for media operations

@@ -57,6 +57,11 @@ app.get('/api/health', (req, res) => {
 
 // Initialize database and routes
 app.initialize = async () => {
+  // Check for Resend API key
+  if (!process.env.RESEND_API_KEY) {
+    console.warn('[STARTUP] WARNING: RESEND_API_KEY is not set. Email invitations will not work. Please add RESEND_API_KEY to your .env file.');
+  }
+
   // Load dependencies after app is created
   const { getSequelize } = require('./config/database.js');
   const sequelize = getSequelize();
@@ -71,6 +76,7 @@ app.initialize = async () => {
   const { hotelRequestRoutes } = require('./features/hotel-request');
   const { mediaRoutes } = require('./features/media');
   const { rbacRoutes } = require('./features/rbac');
+  const { invitationRoutes } = require('./features/invitation');
 
   // API routes - New TypeScript modules
   app.use('/api/auth', authRoutes);
@@ -78,10 +84,12 @@ app.initialize = async () => {
   app.use('/api/hotels/:hotelId/rooms', roomRoutes);
   app.use('/api/hotels/:hotelId/room-types', roomTypeRoutes);
   app.use('/api/hotels/:hotelId/availability', availabilityRoutes);
+  app.use('/api/hotels/:hotelId/staff-invitations', invitationRoutes);
   app.use('/api/bookings', bookingRoutes);
   app.use('/api/hotel-requests', hotelRequestRoutes);
   app.use('/api/media', mediaRoutes);
   app.use('/api/rbac', rbacRoutes);
+  app.use('/api', invitationRoutes); // For public routes like /staff-invitations/:token
 
   // Global error handler (must be after all routes)
   app.use(errorMiddleware);

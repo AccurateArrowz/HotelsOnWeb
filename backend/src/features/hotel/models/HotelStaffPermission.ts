@@ -9,14 +9,15 @@ import {
   ForeignKey,
   BelongsTo,
 } from 'sequelize-typescript';
-import User from './User';
+import User from '@/features/auth/models/User';
 import Hotel from './Hotel';
+import Permission from '@/features/rbac/models/Permission';
 
 @Table({
-  tableName: 'HotelOwners',
+  tableName: 'HotelStaffPermissions',
   timestamps: true,
 })
-export default class HotelOwner extends Model {
+export default class HotelStaffPermission extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)
@@ -32,9 +33,17 @@ export default class HotelOwner extends Model {
   @Column(DataType.INTEGER)
   declare hotelId: number;
 
+  @AllowNull(false)
+  @ForeignKey(() => Permission)
+  @Column(DataType.INTEGER)
+  declare permissionId: number;
+
   @BelongsTo(() => User, { foreignKey: 'userId', as: 'user' })
   declare user?: User;
 
   @BelongsTo(() => Hotel, { foreignKey: 'hotelId', as: 'hotel' })
   declare hotel?: Hotel;
+
+  @BelongsTo(() => Permission, { foreignKey: 'permissionId', as: 'permission' })
+  declare permission?: Permission;
 }

@@ -1,6 +1,6 @@
 import { RoomTypeRepository } from './roomType.repository';
 import { HttpError } from '@/common/http-error';
-import RoomType from '@/models/RoomType';
+import RoomType from '@/features/roomType/models/RoomType';
 
 /**
  * RoomType service for room type operations

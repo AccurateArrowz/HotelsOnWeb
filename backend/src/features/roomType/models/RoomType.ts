@@ -11,9 +11,9 @@ import {
   HasMany,
   BelongsToMany,
 } from 'sequelize-typescript';
-import Hotel from './Hotel';
-import Room from './Room';
-import BookingRoom from './BookingRoom';
+import Hotel from '@/features/hotel/models/Hotel';
+import Room from '@/features/room/models/Room';
+import BookingRoom from '@/features/booking/models/BookingRoom';
 
 @Table({
   tableName: 'RoomTypes',

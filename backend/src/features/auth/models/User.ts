@@ -15,14 +15,14 @@ import {
   BeforeUpdate,
 } from 'sequelize-typescript';
 import bcrypt from 'bcryptjs';
-import Role from './Role';
-import Booking from './Booking';
+import Role from '@/features/rbac/models/Role';
+import Booking from '@/features/booking/models/Booking';
 import RefreshToken from './RefreshToken';
-import HotelRequest from './HotelRequest';
-import HotelOwner from './HotelOwner';
-import Hotel from './Hotel';
-import HotelStaff from './HotelStaff';
-import HotelStaffPermission from './HotelStaffPermission';
+import HotelRequest from '@/features/hotel-request/models/HotelRequest';
+import HotelOwner from '@/features/hotel/models/HotelOwner';
+import Hotel from '@/features/hotel/models/Hotel';
+import HotelStaff from '@/features/hotel/models/HotelStaff';
+import HotelStaffPermission from '@/features/hotel/models/HotelStaffPermission';
 
 @Table({
   tableName: 'Users',

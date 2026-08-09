@@ -1,7 +1,7 @@
 import { BaseRepository } from '@/common/base.repository';
-import Role from '@/models/Role';
-import Permission from '@/models/Permission';
-import RolePermission from '@/models/RolePermission';
+import Role from '@/features/rbac/models/Role';
+import Permission from '@/features/rbac/models/Permission';
+import RolePermission from '@/features/rbac/models/RolePermission';
 
 /**
  * RBAC repository for role and permission operations

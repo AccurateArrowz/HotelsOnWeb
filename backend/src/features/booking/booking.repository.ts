@@ -1,5 +1,5 @@
 import { BaseRepository } from '@/common/base.repository';
-import Booking from '@/models/Booking';
+import Booking from '@/features/booking/models/Booking';
 import { Op } from 'sequelize';
 
 /**

@@ -1,5 +1,5 @@
 import { BaseRepository } from '@/common/base.repository';
-import RoomType from '@/models/RoomType';
+import RoomType from '@/features/roomType/models/RoomType';
 
 /**
  * RoomType repository for room type operations

@@ -1,7 +1,7 @@
 import { BookingRepository } from './booking.repository';
 import { HttpError } from '@/common/http-error';
-import Booking from '@/models/Booking';
-import BookingRoom from '@/models/BookingRoom';
+import Booking from '@/features/booking/models/Booking';
+import BookingRoom from '@/features/booking/models/BookingRoom';
 
 /**
  * Booking service for booking operations
