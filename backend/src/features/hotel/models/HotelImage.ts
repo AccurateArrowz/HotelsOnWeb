@@ -34,6 +34,18 @@ export default class HotelImage extends Model {
   @Column(DataType.STRING)
   declare caption: string | null;
 
+  @Column({
+    type: DataType.BOOLEAN,
+    defaultValue: false,
+  })
+  declare isPrimary: boolean;
+
+  @Column({
+    type: DataType.INTEGER,
+    defaultValue: 0,
+  })
+  declare orderIndex: number;
+
   @BelongsTo(() => Hotel, { foreignKey: 'hotelId', as: 'hotel' })
   declare hotel?: Hotel;
 }

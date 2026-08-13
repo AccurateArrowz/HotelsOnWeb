@@ -6,6 +6,8 @@ import User from '@/features/auth/models/User';
 import Hotel from '@/features/hotel/models/Hotel';
 import Role from '@/features/rbac/models/Role';
 import HotelStaff from '@/features/hotel/models/HotelStaff';
+import Invitation from './models/Invitation';
+import type { Invitation as InvitationType, InvitationDetails } from '@hotelsonweb/shared';
 
 /**
  * Invitation service for staff invitation operations
@@ -25,7 +27,7 @@ export class InvitationService {
     invitedEmail: string,
     roleId: number,
     invitedByUserId: number
-  ) {
+  ): Promise<InvitationType> {
     // Verify hotel exists
     const hotel = await Hotel.findByPk(hotelId);
     if (!hotel) {
@@ -88,13 +90,17 @@ export class InvitationService {
       throw HttpError.internalServerError(`Failed to send invitation email: ${emailResult.error}`);
     }
 
-    return invitation;
+    return this.formatInvitationResponse(invitation);
   }
 
   /**
    * Get pending invitations for a hotel
    */
-  async getPendingInvitations(hotelId: number, limit: number = 20, offset: number = 0) {
+  async getPendingInvitations(
+    hotelId: number,
+    limit: number = 20,
+    offset: number = 0
+  ): Promise<{ data: InvitationType[]; pagination: { total: number; page: number; limit: number; pages: number } }> {
     const { rows, count } = await this.invitationRepository.findByHotelWithPagination(
       hotelId,
       limit,
@@ -105,7 +111,7 @@ export class InvitationService {
     const page = Math.floor(offset / limit) + 1;
 
     return {
-      data: rows,
+      data: rows.map((inv) => this.formatInvitationResponse(inv)),
       pagination: {
         total: count,
         page,
@@ -260,7 +266,7 @@ export class InvitationService {
   /**
    * Get invitation details by token (public endpoint for accept page)
    */
-  async getInvitationByToken(token: string) {
+  async getInvitationByToken(token: string): Promise<InvitationDetails> {
     const invitation = await this.invitationRepository.findByToken(token);
     if (!invitation) {
       throw HttpError.notFound('Invitation not found');
@@ -276,11 +282,38 @@ export class InvitationService {
     }
 
     return {
-      id: invitation.id,
       email: invitation.invitedEmail,
-      hotelName: invitation.hotel?.name,
-      roleName: invitation.role?.description || invitation.role?.name,
+      hotelName: invitation.hotel?.name || '',
+      roleName: invitation.role?.description || invitation.role?.name || '',
       inviterName: invitation.inviter ? `${invitation.inviter.firstName} ${invitation.inviter.lastName}` : 'Unknown',
+    };
+  }
+
+  /**
+   * Format invitation response - converts ORM instance to shared type
+   */
+  private formatInvitationResponse(invitation: Invitation): InvitationType {
+    const invJson = invitation.toJSON() as any;
+    return {
+      id: invJson.id,
+      hotelId: invJson.hotelId,
+      invitedEmail: invJson.invitedEmail,
+      invitedBy: invJson.invitedBy,
+      roleId: invJson.roleId,
+      token: invJson.token,
+      tokenExpiresAt: invJson.tokenExpiresAt,
+      status: invJson.status,
+      acceptedAt: invJson.acceptedAt,
+      acceptedByUserId: invJson.acceptedByUserId,
+      cancelledAt: invJson.cancelledAt,
+      cancelledBy: invJson.cancelledBy,
+      createdAt: invJson.createdAt,
+      updatedAt: invJson.updatedAt,
+      hotel: invJson.hotel,
+      inviter: invJson.inviter,
+      role: invJson.role,
+      acceptedBy: invJson.acceptedBy,
+      cancelledByUser: invJson.cancelledByUser,
     };
   }
 }

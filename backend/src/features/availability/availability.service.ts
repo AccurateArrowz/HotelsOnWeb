@@ -48,15 +48,15 @@ export class AvailabilityService {
       const totalRooms = roomType.rooms?.length ?? 0;
       const bookedRooms = bookedCounts[roomType.id] || 0;
       const availableRooms = Math.max(0, totalRooms - bookedRooms);
-      const totalPrice = Number(roomType.pricePerNight) * nights;
+      const totalPrice = Number(roomType.basePrice) * nights;
 
       return {
         roomTypeId: roomType.id,
         name: roomType.name,
         description: roomType.description,
-        pricePerNight: Number(roomType.pricePerNight),
-        capacity: roomType.capacity,
-        amenities: roomType.amenities,
+        basePrice: Number(roomType.basePrice),
+        adults: roomType.adults,
+        children: roomType.children,
         // Display-only cap - real availability (isAvailable) is computed from the uncapped counts above
         totalRooms: Math.min(totalRooms, MAX_DISPLAYED_ROOMS),
         availableRooms: Math.min(availableRooms, MAX_DISPLAYED_ROOMS),

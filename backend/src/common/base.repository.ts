@@ -37,8 +37,8 @@ export class BaseRepository<T extends Model> {
   /**
    * Count records matching criteria
    */
-  async count(where?: any): Promise<number> {
-    return this.model.count({ where });
+  async count(options?: any): Promise<number> {
+    return this.model.count(options || {});
   }
 
   /**

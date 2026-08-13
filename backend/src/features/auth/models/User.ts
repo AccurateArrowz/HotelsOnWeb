@@ -98,4 +98,10 @@ export default class User extends Model {
   async comparePassword(candidatePassword: string): Promise<boolean> {
     return bcrypt.compare(candidatePassword, this.password);
   }
+
+  toJSON() {
+    const values = { ...this.get() };
+    delete values.password;
+    return values;
+  }
 }

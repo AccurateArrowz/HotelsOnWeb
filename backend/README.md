@@ -60,13 +60,25 @@ src/
 │   ├── roomRoutes.js
 │   └── roomTypeRoutes.js
 │
-├── models/               # Sequelize models and associations
-│   ├── index.js          # Associations (User, Hotel, Booking, etc.)
-│   ├── User.js
-│   ├── Hotel.js
-│   ├── Room.js
-│   ├── Booking.js
-│   └── ... (see src/models for full list)
+├── models/               # Centralized model exports for database sync
+│   └── index.ts          # Imports and exports all models from feature folders
+│
+├── features/             # Feature modules with models and business logic
+│   ├── auth/
+│   │   ├── models/       # User, RefreshToken
+│   │   ├── auth.controller.ts
+│   │   ├── auth.service.ts
+│   │   └── auth.routes.ts
+│   ├── hotel/
+│   │   ├── models/       # Hotel, HotelOwner, HotelStaff, HotelImage, etc.
+│   │   └── ...
+│   ├── room/
+│   │   ├── models/       # Room
+│   │   └── ...
+│   ├── booking/
+│   │   ├── models/       # Booking, BookingRoom
+│   │   └── ...
+│   └── ... (other features)
 │
 ├── middleware/           # Express middleware
 │   ├── auth.js           # JWT verification
@@ -82,6 +94,14 @@ src/
 │
 └── utils/                # Utilities
 ```
+
+## Models Architecture
+
+**Model Location**: Models are defined in individual feature folders (e.g., `src/features/auth/models/`, `src/features/hotel/models/`).
+
+**Centralized Export**: `src/models/index.ts` imports and exports all models as a centralized point. This file is used by the database configuration (`src/config/database.ts`) to register models with Sequelize via `sequelize.addModels()`, enabling proper database synchronization.
+
+This structure keeps models co-located with their feature logic while maintaining a single entry point for database initialization.
 
 ## Database Architecture
 
@@ -126,6 +146,10 @@ booking → booking_rooms ← rooms
 ## API Endpoints
 
 For full endpoint details, request/response shapes, and authentication, see [API_DOCUMENTATION.md](./API_DOCUMENTATION.md).
+
+### Note on Hotel List Responses
+
+`GET /api/hotels` and `GET /api/hotels/search` return a lightweight summary containing only the hotel's core listing fields and a single primary `image` URL. The full detail endpoint, `GET /api/hotels/:id` returns the hotel record with all images and room types.
 
 ## Validation
 

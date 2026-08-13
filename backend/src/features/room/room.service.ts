@@ -1,6 +1,7 @@
 import { RoomRepository } from './room.repository';
 import { HttpError } from '@/common/http-error';
 import Room from '@/features/room/models/Room';
+import type { Room as RoomType } from '@hotelsonweb/shared';
 
 /**
  * Room service for room operations
@@ -15,42 +16,42 @@ export class RoomService {
   /**
    * Get rooms by hotel
    */
-  async getRoomsByHotel(hotelId: number) {
+  async getRoomsByHotel(hotelId: number): Promise<RoomType[]> {
     const rooms = await this.roomRepository.findByHotelId(hotelId);
 
     if (!rooms || rooms.length === 0) {
       throw HttpError.notFound('No rooms found for this hotel');
     }
 
-    return rooms;
+    return rooms.map((r) => this.formatRoomResponse(r));
   }
 
   /**
    * Get room by ID
    */
-  async getRoomById(roomId: number) {
+  async getRoomById(roomId: number): Promise<RoomType> {
     const room = await this.roomRepository.findById(roomId);
 
     if (!room) {
       throw HttpError.notFound('Room not found');
     }
 
-    return room;
+    return this.formatRoomResponse(room);
   }
 
   /**
    * Create new room
    */
-  async createRoom(data: any) {
+  async createRoom(data: any): Promise<RoomType> {
     const room = await this.roomRepository.create(data);
 
-    return room;
+    return this.formatRoomResponse(room);
   }
 
   /**
    * Update room
    */
-  async updateRoom(roomId: number, data: any) {
+  async updateRoom(roomId: number, data: any): Promise<RoomType> {
     const room = await this.roomRepository.findById(roomId);
 
     if (!room) {
@@ -59,7 +60,8 @@ export class RoomService {
 
     await this.roomRepository.update(roomId, data);
 
-    return this.roomRepository.findById(roomId);
+    const updated = await this.roomRepository.findById(roomId);
+    return this.formatRoomResponse(updated!);
   }
 
   /**
@@ -78,19 +80,19 @@ export class RoomService {
   /**
    * Get available rooms
    */
-  async getAvailableRooms(hotelId: number, roomTypeId?: number) {
+  async getAvailableRooms(hotelId: number, roomTypeId?: number): Promise<RoomType[]> {
     const rooms = await this.roomRepository.findAvailableRooms(hotelId, roomTypeId);
 
-    return rooms;
+    return rooms.map((r) => this.formatRoomResponse(r));
   }
 
   /**
    * Get occupied rooms
    */
-  async getOccupiedRooms(hotelId: number) {
+  async getOccupiedRooms(hotelId: number): Promise<RoomType[]> {
     const rooms = await this.roomRepository.findOccupiedRooms(hotelId);
 
-    return rooms;
+    return rooms.map((r) => this.formatRoomResponse(r));
   }
 
   /**
@@ -108,7 +110,7 @@ export class RoomService {
   /**
    * Update room status
    */
-  async updateRoomStatus(roomId: number, status: string) {
+  async updateRoomStatus(roomId: number, status: string): Promise<RoomType> {
     const room = await this.roomRepository.findById(roomId);
 
     if (!room) {
@@ -117,7 +119,8 @@ export class RoomService {
 
     await this.roomRepository.updateStatus(roomId, status);
 
-    return this.roomRepository.findById(roomId);
+    const updated = await this.roomRepository.findById(roomId);
+    return this.formatRoomResponse(updated!);
   }
 
   /**
@@ -127,5 +130,23 @@ export class RoomService {
     const updated = await this.roomRepository.bulkUpdateStatus(roomIds, status);
 
     return { updated };
+  }
+
+  /**
+   * Format room response - converts ORM instance to shared type
+   */
+  private formatRoomResponse(room: Room): RoomType {
+    const roomJson = room.toJSON() as any;
+    return {
+      id: roomJson.id,
+      hotelId: roomJson.hotelId,
+      roomTypeId: roomJson.roomTypeId,
+      roomNumber: roomJson.roomNumber,
+      status: roomJson.status,
+      createdAt: roomJson.createdAt,
+      updatedAt: roomJson.updatedAt,
+      hotel: roomJson.hotel,
+      roomType: roomJson.roomType,
+    };
   }
 }

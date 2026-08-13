@@ -125,7 +125,8 @@ Authorization: Bearer <your-jwt-token>
 ### Hotels (Public)
 | Endpoint | Query Params | Response |
 |----------|--------------|----------|
-| `GET /api/hotels` | `city` (required) | Hotel list |
+| `GET /api/hotels` | `search` (optional), `limit` (default 20), `offset` (default 0) | Slim hotel list summary |
+| `GET /api/hotels/search` | `q` (required), `limit` (default 20), `offset` (default 0) | Slim hotel list summary |
 | `GET /api/hotels/:id` | - | Hotel details with images, room types |
 | `GET /api/hotels/owner/my-hotels` | - | Owner's hotels (auth) |
 
@@ -270,6 +271,47 @@ Authenticate a user and receive a JWT token.
 
 ### Hotels
 
+#### Get Hotels
+
+List active hotels with optional search and pagination.
+
+**Endpoint:** `GET /hotels`
+
+**Authentication:** Not required
+
+**Query Parameters:**
+- `search` (optional): Searches `name`, `city`, and `description` (case-insensitive)
+- `limit` (optional, default `20`, max `100`): Number of results per page
+- `offset` (optional, default `0`): Number of results to skip
+
+**Success Response (200):**
+```json
+{
+  "success": true,
+  "message": "Hotels retrieved successfully",
+  "data": [
+    {
+      "id": 1,
+      "name": "Grand Hotel",
+      "description": "Luxury hotel in the city center",
+      "street": "123 Main Street",
+      "city": "New York",
+      "country": "USA",
+      "image": "https://example.com/primary-image.jpg"
+    }
+  ],
+  "pagination": {
+    "total": 42,
+    "page": 1,
+    "limit": 20,
+    "pages": 3
+  }
+}
+```
+
+**Error Responses:**
+- `500 Internal Server Error`: Server error
+
 #### Get Hotel by ID
 
 Retrieve detailed information about a specific hotel.
@@ -323,6 +365,8 @@ Search for hotels by city name or hotel name.
 
 **Query Parameters:**
 - `q` (required): Search query (city name or hotel name)
+- `limit` (optional, default `20`, max `100`): Number of results per page
+- `offset` (optional, default `0`): Number of results to skip
 
 **Success Response (200):**
 ```json
@@ -332,8 +376,11 @@ Search for hotels by city name or hotel name.
     {
       "id": 1,
       "name": "Grand Hotel",
+      "description": "Luxury hotel in the city center",
+      "street": "123 Main Street",
       "city": "New York",
-      "hotelImg": "https://example.com/image1.jpg"
+      "country": "USA",
+      "image": "https://example.com/primary-image.jpg"
     }
   ]
 }

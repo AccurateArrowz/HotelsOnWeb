@@ -31,8 +31,7 @@ export class HotelRepository extends BaseRepository<Hotel> {
     const { rows, count } = await this.model.findAndCountAll({
       where,
       include: [
-        { association: 'images', attributes: ['id', 'imageUrl', 'isPrimary', 'orderIndex'] },
-        { association: 'roomTypes', where: { isActive: true }, required: false },
+        { association: 'images', where: { isPrimary: true }, required: false, attributes: ['id', 'imageUrl', 'isPrimary'] },
       ],
       limit,
       offset,
@@ -51,8 +50,8 @@ export class HotelRepository extends BaseRepository<Hotel> {
       include: [
         { association: 'images' },
         { association: 'roomTypes', where: { isActive: true }, required: false },
-        { association: 'owner' },
-        { association: 'staff' },
+        { association: 'owners' },
+        { association: 'hotelStaffs' },
       ],
     });
   }
@@ -62,10 +61,10 @@ export class HotelRepository extends BaseRepository<Hotel> {
    */
   async findByOwnerId(ownerId: number): Promise<Hotel[]> {
     return this.findAll({
-      where: { ownerId },
       include: [
         { association: 'images' },
         { association: 'roomTypes' },
+        { association: 'hotelOwners', where: { userId: ownerId }, required: true, attributes: [] },
       ],
     });
   }
@@ -94,6 +93,9 @@ export class HotelRepository extends BaseRepository<Hotel> {
           { city: { [Op.iLike]: `%${query}%` } },
         ],
       },
+      include: [
+        { association: 'images', where: { isPrimary: true }, required: false, attributes: ['id', 'imageUrl', 'isPrimary'] },
+      ],
       limit,
       offset,
       order: [['createdAt', 'DESC']],

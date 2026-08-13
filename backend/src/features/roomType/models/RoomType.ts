@@ -40,15 +40,28 @@ export default class RoomType extends Model {
 
   @AllowNull(false)
   @Column(DataType.DECIMAL(10, 2))
-  declare pricePerNight: number;
+  declare basePrice: number;
 
   @AllowNull(false)
-  @Column(DataType.INTEGER)
-  declare capacity: number;
+  @Column({
+    type: DataType.BOOLEAN,
+    defaultValue: true,
+  })
+  declare isActive: boolean;
 
-  @AllowNull(true)
-  @Column(DataType.JSONB)
-  declare amenities: string[] | null;
+  @AllowNull(false)
+  @Column({
+    type: DataType.INTEGER,
+    defaultValue: 2,
+  })
+  declare adults: number;
+
+  @AllowNull(false)
+  @Column({
+    type: DataType.INTEGER,
+    defaultValue: 0,
+  })
+  declare children: number;
 
   @BelongsTo(() => Hotel, { foreignKey: 'hotelId', as: 'hotel' })
   declare hotel?: Hotel;

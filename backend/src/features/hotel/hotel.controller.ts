@@ -53,11 +53,11 @@ export class HotelController {
       throw HttpError.unauthorized();
     }
 
-    const { name, description, city, address, phone, email, basePrice } = req.body;
+    const { name, description, city, street, country, amenities } = req.body;
 
     // Validate required fields
-    if (!name || !city || !address) {
-      throw HttpError.badRequest('Name, city, and address are required');
+    if (!name || !city || !street || !country) {
+      throw HttpError.badRequest('Name, city, street, and country are required');
     }
 
     const hotel = await this.hotelService.createHotel(
@@ -65,10 +65,9 @@ export class HotelController {
         name,
         description,
         city,
-        address,
-        phone,
-        email,
-        basePrice,
+        street,
+        country,
+        amenities,
       },
       req.userId
     );
