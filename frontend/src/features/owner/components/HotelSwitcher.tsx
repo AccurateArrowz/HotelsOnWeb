@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { ChevronDown, Plus } from 'lucide-react';
-import type { OwnerHotel } from '@features/owner/ownerHotelsApi';
+import type { OwnerHotel } from '@features/owner/api';
 import './HotelSwitcher.css';
 
 interface HotelSwitcherProps {

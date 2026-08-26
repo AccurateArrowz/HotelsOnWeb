@@ -3,7 +3,7 @@ import { Loading, TryAgainButton } from "@shared/components";
 import {
   useGetHotelRequestsQuery,
   useUpdateHotelRequestStatusMutation,
-} from "@features/admin/adminHotelRequestsApi";
+} from "@features/admin/api";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 

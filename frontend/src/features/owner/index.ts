@@ -1,10 +1,10 @@
 // Owner feature exports
 
 // API slices
-export { ownerHotelsApi, useGetMyHotelsQuery, useGetMyHotelByIdQuery } from './ownerHotelsApi';
-export { roomsApi, useGetRoomsByHotelQuery, useCreateRoomMutation, useUpdateRoomMutation, useDeleteRoomMutation } from './roomsApi';
-export { roomTypesApi, useGetRoomTypesByHotelQuery, useCreateRoomTypeMutation, useUpdateRoomTypeMutation, useDeleteRoomTypeMutation } from './roomTypesApi';
-export { hotelRequestsApi, useCreateHotelRequestMutation } from './hotelRequestsApi';
+export { ownerHotelsApi, useGetMyHotelsQuery, useGetMyHotelByIdQuery } from './api';
+export { roomsApi, useGetRoomsByHotelQuery, useCreateRoomMutation, useUpdateRoomMutation, useDeleteRoomMutation } from './api';
+export { roomTypesApi, useGetRoomTypesByHotelQuery, useCreateRoomTypeMutation, useUpdateRoomTypeMutation, useDeleteRoomTypeMutation } from './api';
+export { hotelRequestsApi, useCreateHotelRequestMutation } from './api';
 
 // Redux slice
 export {
@@ -33,6 +33,6 @@ export { default as OwnerDashboard } from './pages/OwnerDashboard';
 export { default as ListYourProperty } from './pages/ListYourProperty';
 
 // Types
-export type { OwnerHotel } from './ownerHotelsApi';
-export type { Room, CreateRoomRequest, UpdateRoomRequest } from './roomsApi';
-export type { RoomType, CreateRoomTypeRequest, UpdateRoomTypeRequest } from './roomTypesApi';
+export type { OwnerHotel } from './api';
+export type { Room, CreateRoomRequest, UpdateRoomRequest } from './api';
+export type { RoomType, CreateRoomTypeRequest, UpdateRoomTypeRequest } from './api';

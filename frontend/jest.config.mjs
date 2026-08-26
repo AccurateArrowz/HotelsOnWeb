@@ -14,5 +14,5 @@ export default {
     '^@assets/(.*)$': '<rootDir>/src/assets/$1',
     '^@/(.*)$': '<rootDir>/src/$1',
   },
-  extensionsToTreatAsEsm: ['.jsx'],
+  extensionsToTreatAsEsm: ['.jsx', '.tsx', '.ts'],
 };

@@ -1,0 +1,218 @@
+import { useState } from 'react';
+import { useAuth } from './useAuth';
+import Spinner from '@shared/components/Spinner';
+import { getAuthErrorMessage } from './getAuthErrorMessage';
+import './authForms.css';
+
+interface SignupFormProps {
+  onSuccess?: () => void;
+  onSwitchToLogin?: () => void;
+}
+
+interface SignupFormData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  role: 'customer' | 'owner';
+  password: string;
+  confirmPassword: string;
+}
+
+const SignupForm = ({ onSuccess, onSwitchToLogin }: SignupFormProps) => {
+  const [formData, setFormData] = useState<SignupFormData>({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    role: 'customer',
+    password: '',
+    confirmPassword: ''
+  });
+  const [error, setError] = useState('');
+  const { register, isRegisterLoading } = useAuth();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError('');
+
+    for (const [, value] of Object.entries(formData)) {
+      if (!value || value.trim() === '') {
+        setError('All fields are required');
+        return;
+      }
+    }
+
+    const emailRegex = /^\S+@\S+\.\S+$/;
+    if (!emailRegex.test(formData.email)) {
+      setError('Please enter a valid email address');
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords don't match");
+      return;
+    }
+
+    if (formData.password.length < 8) {
+      setError("Password must be at least 8 characters long");
+      return;
+    }
+
+    try {
+      await register({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phone: formData.phone,
+        role: formData.role,
+        password: formData.password
+      });
+      onSuccess?.();
+    } catch (err: any) {
+      setError(getAuthErrorMessage(err, 'Failed to create an account. Please try again.'));
+    }
+  };
+
+  return (
+    <>
+      {error && <div className="error-message">{error}</div>}
+
+      <form onSubmit={handleSubmit} className="signup-form">
+        <h2 className="form-title">Create Account</h2>
+        <div className="form-row">
+          <div className="form-group">
+            <label htmlFor="firstName">First Name</label>
+            <input
+              id="firstName"
+              type="text"
+              name="firstName"
+              placeholder="Enter your first name"
+              value={formData.firstName}
+              onChange={handleChange}
+              required
+              aria-required="true"
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="lastName">Last Name</label>
+            <input
+              id="lastName"
+              type="text"
+              name="lastName"
+              placeholder="Enter your last name"
+              value={formData.lastName}
+              onChange={handleChange}
+              required
+              aria-required="true"
+            />
+          </div>
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="email">Email Address</label>
+          <input
+            id="email"
+            type="email"
+            name="email"
+            placeholder="Enter your email address"
+            value={formData.email}
+            onChange={handleChange}
+            required
+            aria-required="true"
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="phone">Phone Number</label>
+          <input
+            id="phone"
+            type="tel"
+            name="phone"
+            placeholder="Enter your phone number"
+            value={formData.phone}
+            onChange={handleChange}
+            required
+            aria-required="true"
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="role">I am a</label>
+          <select
+            id="role"
+            name="role"
+            value={formData.role}
+            onChange={handleChange}
+            className="role-selector"
+            aria-label="Select account type"
+          >
+            <option value="customer">Traveler looking to book hotels</option>
+            <option value="owner">Hotel owner listing my property</option>
+          </select>
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="password">Create Password</label>
+          <input
+            id="password"
+            type="password"
+            name="password"
+            placeholder="Create a strong password"
+            value={formData.password}
+            onChange={handleChange}
+            minLength={8}
+            required
+            aria-required="true"
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="confirmPassword">Confirm Password</label>
+          <input
+            id="confirmPassword"
+            type="password"
+            name="confirmPassword"
+            placeholder="Re-enter your password"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            required
+            aria-required="true"
+          />
+        </div>
+
+        <div className="form-actions">
+          <button type="submit" className="primary-button" disabled={isRegisterLoading}>
+            {isRegisterLoading ? (
+              <div className="flex items-center justify-center gap-2">
+                <Spinner size="small" />
+                <span>Creating Account...</span>
+              </div>
+            ) : (
+              'Create Account'
+            )}
+          </button>
+        </div>
+      </form>
+
+      <div className="auth-footer">
+        <p>
+          Already have an account?{' '}
+          <button type="button" onClick={onSwitchToLogin} className="text-button">
+            Sign In
+          </button>
+        </p>
+      </div>
+    </>
+  );
+};
+
+export default SignupForm;

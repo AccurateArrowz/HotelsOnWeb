@@ -66,7 +66,7 @@ const baseQueryWithResponseHandler = async (
   }
 
   const rawBaseQuery = fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api',
+    baseUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api',
     credentials: 'include',
   });
 
@@ -76,10 +76,17 @@ const baseQueryWithResponseHandler = async (
     toast.info('The backend is hosted on Render free tier. First response can take upto 50-60 seconds.', 8000);
   }
 
+  // Requests to these auth endpoints must never trigger the refresh-and-retry
+  // flow below, otherwise a failing /auth/refresh call would try to refresh
+  // itself, causing an infinite loop of refresh requests.
+  const requestUrl = typeof args === 'string' ? args : args.url;
+  const isAuthBootstrapRequest =
+    typeof requestUrl === 'string' && /\/auth\/(refresh|login|register)$/.test(requestUrl);
+
   let result = await rawBaseQuery(fetchArgs, api, extraOptions);
 
   // Handle 401 Unauthorized - attempt to refresh token
-  if (result.error && result.error.status === 401) {
+  if (result.error && result.error.status === 401 && !isAuthBootstrapRequest) {
     console.log('[BaseQuery] Received 401 - attempting to refresh token');
 
     // Try to refresh the token

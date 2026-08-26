@@ -56,7 +56,7 @@ export class AuthController {
       'customer': 1,
       'owner': 3,
     };
-    const roleId = roleMap[role || 'customer'] || 1;
+    const roleId = roleMap[role || 'customer'] ;
 
     // Create user
     const user = await User.create({

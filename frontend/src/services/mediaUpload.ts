@@ -1,0 +1,73 @@
+import ImageKit from 'imagekit-javascript';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
+
+interface UploadFileParams {
+  file: File;
+  fileName?: string;
+  folder: string;
+}
+
+interface UploadFilesParams {
+  files: File[];
+  folder: string;
+}
+
+interface AuthResponse {
+  token: string;
+  expire: number;
+  signature: string;
+}
+
+const getImageKitClient = () => {
+  const publicKey = import.meta.env.VITE_IMAGEKIT_PUBLIC_KEY;
+  const urlEndpoint = import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT;
+
+  if (!publicKey || !urlEndpoint) {
+    throw new Error('Missing ImageKit configuration. Set VITE_IMAGEKIT_PUBLIC_KEY and VITE_IMAGEKIT_URL_ENDPOINT');
+  }
+
+  return new ImageKit({ publicKey, urlEndpoint });
+};
+
+export const uploadFile = async ({ file, fileName, folder }: UploadFileParams) => {
+  const imagekit = getImageKitClient();
+
+  const res = await fetch(`${API_BASE_URL}/media/auth`, {
+    method: 'GET',
+    credentials: 'include',
+  });
+
+  if (!res.ok) {
+    throw new Error('Failed to get media auth');
+  }
+
+  const auth: AuthResponse = await res.json();
+
+  const result = await new Promise((resolve, reject) => {
+    imagekit.upload(
+      {
+        file,
+        fileName: fileName || file.name,
+        folder,
+        token: auth.token,
+        expire: auth.expire,
+        signature: auth.signature,
+        useUniqueFileName: true,
+      },
+      (error: any, response: any) => {
+        if (error) reject(error);
+        else resolve(response);
+      }
+    );
+  });
+
+  return result;
+};
+
+export const uploadFiles = async ({ files, folder }: UploadFilesParams) => {
+  const uploads = await Promise.all(
+    files.map((file) => uploadFile({ file, fileName: file.name, folder }))
+  );
+  return uploads;
+};

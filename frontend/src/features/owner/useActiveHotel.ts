@@ -7,8 +7,8 @@ import {
   selectActiveHotel,
   selectActiveHotelId,
 } from './hotelSlice';
-import { useGetMyHotelsQuery } from './ownerHotelsApi';
-import type { OwnerHotel } from './ownerHotelsApi';
+import { useGetMyHotelsQuery } from './api';
+import type { OwnerHotel } from './api';
 
 interface UseActiveHotelReturn {
   hotel: OwnerHotel | null;

@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { OwnerHotel } from './ownerHotelsApi';
+import type { OwnerHotel } from './api';
 
 interface HotelState {
   activeHotelId: number | null;
