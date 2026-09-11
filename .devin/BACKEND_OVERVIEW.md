@@ -414,8 +414,7 @@ npm run db:reset               # Undo all → migrate → seed
 
 ## 🔗 Related Documentation
 
-- **API Endpoints**: See `backend/API_DOCUMENTATION.md`
-- **Response Shapes**: See `backend/API_RESPONSE_SHAPES.md`
+- **API Endpoints & Response Shapes**: See `backend/API_DOCUMENTATION.md`
 - **Migration Guide**: See `backend/BACKEND_MIGRATION_TO_TS.md`
 - **Frontend**: See `frontend/` directory
 

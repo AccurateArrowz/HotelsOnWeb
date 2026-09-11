@@ -410,6 +410,5 @@ app.use('/api/rbac', rbacRoutes);
 ## Related Files
 
 - `BACKEND_OVERVIEW.md` - Quick reference guide
-- `API_DOCUMENTATION.md` - Detailed endpoint documentation
-- `API_RESPONSE_SHAPES.md` - Response format specifications
+- `API_DOCUMENTATION.md` - Detailed endpoint documentation and response shapes
 - `BACKEND_MIGRATION_TO_TS.md` - TypeScript migration notes
