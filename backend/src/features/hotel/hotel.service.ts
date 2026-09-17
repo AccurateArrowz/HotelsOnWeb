@@ -36,7 +36,7 @@ export class HotelService {
     limit: number = 20,
     offset: number = 0
   ): Promise<{ data: HotelListItem[]; pagination: { total: number; page: number; limit: number; pages: number } }> {
-    const { hotels, total } = await this.hotelRepository.findActiveHotels(search, limit, offset);
+    const { hotels, total } = await this.hotelRepository.searchHotels(search, limit, offset);
     const page = Math.floor(offset / limit) + 1;
 
     return {
@@ -129,15 +129,6 @@ export class HotelService {
     const hotels = await this.hotelRepository.findByOwnerId(ownerId);
 
     return hotels.map((hotel) => this.formatHotelResponse(hotel));
-  }
-
-  /**
-   * Search hotels
-   */
-  async searchHotels(query: string, limit: number = 20, offset: number = 0): Promise<HotelListItem[]> {
-    const hotels = await this.hotelRepository.search(query, limit, offset);
-
-    return hotels.map((hotel) => this.formatListResponse(hotel));
   }
 
   /**

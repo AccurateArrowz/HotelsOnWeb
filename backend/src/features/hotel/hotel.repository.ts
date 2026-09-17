@@ -13,7 +13,7 @@ export class HotelRepository extends BaseRepository<Hotel> {
   /**
    * Find active hotels with pagination and search
    */
-  async findActiveHotels(
+  async searchHotels(
     search?: string,
     limit: number = 20,
     offset: number = 0
@@ -24,7 +24,6 @@ export class HotelRepository extends BaseRepository<Hotel> {
       where[Op.or] = [
         { name: { [Op.iLike]: `%${search}%` } },
         { city: { [Op.iLike]: `%${search}%` } },
-        { description: { [Op.iLike]: `%${search}%` } },
       ];
     }
 
@@ -75,27 +74,6 @@ export class HotelRepository extends BaseRepository<Hotel> {
   async findByCity(city: string, limit: number = 20, offset: number = 0): Promise<Hotel[]> {
     return this.findAll({
       where: { city: { [Op.iLike]: `%${city}%` }, isActive: true },
-      limit,
-      offset,
-      order: [['createdAt', 'DESC']],
-    });
-  }
-
-  /**
-   * Search hotels by name or city
-   */
-  async search(query: string, limit: number = 20, offset: number = 0): Promise<Hotel[]> {
-    return this.findAll({
-      where: {
-        isActive: true,
-        [Op.or]: [
-          { name: { [Op.iLike]: `%${query}%` } },
-          { city: { [Op.iLike]: `%${query}%` } },
-        ],
-      },
-      include: [
-        { association: 'images', where: { isPrimary: true }, required: false, attributes: ['id', 'imageUrl', 'isPrimary'] },
-      ],
       limit,
       offset,
       order: [['createdAt', 'DESC']],

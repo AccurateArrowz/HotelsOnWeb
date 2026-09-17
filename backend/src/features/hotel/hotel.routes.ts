@@ -22,12 +22,6 @@ router.get('/', hotelController.getHotels);
 router.get('/stats', hotelController.getStatistics);
 
 /**
- * GET /hotels/search
- * Search hotels
- */
-router.get('/search', hotelController.searchHotels);
-
-/**
  * GET /hotels/owner/my-hotels
  * Get current user's owned hotels (authenticated owner only)
  */
