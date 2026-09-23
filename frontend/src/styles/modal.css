@@ -1,31 +1,29 @@
-/* Modal Overlay */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+/* Modal Backdrop */
+.modal-content::backdrop {
   background: rgba(0, 0, 0, 0.55);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: 1rem;
-  box-sizing: border-box;
 }
 
 /* Modal Content */
 .modal-content {
   background: #fff;
   width: 100%;
-  max-width: 420px;
   max-height: calc(100dvh - 2rem);
   border-radius: 14px;
   box-shadow: 0 8px 32px rgba(0,0,0,0.18);
-  position: relative;
   overflow: hidden;
   animation: modal-fade-in 0.25s cubic-bezier(.4,0,.2,1);
+  padding: 0;
+  border: none;
+  margin: auto;
 }
+
+/* Modal Sizes */
+.modal-content--sm { max-width: 380px; }
+.modal-content--md { max-width: 420px; }
+.modal-content--lg { max-width: 600px; }
+.modal-content--xl { max-width: 800px; }
+.modal-content--full { max-width: 95%; height: 95vh; }
+
 
 /* Profile Modal Specific Styles */
 /* .modal-content.profile-modal {

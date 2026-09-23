@@ -1,4 +1,4 @@
-import { useEffect, ReactNode } from 'react';
+import { useEffect, useRef, ReactNode } from 'react';
 import '@/styles/modal.css';
 
 interface ModalProps {
@@ -18,22 +18,28 @@ export default function Modal({
   size = 'md',
   className = '',
 }: ModalProps) {
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose();
-      }
-    };
-
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
-  }, [onClose]);
-
+  const dialogRef = useRef<HTMLDialogElement>(null);
   const modalOpen = isOpen ?? isModalOpen;
-  if (!modalOpen) return null;
 
-  const handleOverlayClick = () => {
-    onClose();
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+
+    if (modalOpen) {
+      if (!dialog.open) {
+        dialog.showModal();
+      }
+    } else {
+      if (dialog.open) {
+        dialog.close();
+      }
+    }
+  }, [modalOpen]);
+
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDialogElement>) => {
+    if (e.target === dialogRef.current) {
+      onClose();
+    }
   };
 
   const sizeClasses: Record<string, string> = {
@@ -47,23 +53,21 @@ export default function Modal({
   const sizeClass = sizeClasses[size] || sizeClasses.md;
 
   return (
-    <div className="modal-overlay" onClick={handleOverlayClick}>
-      <div
-        className={`modal-content ${sizeClass} ${className}`}
-        onClick={(e) => e.stopPropagation()}
-        role="dialog"
-        aria-modal="true"
+    <dialog
+      ref={dialogRef}
+      className={`modal-content ${sizeClass} ${className}`}
+      onClick={handleBackdropClick}
+      onClose={onClose}
+    >
+      <button
+        className="modal-close-button"
+        onClick={onClose}
+        aria-label="Close modal"
+        type="button"
       >
-        <button
-          className="modal-close-button"
-          onClick={onClose}
-          aria-label="Close modal"
-          type="button"
-        >
-          ×
-        </button>
-        <div className="modal-body">{children}</div>
-      </div>
-    </div>
+        ×
+      </button>
+      <div className="modal-body">{children}</div>
+    </dialog>
   );
 }
