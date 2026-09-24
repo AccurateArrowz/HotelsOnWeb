@@ -3,7 +3,7 @@ import '@/styles/modal.css';
 
 interface ModalProps {
   isOpen?: boolean;
-  isModalOpen?: boolean;
+ 
   onClose: () => void;
   children: ReactNode;
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
@@ -12,20 +12,18 @@ interface ModalProps {
 
 export default function Modal({
   isOpen,
-  isModalOpen,
   onClose,
   children,
   size = 'md',
   className = '',
 }: ModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const modalOpen = isOpen ?? isModalOpen;
 
   useEffect(() => {
     const dialog = dialogRef.current;
     if (!dialog) return;
 
-    if (modalOpen) {
+    if (isOpen) {
       if (!dialog.open) {
         dialog.showModal();
       }
@@ -34,7 +32,7 @@ export default function Modal({
         dialog.close();
       }
     }
-  }, [modalOpen]);
+  }, [isOpen]);
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDialogElement>) => {
     if (e.target === dialogRef.current) {

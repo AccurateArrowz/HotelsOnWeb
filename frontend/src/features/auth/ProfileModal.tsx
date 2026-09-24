@@ -11,7 +11,7 @@ const ProfileModal = ({ onClose }: ProfileModalProps) => {
   const { user, logout } = useAuth();
 
   return (
-    <Modal isModalOpen={true} onClose={onClose} size="sm" className="profile-modal">
+    <Modal isOpen={true} onClose={onClose} size="sm" className="profile-modal">
       <h2 className='text-center'>Profile</h2>
       <div className="profile-info">
         <div><strong>Name:</strong> {user?.firstName} {user?.lastName}</div>

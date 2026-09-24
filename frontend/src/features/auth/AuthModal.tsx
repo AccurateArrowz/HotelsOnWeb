@@ -29,7 +29,7 @@ export default function AuthModal({ authenticationMode = 'login', onClose }: Aut
   if (authMode === null) return null;
 
   return (
-    <Modal isModalOpen={true} onClose={handleClose} size={authMode === 'signup' ? 'lg' : 'md'}>
+    <Modal isOpen={true} onClose={handleClose} size={authMode === 'signup' ? 'lg' : 'md'}>
       {authMode === 'login'
         ? <LoginForm onSwitchToSignup={toggleAuthMode} />
         : <SignupForm onSwitchToLogin={toggleAuthMode} />
