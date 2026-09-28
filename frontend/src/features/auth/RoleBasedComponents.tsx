@@ -28,33 +28,6 @@ export const RequireAuth = ({ children, redirectTo = '/login', onRequireLogin }:
   return <>{children}</>;
 };
 
-interface RequirePermissionProps {
-  children: ReactNode;
-  permission: string;
-  redirectTo?: string;
-  fallback?: ReactNode;
-}
-
-export const RequirePermission = ({
-  children,
-  permission,
-  redirectTo = '/unauthorized',
-  fallback,
-}: RequirePermissionProps) => {
-  const { hasPermission } = useAuth();
-  const location = useLocation();
-
-  // TODO: hasPermission is called here but not defined in AuthContext
-  if (!hasPermission?.(permission)) {
-    if (fallback !== undefined) {
-      return <>{fallback}</>;
-    }
-    return <Navigate to={redirectTo} state={{ from: location }} replace />;
-  }
-
-  return <>{children}</>;
-};
-
 interface RequireRoleProps {
   children: ReactNode;
   role: string;

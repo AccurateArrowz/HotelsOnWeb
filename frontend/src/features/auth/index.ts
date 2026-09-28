@@ -10,4 +10,4 @@ export { default as ProfileModal } from './ProfileModal';
 export { default as ProfilePage } from './pages/ProfilePage';
 
 // Role-based components and utilities
-export { RequireAuth, RequireRole, RequirePermission} from './RoleBasedComponents';
+export { RequireAuth, RequireRole} from './RoleBasedComponents';

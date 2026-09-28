@@ -1,3 +1,4 @@
+import { RoomType } from './roomType';
 import type { User } from './user';
 
 /**
@@ -26,6 +27,7 @@ export interface Hotel {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+  roomTypes: RoomType[];
   // Optional nested associations
   images?: HotelImage[];
   owners?: User[];

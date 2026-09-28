@@ -57,10 +57,7 @@ export class AvailabilityService {
         basePrice: Number(roomType.basePrice),
         adults: roomType.adults,
         children: roomType.children,
-        // Display-only cap - real availability (isAvailable) is computed from the uncapped counts above
-        totalRooms: Math.min(totalRooms, MAX_DISPLAYED_ROOMS),
-        availableRooms: Math.min(availableRooms, MAX_DISPLAYED_ROOMS),
-        bookedRooms,
+        availableRooms: Math.min(availableRooms, MAX_DISPLAYED_ROOMS), // capped to MAX_DISPLAYED_ROOMS
         nights,
         totalPrice: parseFloat(totalPrice.toFixed(2)),
         isAvailable: availableRooms > 0,

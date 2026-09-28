@@ -21,14 +21,16 @@ function createSequelizeInstance(): Sequelize {
     dialectModule: pg,
     logging: false,
     dialectOptions: {
-      ssl: isProduction
-        ? { require: true, rejectUnauthorized: false }
-        : false
+      ssl: {
+        require: true,
+        rejectUnauthorized: false
+      },
+      connectTimeout: 60000 // 60 seconds to allow Neon to wake up
     },
     pool: {
-      max: 2,
+      max: 5,
       min: 0,
-      acquire: 30000,
+      acquire: 60000,
       idle: 10000
     },
   };

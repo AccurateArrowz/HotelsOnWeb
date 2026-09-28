@@ -268,7 +268,7 @@ export class HotelRepository extends BaseRepository<Hotel> {
   async delete(id) { }
 
   // Custom methods
-  async findActiveHotels(search?: string, limit = 20, offset = 0) {
+  async searchHotels(search?: string, limit = 20, offset = 0) {
     return this.findAll({
       where: {
         isActive: true,

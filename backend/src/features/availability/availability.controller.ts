@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { AvailabilityService } from './availability.service';
 import { ApiResponseHandler, asyncHandler } from '@/common';
 import { HttpError } from '@/common/http-error';
+import { setTimeout } from 'timers/promises';
 
 /**
  * Availability controller for room availability endpoints
@@ -30,6 +31,7 @@ export class AvailabilityController {
     }
 
     const availability = await this.availabilityService.getHotelAvailability(hotelId, checkInDate, checkOutDate);
+    if(process.env.NODE_ENV === 'development') await setTimeout(3000);
 
     return ApiResponseHandler.success(res, availability);
   });

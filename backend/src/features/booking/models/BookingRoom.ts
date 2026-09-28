@@ -38,9 +38,9 @@ export default class BookingRoom extends Model {
   @Column(DataType.INTEGER)
   declare roomTypeId: number;
 
-  @AllowNull(false)
-  @Column(DataType.INTEGER)
-  declare quantity: number;
+  // @AllowNull(false)
+  // @Column(DataType.INTEGER)
+  // declare quantity: number;
 
   @AllowNull(false)
   @Column(DataType.DECIMAL(10, 2))

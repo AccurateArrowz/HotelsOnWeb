@@ -15,7 +15,7 @@ const parseOrigins = (value = '') =>
 const corsOrigins = new Set(parseOrigins(process.env.CORS_ORIGIN));
 
 if (!isProduction) {
-  for (const origin of ['http://localhost:5173', 'http://localhost:3000', 'http://localhost:3001']) {
+  for (const origin of ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000', 'http://localhost:3001']) {
     corsOrigins.add(origin);
   }
 }
