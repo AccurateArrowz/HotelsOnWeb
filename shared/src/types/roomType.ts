@@ -14,6 +14,9 @@ export interface RoomType {
   children: number;
   createdAt: string;
   updatedAt: string;
+  availableRooms: number;
+  isAvailable: boolean;
   // Optional nested associations
   hotel?: Hotel;
 }
+

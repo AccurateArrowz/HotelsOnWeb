@@ -125,19 +125,20 @@ const HotelDetailsPage = () => {
   const total = subtotal > 0 ? subtotal + SERVICE_FEE : 0;
 
   const baseRoomTypes = (hotel as any).roomTypes || [];
-  const availabilityMap: Record<string | number, any> = {};
+  const availabilityMap: Record<string, any> = {};
   if (availabilityData?.roomTypes) {
-    availabilityData.roomTypes.forEach((rt: any) => {
+    console.log('availabilityData ', availabilityData)
+      availabilityData.roomTypes.forEach((rt: any) => {
       availabilityMap[rt.roomTypeId] = rt;
     });
   }
 
-  const mergedRoomTypes: RoomType[] = baseRoomTypes.map((rt: any) => {
+  const mergedRoomTypes: RoomType[] = baseRoomTypes.map((rt: RoomType) => {
     const avail = availabilityMap[rt.id];
     const totalAvailable = avail?.totalAvailable;
     return {
       ...rt,
-      availableRooms: totalAvailable ?? rt.totalRooms ?? null,
+      availableRooms: totalAvailable ?? rt.availableRooms ?? null,
       isAvailable: totalAvailable == null ? true : totalAvailable > 0,
     };
   });

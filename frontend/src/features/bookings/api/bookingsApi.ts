@@ -50,8 +50,6 @@ export interface CreateBookingRequest {
     roomTypeId: number;
     quantity: number;
   }>;
-  roomTypeId?: number;
-  quantity?: number;
   checkInDate: string;
   checkOutDate: string;
   specialRequests?: string;
