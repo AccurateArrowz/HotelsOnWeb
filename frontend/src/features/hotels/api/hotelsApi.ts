@@ -1,20 +1,5 @@
 import { baseApi } from '@app/store/baseApi';
-
-interface Hotel {
-  id: number;
-  name: string;
-  description: string;
-  address: string;
-  city: string;
-  country: string;
-  starRating: number;
-  amenities: string[];
-  images: string[];
-  ownerId: number;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
+import { Hotel } from '@hotelsonweb/shared';
 
 interface GetHotelsParams {
   search?: string;

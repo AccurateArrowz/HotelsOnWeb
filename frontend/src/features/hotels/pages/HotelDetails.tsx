@@ -1,7 +1,12 @@
 import { useState, useRef, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { RoomType } from '@hotelsonweb/shared';
+import { RoomType, Hotel, HotelImage } from '@hotelsonweb/shared';
 import { useGetHotelByIdQuery, useLazyGetHotelAvailabilityQuery } from '../api';
+import type { HotelAvailabilityData, RoomTypeAvailability } from '@hotelsonweb/shared';
+interface ApiError {
+  data?: { message?: string };
+  error?: string;
+}
 import { useAuth, LoginForm, SignupForm } from '@features/auth';
 import { Modal, Loading, ImageCarousel, TryAgainButton } from '@shared/components';
 import './HotelDetails.css';
@@ -20,7 +25,7 @@ const HotelDetailsPage = () => {
   const { isAuthenticated } = useAuth();
 
   const { data: hotel, isLoading: loading, error, refetch } = useGetHotelByIdQuery(id);
-  const [fetchAvailability, { data: availabilityData, isFetching: availabilityLoading }] =
+  const [fetchAvailability, { data: roomTypeWithAvailableRooms, isFetching: availabilityLoading }] =
     useLazyGetHotelAvailabilityQuery();
 
   const [loginModalOpen, setLoginModalOpen] = useState(false);
@@ -88,7 +93,8 @@ const HotelDetailsPage = () => {
   }
 
   if (error) {
-    const message = (error as any)?.data?.message || (error as any)?.error || 'Failed to fetch hotel details';
+    const apiError = error as ApiError;
+    const message = apiError?.data?.message || apiError?.error || 'Failed to fetch hotel details';
     return (
       <div className="hotel-details-page">
         <div className="error">
@@ -109,37 +115,38 @@ const HotelDetailsPage = () => {
     );
   }
 
-  const primaryImage = (hotel as any).images?.find((img: any) => img.isPrimary)?.imageUrl || (hotel as any).image;
-  const otherImages = (hotel as any).images?.filter((img: any) => !img.isPrimary) || [];
+  const typedHotel = hotel as Hotel & { image?: string };
+  const primaryImage = typedHotel.images?.find((img: HotelImage) => img.isPrimary)?.imageUrl || typedHotel.image;
+  const otherImages = typedHotel.images?.filter((img: HotelImage) => !img.isPrimary) || [];
   const allImages = primaryImage
-    ? [primaryImage, ...otherImages.map((img: any) => img.imageUrl)]
-    : otherImages.map((img: any) => img.imageUrl);
+    ? [primaryImage, ...otherImages.map((img: HotelImage) => img.imageUrl)]
+    : otherImages.map((img: HotelImage) => img.imageUrl);
 
   const nights = calculateNights(checkIn, checkOut);
-  const minBasePrice = (hotel as any).roomTypes?.length
-    ? Math.min(...(hotel as any).roomTypes.map((r: any) => r.basePrice))
+  const minBasePrice = typedHotel.roomTypes?.length
+    ? Math.min(...typedHotel.roomTypes.map((r: RoomType) => r.basePrice))
     : 0;
 
   const sidebarPrice = selectedRoomType ? selectedRoomType.basePrice : minBasePrice;
   const subtotal = nights > 0 ? sidebarPrice * nights : 0;
   const total = subtotal > 0 ? subtotal + SERVICE_FEE : 0;
 
-  const baseRoomTypes = (hotel as any).roomTypes || [];
-  const availabilityMap: Record<string, any> = {};
-  if (availabilityData?.roomTypes) {
-    console.log('availabilityData ', availabilityData)
-      availabilityData.roomTypes.forEach((rt: any) => {
+  const baseRoomTypes = typedHotel.roomTypes || [];
+  const availabilityMap: Record<string, RoomTypeAvailability> = {}; //contains
+  if (roomTypeWithAvailableRooms) {
+    console.log('roomTypeWithAvailableRooms ', roomTypeWithAvailableRooms)
+      roomTypeWithAvailableRooms.forEach((rt) => {
       availabilityMap[rt.roomTypeId] = rt;
     });
   }
 
   const mergedRoomTypes: RoomType[] = baseRoomTypes.map((rt: RoomType) => {
     const avail = availabilityMap[rt.id];
-    const totalAvailable = avail?.totalAvailable;
+
     return {
       ...rt,
-      availableRooms: totalAvailable ?? rt.availableRooms ?? null,
-      isAvailable: totalAvailable == null ? true : totalAvailable > 0,
+      availableRooms: avail?.availableRooms ?? null,
+      isAvailable:  (avail?.availableRooms ?? 0) > 0,
     };
   });
 
@@ -220,24 +227,24 @@ const HotelDetailsPage = () => {
     <div className="hotel-details-page">
       {allImages.length > 0 && (
         <div className="hotel-carousel-wrapper">
-          <ImageCarousel images={allImages} alt={`${(hotel as any).name} photo`} />
+          <ImageCarousel images={allImages} alt={`${typedHotel.name} photo`} />
         </div>
       )}
 
       <div className="hotel-details-layout">
         <div className="hotel-main-content">
-          <h1 className="hotel-title">{(hotel as any).name}</h1>
+          <h1 className="hotel-title">{typedHotel.name}</h1>
           <p className="hotel-location">
             <MapPin size={16} className="location-icon" />
-            {(hotel as any).street}, {(hotel as any).city}
+            {typedHotel.street}, {typedHotel.city}
           </p>
 
           <div className="description-section">
             <h2>About this property</h2>
-            <p>{(hotel as any).description}</p>
+            <p>{typedHotel.description}</p>
           </div>
 
-          <HotelAmenities amenities={(hotel as any).amenities} />
+          <HotelAmenities amenities={typedHotel.amenities ?? []} />
 
           <HotelRoomsList
             rooms={mergedRoomTypes}
@@ -304,7 +311,7 @@ const HotelDetailsPage = () => {
       <HotelBookingModal
         isOpen={bookingModalOpen}
         onClose={handleCloseBookingModal}
-        hotelName={(hotel as any).name}
+        hotelName={typedHotel.name}
         selectedRoomType={selectedRoomType}
         checkIn={checkIn}
         checkOut={checkOut}
