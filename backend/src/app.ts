@@ -41,7 +41,7 @@ const app: Express & { initialize?: () => Promise<void> } = express();
 app.options(/.*/, cors(corsOptions));
 app.use(cors(corsOptions));
 app.use(cookieParser());
-app.use(morgan(isProduction ? 'combined' : 'dev'));
+app.use(morgan(':method :url :status :response-time ms'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

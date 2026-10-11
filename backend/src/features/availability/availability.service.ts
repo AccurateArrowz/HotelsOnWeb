@@ -1,6 +1,7 @@
 import { RoomTypeRepository } from '@/features/roomType/roomType.repository';
 import { BookingRepository } from '@/features/booking/booking.repository';
 import { HttpError } from '@/common/http-error';
+import type { HotelAvailabilityData } from '@hotelsonweb/shared';
 
 /**
  * Max rooms shown to the client per room type. This is a display cap only -
@@ -24,7 +25,11 @@ export class AvailabilityService {
   /**
    * Get availability for all room types at a hotel for the given dates
    */
-  async getHotelAvailability(hotelId: number, checkInDate: string, checkOutDate: string) {
+  async getHotelAvailability(
+    hotelId: number,
+    checkInDate: string,
+    checkOutDate: string
+  ): Promise<HotelAvailabilityData> {
     const checkIn = new Date(checkInDate);
     const checkOut = new Date(checkOutDate);
     const nights = Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24));
