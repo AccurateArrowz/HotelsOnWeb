@@ -12,3 +12,4 @@ export * from './room';
 export * from './booking';
 export * from './invitation';
 export * from './responses';
+export * from './availability';
