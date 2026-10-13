@@ -15,7 +15,7 @@ import { formatDate, calculateNights } from '@hotelsonweb/shared';
 
 import {
   HotelAmenities,
-  HotelRoomsList,
+  RoomTypesSection,
   HotelBookingSidebar,
   HotelBookingModal,
 } from '../components';
@@ -246,7 +246,7 @@ const HotelDetailsPage = () => {
 
           <HotelAmenities amenities={typedHotel.amenities ?? []} />
 
-          <HotelRoomsList
+          <RoomTypesSection
             rooms={mergedRoomTypes}
             checkIn={checkIn}
             checkOut={checkOut}
