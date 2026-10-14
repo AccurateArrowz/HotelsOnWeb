@@ -171,50 +171,6 @@ export class BookingController {
   });
 
   /**
-   * GET /bookings/status/:status
-   * Get bookings by status
-   */
-  getBookingsByStatus = asyncHandler(async (req: Request, res: Response) => {
-    const { status } = req.params;
-
-    const bookings = await this.bookingService.getBookingsByStatus(status as string);
-
-    return ApiResponseHandler.success(res, bookings);
-  });
-
-  /**
-   * GET /bookings/active
-   * Get active bookings
-   */
-  getActiveBookings = asyncHandler(async (req: Request, res: Response) => {
-    const bookings = await this.bookingService.getActiveBookings();
-
-    return ApiResponseHandler.success(res, bookings);
-  });
-
-  /**
-   * GET /bookings/stats
-   * Get booking statistics
-   */
-  getStatistics = asyncHandler(async (req: Request, res: Response) => {
-    const stats = await this.bookingService.getStatistics();
-
-    return ApiResponseHandler.success(res, stats);
-  });
-
-  /**
-   * GET /bookings/revenue
-   * Get revenue statistics
-   */
-  getRevenueStatistics = asyncHandler(async (req: Request, res: Response) => {
-    const { hotelId } = req.query;
-
-    const revenue = await this.bookingService.getRevenueStatistics(hotelId ? parseInt(hotelId as string) : undefined);
-
-    return ApiResponseHandler.success(res, revenue);
-  });
-
-  /**
    * POST /bookings/:id/rooms
    * Add rooms to booking
    */

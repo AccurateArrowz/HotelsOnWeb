@@ -129,44 +129,12 @@ export class BookingService {
   }
 
   /**
-   * Get bookings by status
-   */
-  async getBookingsByStatus(status: string) {
-    const bookings = await this.bookingRepository.findByStatus(status);
-
-    return bookings;
-  }
-
-  /**
-   * Get active bookings
-   */
-  async getActiveBookings() {
-    const bookings = await this.bookingRepository.findActiveBookings();
-
-    return bookings;
-  }
-
-  /**
    * Get bookings within date range
    */
   async getBookingsByDateRange(startDate: Date, endDate: Date) {
     const bookings = await this.bookingRepository.findByDateRange(startDate, endDate);
 
     return bookings;
-  }
-
-  /**
-   * Get booking statistics
-   */
-  async getStatistics() {
-    return this.bookingRepository.getStatistics();
-  }
-
-  /**
-   * Get revenue statistics
-   */
-  async getRevenueStatistics(hotelId?: number) {
-    return this.bookingRepository.getRevenueStatistics(hotelId);
   }
 
   /**

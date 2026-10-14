@@ -10,30 +10,6 @@ const bookingController = new BookingController();
  */
 
 /**
- * GET /bookings/stats
- * Get booking statistics
- */
-router.get('/stats', bookingController.getStatistics);
-
-/**
- * GET /bookings/revenue
- * Get revenue statistics
- */
-router.get('/revenue', bookingController.getRevenueStatistics);
-
-/**
- * GET /bookings/active
- * Get active bookings
- */
-router.get('/active', bookingController.getActiveBookings);
-
-/**
- * GET /bookings/status/:status
- * Get bookings by status
- */
-router.get('/status/:status', bookingController.getBookingsByStatus);
-
-/**
  * GET /bookings/hotel/:hotelId
  * Get bookings by hotel
  */
