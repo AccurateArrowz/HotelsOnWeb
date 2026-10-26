@@ -1,108 +1,40 @@
-import { Request, Response, NextFunction } from 'express';
-import { ZodSchema, ZodError } from 'zod';
+import type { NextFunction, Request, Response } from 'express';
+import { z } from 'zod';
 import { ApiResponseHandler } from '../common/api-response';
 
-/**
- * Validate request data against Zod schema
- */
-export const validateRequest = (schema: ZodSchema) => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const result = schema.safeParse({
-        body: req.body,
-        params: req.params,
-        query: req.query,
-      });
-
-      if (!result.success) {
-        const errors = result.error.errors.map((err) => ({
-          field: err.path.join('.'),
-          message: err.message,
-        }));
-
-        return ApiResponseHandler.validationError(res, 'Validation failed', errors);
-      }
-
-      // Attach validated data to request for use in controllers
-      (req as any).validatedData = result.data;
-      next();
-    } catch (error) {
-      return ApiResponseHandler.internalError(res, 'Validation error');
-    }
-  };
+type RequestSchemas = {
+  body?: z.ZodType;
+  query?: z.ZodType;
+  params?: z.ZodType;
 };
 
-/**
- * Validate request body only
- */
-export const validateBody = (schema: ZodSchema) => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const result = schema.safeParse(req.body);
+export const validate =
+  (schemas: RequestSchemas) =>
+  (req: Request, res: Response, next: NextFunction): void => {
+    const issues: { field: string; message: string }[] = [];
 
-      if (!result.success) {
-        const errors = result.error.errors.map((err) => ({
-          field: err.path.join('.'),
-          message: err.message,
-        }));
+    for (const source of ['body', 'query', 'params'] as const) {
+      const schema = schemas[source];
+      if (!schema) continue;
 
-        return ApiResponseHandler.validationError(res, 'Validation failed', errors);
+      const result = schema.safeParse(req[source]);
+      if (result.success) {
+        // Only body is safely writable in Express 5
+        if (source === 'body') req.body = result.data;
+      } else {
+        issues.push(
+          ...result.error.issues.map((issue) => ({
+            field: issue.path.length > 0 ? `${source}.${issue.path.join('.')}` : source,
+            message: issue.message,
+          }))
+        );
       }
-
-      (req as any).validatedData = result.data;
-      next();
-    } catch (error) {
-      return ApiResponseHandler.internalError(res, 'Validation error');
     }
-  };
-};
 
-/**
- * Validate request params only
- */
-export const validateParams = (schema: ZodSchema) => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const result = schema.safeParse(req.params);
-
-      if (!result.success) {
-        const errors = result.error.errors.map((err) => ({
-          field: err.path.join('.'),
-          message: err.message,
-        }));
-
-        return ApiResponseHandler.validationError(res, 'Validation failed', errors);
-      }
-
-      (req as any).validatedData = result.data;
-      next();
-    } catch (error) {
-      return ApiResponseHandler.internalError(res, 'Validation error');
+    if (issues.length > 0) {
+      ApiResponseHandler.validationError(res, 'Validation failed', issues);
+      return;
     }
+
+    next();
   };
-};
-
-/**
- * Validate request query only
- */
-export const validateQuery = (schema: ZodSchema) => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const result = schema.safeParse(req.query);
-
-      if (!result.success) {
-        const errors = result.error.errors.map((err) => ({
-          field: err.path.join('.'),
-          message: err.message,
-        }));
-
-        return ApiResponseHandler.validationError(res, 'Validation failed', errors);
-      }
-
-      (req as any).validatedData = result.data;
-      next();
-    } catch (error) {
-      return ApiResponseHandler.internalError(res, 'Validation error');
-    }
-  };
-};
