@@ -4,7 +4,7 @@ import type { Hotel } from './hotel';
  * RoomType entity
  */
 export interface RoomType {
-  id: number;
+  id: string;
   hotelId: number;
   name: string;
   description: string | null;
@@ -16,7 +16,7 @@ export interface RoomType {
   updatedAt: string;
   availableRooms: number;
   isAvailable: boolean;
-  // Optional nested associations
-  hotel?: Hotel;
 }
+
+export type SelectedRoomTypes = Array<{roomTypeId: string, count: number}>
 

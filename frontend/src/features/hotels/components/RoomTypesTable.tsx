@@ -1,5 +1,5 @@
 import React from 'react';
-import { RoomType } from '@hotelsonweb/shared';
+import { RoomType, SelectedRoomTypes } from '@hotelsonweb/shared';
 import { Users, Baby, Check } from 'lucide-react';
 
 interface Chip {
@@ -33,7 +33,7 @@ interface RoomTypesTableProps {
   rooms: RoomType[];
   checkIn: Date | null;
   checkOut: Date | null;
-  selectedRoomType: RoomType | null;
+  selectedRoomTypes: SelectedRoomTypes;
   roomCounts: Record<string | number, number>;
   handleSelectRoom: (roomType: RoomType) => void;
   handleRoomCountChange: (roomTypeId: string | number, value: string) => void;
@@ -44,7 +44,7 @@ export const RoomTypesTable: React.FC<RoomTypesTableProps> = ({
   rooms,
   checkIn,
   checkOut,
-  selectedRoomType,
+  selectedRoomTypes,
   roomCounts,
   handleSelectRoom,
   handleRoomCountChange,
@@ -66,11 +66,12 @@ export const RoomTypesTable: React.FC<RoomTypesTableProps> = ({
           const adultCapacity = roomType.adults ?? roomType.maxAdults ?? null;
           const childrenCapacity = roomType.children ?? roomType.maxChildren ?? null;
           const count = roomCounts[roomType.id] ?? '';
-          const isSelected = selectedRoomType?.id === roomType.id;
-          const maxRooms =
-            checkIn && checkOut && roomType.availableRooms != null
-              ? Math.max(1, roomType.availableRooms)
-              : 5;
+          // const isSelected = selectedRoomType?.id === roomType.id;
+          const isSelected = false;
+          // const maxRooms =
+          //   checkIn && checkOut && roomType.availableRooms != null
+          //     ? Math.max(1, roomType.availableRooms)
+          //     : 5;
           const unavailable = checkIn && checkOut && !roomType.isAvailable;
 
           return (
@@ -134,7 +135,8 @@ export const RoomTypesTable: React.FC<RoomTypesTableProps> = ({
                     aria-label={`Number of ${roomType.name} rooms`}
                   >
                     {!checkIn || !checkOut ? <option value="" disabled hidden /> : null}
-                    {Array.from({ length: maxRooms }, (_, index) => index + 1).map((quantity) => (
+                    {Array.from({ length: roomType.availableRooms + 1 },
+                        (_, index) => index ).map((quantity) => (
                       <option key={quantity} value={quantity}>
                         {quantity}
                       </option>
