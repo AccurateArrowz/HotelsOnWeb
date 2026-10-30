@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { useAuth } from './useAuth';
+import { useAuth } from '../context/useAuth';
 import { Loading } from '@shared/components';
 
 interface RequireAuthProps {

@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef, ReactNode } from 'react';
-import { useLoginMutation, useRegisterMutation, useRefreshMutation, useGetProfileMutation } from './api';
+import { useLoginMutation, useRegisterMutation, useRefreshMutation, useGetProfileMutation } from '../api';
 import { AuthContext, type AuthContextValue } from './AuthContext';
 import { useAppDispatch } from '@app/store/hooks';
-import { setAccessToken, clearAccessToken } from './authSlice';
+import { setAccessToken, clearAccessToken } from '../authSlice';
 import type { User } from '@hotelsonweb/shared';
 
 const TOKEN_REFRESH_BUFFER_MS = 2 * 60 * 1000;

@@ -1,12 +1,12 @@
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useAuth } from './useAuth';
+import { useAuth } from '../context/useAuth';
 import Spinner from '@shared/components/Spinner';
-import { getAuthErrorMessage } from './getAuthErrorMessage';
+import { getAuthErrorMessage } from '../getAuthErrorMessage';
 import {
   SignupFormSchema,
   type SignupFormValues,
-} from './schemas/signupForm.schema';
+} from '../schemas/signupForm.schema';
 import './authForms.css';
 
 interface SignupFormProps {

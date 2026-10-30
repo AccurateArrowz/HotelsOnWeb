@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
-import { useAuth } from './useAuth';
+import { useAuth } from '../context/useAuth';
 import { Modal } from '@shared';
-import '../../styles/modal.css';
+import '../../../styles/modal.css';
 
 interface ProfileModalProps {
   onClose: () => void;

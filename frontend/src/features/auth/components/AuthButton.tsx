@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from './useAuth';
+import { useAuth } from '../context/useAuth';
 import LoginForm from './LoginForm';
 import SignupForm from './SignupForm';
-import './auth.css';
+import '../auth.css';
 import AuthModal from './AuthModal';
 
 type AuthMode = 'login' | 'signup' | null;

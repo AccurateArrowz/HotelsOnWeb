@@ -1,8 +1,8 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useAuth } from './useAuth';
+import { useAuth } from '../context/useAuth';
 import Spinner from '@shared/components/Spinner';
-import { getAuthErrorMessage } from './getAuthErrorMessage';
+import { getAuthErrorMessage } from '../getAuthErrorMessage';
 import { LoginSchema, type LoginInput } from '@hotelsonweb/shared';
 import './authForms.css';
 
