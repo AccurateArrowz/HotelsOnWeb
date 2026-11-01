@@ -14,8 +14,8 @@ interface RoomTypesSectionProps {
   errorRef: React.RefObject<HTMLDivElement>;
   tableRef: React.RefObject<HTMLDivElement>;
   availabilityLoading: boolean;
-  datesError: string;
-  roomError: string;
+  datesNotSelectedError: string;
+  roomsNotSelectedError: string;
 }
 
 export const RoomTypesSection: React.FC<RoomTypesSectionProps> = ({
@@ -30,16 +30,16 @@ export const RoomTypesSection: React.FC<RoomTypesSectionProps> = ({
   errorRef,
   tableRef,
   availabilityLoading,
-  datesError,
-  roomError,
+  datesNotSelectedError,
+  roomsNotSelectedError,
 }) => {
   return (
     <div className="rooms-section" ref={tableRef}>
       <h2>Available Rooms</h2>
 
-      {(datesError || roomError) && (
+      {(datesNotSelectedError || roomsNotSelectedError) && (
         <div className="dates-required-msg" ref={errorRef}>
-          {datesError || roomError}
+          {datesNotSelectedError || roomsNotSelectedError}
         </div>
       )}
 

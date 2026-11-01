@@ -122,7 +122,7 @@ export const RoomTypesTable: React.FC<RoomTypesTableProps> = ({
                   <select
                     className="rooms-select"
                     value={count}
-                    onMouseDown={handleRoomDropdownAttempt as any}
+                    onPointerDown={handleRoomDropdownAttempt as any}
                     onKeyDown={(event) => {
                       if (
                         (!checkIn || !checkOut) &&
