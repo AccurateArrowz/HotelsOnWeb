@@ -1,6 +1,6 @@
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useAuth } from '../context/useAuth';
+import { useAuth } from '../hooks/useAuth';
 import Spinner from '@shared/components/Spinner';
 import { getAuthErrorMessage } from '../getAuthErrorMessage';
 import {
