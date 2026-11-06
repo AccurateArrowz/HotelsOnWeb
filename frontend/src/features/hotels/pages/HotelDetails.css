@@ -134,11 +134,11 @@
 }
 
 /* ─── Rooms section ──────────────────────────────────────────────────────── */
-.rooms-section {
+.roomTypes-section {
   margin-bottom: 2.5rem;
 }
 
-.rooms-section h2 {
+.roomTypes-section h2 {
   font-size: 1.3rem;
   font-weight: 600;
   color: #1a2540;
@@ -181,26 +181,26 @@
 }
 
 /* ─── Rooms table ────────────────────────────────────────────────────────── */
-.rooms-table-wrapper {
+.roomTypes-table-wrapper {
   overflow-x: auto;
   border-radius: 12px;
   border: 1px solid #e3e8f3;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
 }
 
-.rooms-table {
+.roomTypes-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.95rem;
   background: #fff;
 }
 
-.rooms-table thead tr {
+.roomTypes-table thead tr {
   background: #f4f6fb;
   border-bottom: 2px solid #e3e8f3;
 }
 
-.rooms-table th {
+.roomTypes-table th {
   padding: 0.85rem 1.1rem;
   text-align: left;
   font-size: 0.82rem;
@@ -211,18 +211,18 @@
   white-space: nowrap;
 }
 
-.rooms-table td {
+.roomTypes-table td {
   padding: 1rem 1.1rem;
   vertical-align: middle;
   border-bottom: 1px solid #eef0f6;
 }
 
 /* Alternating row shading */
-.rooms-table tbody tr:nth-child(even) {
+.roomTypes-table tbody tr:nth-child(even) {
   background: #f9fafd;
 }
 
-.rooms-table tbody tr:last-child td {
+.roomTypes-table tbody tr:last-child td {
   border-bottom: none;
 }
 
@@ -389,12 +389,6 @@
   font-size: 0.83rem;
   color: #e74c3c;
   font-weight: 500;
-}
-
-/* ─── Action cell ────────────────────────────────────────────────────────── */
-.room-action-cell {
-  min-width: 100px;
-  text-align: right;
 }
 
 .select-room-btn {
@@ -865,8 +859,8 @@
     font-size: 1.55rem;
   }
 
-  .rooms-table th,
-  .rooms-table td {
+  .roomTypes-table th,
+  .roomTypes-table td {
     padding: 0.7rem 0.75rem;
   }
 
@@ -906,7 +900,7 @@
   }
 
   /* Make table scrollable on tiny screens */
-  .rooms-table-wrapper {
+  .roomTypes-table-wrapper {
     border-radius: 8px;
   }
 }

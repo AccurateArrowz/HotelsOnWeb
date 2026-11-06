@@ -25,7 +25,7 @@ const HotelDetailsPage = () => {
   const { isAuthenticated } = useAuth();
 
   const { data: hotel, isLoading: loading, error, refetch } = useGetHotelByIdQuery(id);
-  const [fetchAvailability, { data: roomTypeWithAvailableRooms, isFetching: availabilityLoading }] =
+  const [fetchAvailability, { data: roomTypeWithAvailableRooms, isLoading: availabilityLoading }] =
     useLazyGetHotelAvailabilityQuery();
 
   const [loginModalOpen, setLoginModalOpen] = useState(false);
@@ -35,25 +35,21 @@ const HotelDetailsPage = () => {
   const [paymentInProgress, setPaymentInProgress] = useState(false);
   const [bookingConfirmed, setBookingConfirmed] = useState(false);
   const [confirmationNumber, setConfirmationNumber] = useState('');
-
-  const [selectedRoomType, setSelectedRoomType] = useState<RoomType | null>(null);
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
   const [checkIn, checkOut] = dateRange;
 
-  const [roomCounts, setRoomCounts] = useState<Record<string | number, number>>({});
-
-  const [datesError, setDatesError] = useState('');
-  const [roomError, setRoomError] = useState('');
+  const [datesNotSelectedError, setDatesNotSelectedError] = useState('');
+  const [roomsNotSelectedError, setRoomsNotSelectedError] = useState('');
 
   const errorRef = useRef<HTMLDivElement>(null);
   const tableRef = useRef<HTMLDivElement>(null);
   const bookingTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    if ((datesError || roomError) && errorRef.current) {
+    if ((datesNotSelectedError || roomsNotSelectedError) && errorRef.current) {
       errorRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
-  }, [datesError, roomError]);
+  }, [datesNotSelectedError, roomsNotSelectedError]);
 
   useEffect(() => {
     return () => {
@@ -72,7 +68,7 @@ const HotelDetailsPage = () => {
         checkInDate: formatDate(checkIn),
         checkOutDate: formatDate(checkOut),
       });
-      setDatesError('');
+      setDatesNotSelectedError('');
     }
   }, [checkIn, checkOut, id, fetchAvailability]);
 
@@ -127,7 +123,7 @@ const HotelDetailsPage = () => {
     ? Math.min(...typedHotel.roomTypes.map((r: RoomType) => r.basePrice))
     : 0;
 
-  const sidebarPrice = selectedRoomType ? selectedRoomType.basePrice : minBasePrice;
+  const sidebarPrice = minBasePrice;
   const subtotal = nights > 0 ? sidebarPrice * nights : 0;
   const total = subtotal > 0 ? subtotal + SERVICE_FEE : 0;
 
@@ -150,38 +146,21 @@ const HotelDetailsPage = () => {
     };
   });
 
-  const handleRoomCountChange = (roomTypeId: string | number, value: string) => {
-    if (!checkIn || !checkOut) {
-      setDatesError('Please select dates from the right sidebar first');
-      scrollToError(errorRef);
-      return;
-    }
-    setRoomCounts((prev) => ({ ...prev, [roomTypeId]: Number(value) }));
-  };
-
-  const handleRoomDropdownAttempt = (event: React.MouseEvent<HTMLSelectElement>) => {
+  const showDatesNotSelectedWarning = (event: React.MouseEvent<HTMLSelectElement>) => {
     if (checkIn && checkOut) {
       return;
     }
 
     event.preventDefault();
-    setDatesError('Please select dates from the right sidebar first');
+    setDatesNotSelectedError('Please select dates from the right sidebar first');
     scrollToError(errorRef);
   };
 
-  const handleSelectRoom = (roomType: RoomType) => {
-    if (!checkIn || !checkOut) {
-      setDatesError('Please select dates from the right sidebar first');
-      scrollToError(errorRef);
-      return;
-    }
-    setSelectedRoomType(roomType);
-    setRoomError('');
-  };
+
 
   const handleBookNow = () => {
     if (!selectedRoomType) {
-      setRoomError('Please select a room type before booking.');
+      setRoomsNotSelectedError('Please select a room type before booking.');
       scrollToError(errorRef);
       return;
     }
@@ -197,7 +176,7 @@ const HotelDetailsPage = () => {
 
   const handleConfirmBooking = async () => {
     setPaymentInProgress(true);
-    setRoomError('');
+    setRoomsNotSelectedError('');
 
     if (bookingTimerRef.current) {
       window.clearTimeout(bookingTimerRef.current);
@@ -247,29 +226,21 @@ const HotelDetailsPage = () => {
           <HotelAmenities amenities={typedHotel.amenities ?? []} />
 
           <RoomTypesSection
-            rooms={mergedRoomTypes}
-            checkIn={checkIn}
-            checkOut={checkOut}
-            selectedRoomType={selectedRoomType}
-            roomCounts={roomCounts}
-            handleSelectRoom={handleSelectRoom}
-            handleRoomCountChange={handleRoomCountChange}
-            handleRoomDropdownAttempt={handleRoomDropdownAttempt}
+            roomTypes={mergedRoomTypes}
+            showDatesNotSelectedWarning={showDatesNotSelectedWarning}
             errorRef={errorRef}
             tableRef={tableRef}
             availabilityLoading={availabilityLoading}
-            datesError={datesError}
-            roomError={roomError}
+            datesNotSelectedError={datesNotSelectedError}
+            roomsNotSelectedError={roomsNotSelectedError}
           />
         </div>
 
         <HotelBookingSidebar
           sidebarPrice={sidebarPrice}
-          selectedRoomType={selectedRoomType}
           checkIn={checkIn}
           checkOut={checkOut}
           setDateRange={setDateRange}
-          setSelectedRoomType={setSelectedRoomType}
           nights={nights}
           subtotal={subtotal}
           SERVICE_FEE={SERVICE_FEE}
@@ -312,7 +283,6 @@ const HotelDetailsPage = () => {
         isOpen={bookingModalOpen}
         onClose={handleCloseBookingModal}
         hotelName={typedHotel.name}
-        selectedRoomType={selectedRoomType}
         checkIn={checkIn}
         checkOut={checkOut}
         nights={nights}

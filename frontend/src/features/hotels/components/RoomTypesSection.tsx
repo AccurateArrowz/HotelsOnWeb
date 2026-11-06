@@ -3,14 +3,8 @@ import { RoomType } from '@hotelsonweb/shared';
 import { RoomTypesTable } from './RoomTypesTable';
 
 interface RoomTypesSectionProps {
-  rooms: RoomType[];
-  checkIn: Date | null;
-  checkOut: Date | null;
-  selectedRoomType: RoomType | null;
-  roomCounts: Record<string | number, number>;
-  handleSelectRoom: (roomType: RoomType) => void;
-  handleRoomCountChange: (roomTypeId: string | number, value: string) => void;
-  handleRoomDropdownAttempt: (event: React.MouseEvent<HTMLSelectElement>) => void;
+  roomTypes: RoomType[];
+  showDatesNotSelectedWarning: (event: React.MouseEvent<HTMLSelectElement>) => void;
   errorRef: React.RefObject<HTMLDivElement>;
   tableRef: React.RefObject<HTMLDivElement>;
   availabilityLoading: boolean;
@@ -19,14 +13,8 @@ interface RoomTypesSectionProps {
 }
 
 export const RoomTypesSection: React.FC<RoomTypesSectionProps> = ({
-  rooms,
-  checkIn,
-  checkOut,
-  selectedRoomType,
-  roomCounts,
-  handleSelectRoom,
-  handleRoomCountChange,
-  handleRoomDropdownAttempt,
+  roomTypes,
+  showDatesNotSelectedWarning,
   errorRef,
   tableRef,
   availabilityLoading,
@@ -34,7 +22,7 @@ export const RoomTypesSection: React.FC<RoomTypesSectionProps> = ({
   roomsNotSelectedError,
 }) => {
   return (
-    <div className="rooms-section" ref={tableRef}>
+    <div className="roomTypes-section" ref={tableRef}>
       <h2>Available Rooms</h2>
 
       {(datesNotSelectedError || roomsNotSelectedError) && (
@@ -47,18 +35,12 @@ export const RoomTypesSection: React.FC<RoomTypesSectionProps> = ({
         <div className="availability-loading">Checking availability…</div>
       )}
 
-      {rooms.length === 0 ? (
-        <div className="no-rooms">No room types found for this hotel.</div>
+      {roomTypes.length === 0 ? (
+        <div className="no-roomTypes">No room types found for this hotel.</div>
       ) : (
         <RoomTypesTable
-          rooms={rooms}
-          checkIn={checkIn}
-          checkOut={checkOut}
-          selectedRoomType={selectedRoomType}
-          roomCounts={roomCounts}
-          handleSelectRoom={handleSelectRoom}
-          handleRoomCountChange={handleRoomCountChange}
-          handleRoomDropdownAttempt={handleRoomDropdownAttempt}
+          roomTypes={roomTypes}
+          showDatesNotSelectedWarning={showDatesNotSelectedWarning}
         />
       )}
     </div>

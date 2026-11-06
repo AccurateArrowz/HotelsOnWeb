@@ -19,17 +19,16 @@ interface HotelBookingSidebarProps {
 
 export const HotelBookingSidebar: React.FC<HotelBookingSidebarProps> = ({
   sidebarPrice,
-  selectedRoomType,
   checkIn,
   checkOut,
   setDateRange,
-  setSelectedRoomType,
   nights,
   subtotal,
   SERVICE_FEE,
   total,
   handleBookNow,
 }) => {
+  
   return (
     <aside className="hotel-booking-sidebar">
       <div className="sidebar-card">
@@ -37,11 +36,6 @@ export const HotelBookingSidebar: React.FC<HotelBookingSidebarProps> = ({
           <span className="sidebar-price">Rs.{sidebarPrice.toLocaleString()}</span>
           <span className="sidebar-price-label"> / night</span>
         </div>
-        {selectedRoomType && (
-          <div className="sidebar-selected-room">
-            {selectedRoomType.name}
-          </div>
-        )}
 
         <div className="sidebar-dates">
           <div className="sidebar-date-field">
@@ -50,7 +44,6 @@ export const HotelBookingSidebar: React.FC<HotelBookingSidebarProps> = ({
               selected={checkIn}
               onChange={(dates: any) => {
                 setDateRange(dates);
-                setSelectedRoomType(null);
               }}
               selectsRange
               startDate={checkIn}
@@ -68,7 +61,6 @@ export const HotelBookingSidebar: React.FC<HotelBookingSidebarProps> = ({
               selected={checkOut}
               onChange={(dates: any) => {
                 setDateRange(dates);
-                setSelectedRoomType(null);
               }}
               selectsRange
               startDate={checkIn}
