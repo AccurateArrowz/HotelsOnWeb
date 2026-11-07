@@ -3,6 +3,7 @@ import { Navbar, Footer, Loading } from '@shared/components';
 import { RequireAuth, RequireRole } from '@features/auth';
 import { Suspense, lazy, useEffect } from 'react';
 import OwnerDashboard from '@features/owner/pages/OwnerDashboard';
+import { RoomSelectionsProvider } from '@/features/hotels/context/RoomSelectionsContext';
 
 /**
  * ScrollToTop - Resets window scroll position on route navigation.
@@ -43,7 +44,12 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/hotels/:query" element={<HotelsPage />} />
-            <Route path="/hotels/id/:id" element={<HotelDetails />} />
+            <Route path="/hotels/id/:id" element={
+              <RoomSelectionsProvider>
+
+              <HotelDetails />
+              </RoomSelectionsProvider>
+              } />
 
             <Route path="/booking/:id" element={
               <RequireRole role="owner">

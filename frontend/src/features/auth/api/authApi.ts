@@ -1,18 +1,13 @@
 import { baseApi } from '@app/store/baseApi';
-
+import {
+  type SignupFormValues,
+} from '../schemas/signupForm.schema';
 interface LoginRequest {
   email: string;
   password: string;
 }
 
-interface RegisterRequest {
-  email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  phone?: string;
-  role?: string;
-}
+type SignupRequest = Omit<SignupFormValues, "confirmPassword">
 
 interface AuthUser {
   id: number;
@@ -42,7 +37,7 @@ export const authApi = baseApi.injectEndpoints({
       }),
       transformResponse: (response: { data: AuthResponse }) => response.data,
     }),
-    register: builder.mutation<AuthResponse, RegisterRequest>({
+    register: builder.mutation<AuthResponse, SignupRequest>({
       query: (body) => ({
         url: '/auth/register',
         method: 'POST',
