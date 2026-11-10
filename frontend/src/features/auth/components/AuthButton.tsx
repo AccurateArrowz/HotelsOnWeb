@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import LoginForm from './LoginForm';
 import SignupForm from './SignupForm';
+import { Modal } from '@shared/components';
 import '../auth.css';
-import AuthModal from './AuthModal';
 
 type AuthMode = 'login' | 'signup' | null;
 
@@ -16,6 +16,10 @@ const AuthButton = () => {
   const handleLogout = () => {
     logout();
     setMenuOpen(false);
+  };
+
+  const handleClose = () => {
+    setAuthenticationMode(null);
   };
 
   if (user) {
@@ -37,16 +41,32 @@ const AuthButton = () => {
 
   return (
     <>
-      <button onClick={() => { console.log('login button clicked'); setAuthenticationMode("login") }} className="login-btn">
+      <button onClick={() => setAuthenticationMode('login')} className="login-btn">
         Login
       </button>
-      <button onClick={() => { console.log('signup button clicked'); setAuthenticationMode("signup") }} className="signup-btn" style={{ marginLeft: '8px' }}>
+      <button onClick={() => setAuthenticationMode('signup')} className="signup-btn" style={{ marginLeft: '8px' }}>
         Signup
       </button>
 
-      {(authenticationMode !== null) &&
-        <AuthModal authenticationMode={authenticationMode} onClose={() => { console.log('onClose Modal of the AuthButton called'); setAuthenticationMode(null) }} />
-      }
+      {authenticationMode !== null && (
+        <Modal
+          isOpen={true}
+          onClose={handleClose}
+          size={authenticationMode === 'signup' ? 'lg' : 'md'}
+        >
+          {authenticationMode === 'login' ? (
+            <LoginForm
+              onSuccess={handleClose}
+              onSwitchToSignup={() => setAuthenticationMode('signup')}
+            />
+          ) : (
+            <SignupForm
+              onSuccess={handleClose}
+              onSwitchToLogin={() => setAuthenticationMode('login')}
+            />
+          )}
+        </Modal>
+      )}
     </>
   );
 };

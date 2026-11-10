@@ -9,6 +9,7 @@ interface ApiError {
 }
 import { useAuth, LoginForm, SignupForm } from '@features/auth';
 import { Modal, Loading, ImageCarousel, TryAgainButton } from '@shared/components';
+import { getApiErrorMessage } from '@shared/utils/getApiErrorMessage';
 import './HotelDetails.css';
 import { MapPin } from 'lucide-react';
 import { formatDate, calculateNights } from '@hotelsonweb/shared';
@@ -19,6 +20,7 @@ import {
   HotelBookingSidebar,
   HotelBookingModal,
 } from '../components';
+import useRoomSelections from '../hooks/useRoomSelections';
 
 const HotelDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -28,8 +30,8 @@ const HotelDetailsPage = () => {
   const [fetchAvailability, { data: roomTypeWithAvailableRooms, isLoading: availabilityLoading }] =
     useLazyGetHotelAvailabilityQuery();
 
-  const [loginModalOpen, setLoginModalOpen] = useState(false);
-  const [signupModalOpen, setSignupModalOpen] = useState(false);
+  const [authenticationMode, setAuthenticationMode] = useState<'login' | 'signup' | null>(null);
+
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('credit_card');
   const [paymentInProgress, setPaymentInProgress] = useState(false);
@@ -44,6 +46,7 @@ const HotelDetailsPage = () => {
   const errorRef = useRef<HTMLDivElement>(null);
   const tableRef = useRef<HTMLDivElement>(null);
   const bookingTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const {roomSelections} = useRoomSelections();
 
   useEffect(() => {
     if ((datesNotSelectedError || roomsNotSelectedError) && errorRef.current) {
@@ -89,8 +92,7 @@ const HotelDetailsPage = () => {
   }
 
   if (error) {
-    const apiError = error as ApiError;
-    const message = apiError?.data?.message || apiError?.error || 'Failed to fetch hotel details';
+    const message = getApiErrorMessage(error, 'Failed to fetch hotel details');
     return (
       <div className="hotel-details-page">
         <div className="error">
@@ -130,7 +132,6 @@ const HotelDetailsPage = () => {
   const baseRoomTypes = typedHotel.roomTypes || [];
   const availabilityMap: Record<string, RoomTypeAvailability> = {}; //contains
   if (roomTypeWithAvailableRooms) {
-    console.log('roomTypeWithAvailableRooms ', roomTypeWithAvailableRooms)
       roomTypeWithAvailableRooms.forEach((rt) => {
       availabilityMap[rt.roomTypeId] = rt;
     });
@@ -157,15 +158,21 @@ const HotelDetailsPage = () => {
   };
 
 
+    // console.log('from HotelDetails page, authenticationfMode', authenticationMode);
 
   const handleBookNow = () => {
-    if (!selectedRoomType) {
-      setRoomsNotSelectedError('Please select a room type before booking.');
-      scrollToError(errorRef);
-      return;
-    }
+    // if (!checkIn || !checkOut){
+    //   setDatesNotSelectedError("Please Select dates to get available rooms")
+    // }
+    // if (roomSelections.length === 0) {
+    //   console.log('from handleBookNow, roomSelections: ', roomSelections)
+    //   setRoomsNotSelectedError('Please select a room type before booking.');
+    //   scrollToError(errorRef);
+    //   return;
+    // }
     if (!isAuthenticated) {
-      setLoginModalOpen(true);
+      console.log('is not authenticated')
+      setAuthenticationMode("login");
       return;
     }
     setBookingConfirmed(false);
@@ -249,35 +256,25 @@ const HotelDetailsPage = () => {
         />
       </div>
 
-      <Modal
-        isOpen={loginModalOpen}
-        onClose={() => setLoginModalOpen(false)}
-        size="md"
-        className="login-modal"
-      >
-        <LoginForm
-          onSuccess={() => setLoginModalOpen(false)}
-          onSwitchToSignup={() => {
-            setLoginModalOpen(false);
-            setSignupModalOpen(true);
-          }}
-        />
-      </Modal>
-
-      <Modal
-        isOpen={signupModalOpen}
-        onClose={() => setSignupModalOpen(false)}
-        size="md"
-        className="signup-modal"
-      >
-        <SignupForm
-          onSuccess={() => setSignupModalOpen(false)}
-          onSwitchToLogin={() => {
-            setSignupModalOpen(false);
-            setLoginModalOpen(true);
-          }}
-        />
-      </Modal>
+      {authenticationMode !== null && (
+        <Modal
+          isOpen={true}
+          onClose={() => setAuthenticationMode(null)}
+          size={authenticationMode === 'signup' ? 'lg' : 'md'}
+        >
+          {authenticationMode === 'login' ? (
+            <LoginForm
+              onSuccess={() => setAuthenticationMode(null)}
+              onSwitchToSignup={() => setAuthenticationMode('signup')}
+            />
+          ) : (
+            <SignupForm
+              onSuccess={() => setAuthenticationMode(null)}
+              onSwitchToLogin={() => setAuthenticationMode('login')}
+            />
+          )}
+        </Modal>
+      )}
 
       <HotelBookingModal
         isOpen={bookingModalOpen}

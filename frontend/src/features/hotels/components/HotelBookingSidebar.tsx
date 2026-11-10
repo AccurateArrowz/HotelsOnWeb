@@ -2,6 +2,7 @@ import React from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { RoomType } from '@hotelsonweb/shared';
+import useRoomSelections from '../hooks/useRoomSelections';
 
 interface HotelBookingSidebarProps {
   sidebarPrice: number;
@@ -28,6 +29,7 @@ export const HotelBookingSidebar: React.FC<HotelBookingSidebarProps> = ({
   total,
   handleBookNow,
 }) => {
+    const {roomSelections} = useRoomSelections();
   
   return (
     <aside className="hotel-booking-sidebar">
@@ -93,7 +95,9 @@ export const HotelBookingSidebar: React.FC<HotelBookingSidebarProps> = ({
             </div>
           </div>
         )}
-
+    {roomSelections.map(selection=> (
+      <p>{`roomTypeId-${selection.roomTypeId}: ${selection.count}`} </p>
+    ))}
         <button type="button" className="sidebar-book-btn" onClick={handleBookNow}>
           Book Now
         </button>
