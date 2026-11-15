@@ -3,6 +3,7 @@ import { AvailabilityService } from './availability.service';
 import { ApiResponseHandler, asyncHandler } from '@/common';
 import { HttpError } from '@/common/http-error';
 import type { HotelAvailabilityData, SuccessResponse } from '@hotelsonweb/shared';
+import { setTimeout } from 'node:timers/promises';
 
 type AvailabilityParams = { hotelId: string };
 type AvailabilityQuery = { checkInDate: string; checkOutDate: string };
@@ -38,7 +39,7 @@ export class AvailabilityController {
     }
 
     const availability = await this.availabilityService.getHotelAvailability(hotelId, checkInDate, checkOutDate);
-    // if(process.env.NODE_ENV === 'development') await setTimeout(1000);
+    // if(process.env.NODE_ENV === 'development') await setTimeout(2000);
 
     return ApiResponseHandler.success(res, availability);
   });

@@ -12,7 +12,7 @@ import {
 } from 'sequelize-typescript';
 import Hotel from '@/features/hotel/models/Hotel';
 import RoomType from '../../roomType/models/RoomType';
-import BookingRoom from '@/features/booking/models/BookingRoom';
+import RoomAssignment from '@/features/booking/models/RoomAssignments';
 
 @Table({
   tableName: 'Rooms',
@@ -48,6 +48,6 @@ export default class Room extends Model {
   @BelongsTo(() => RoomType, { foreignKey: 'roomTypeId', as: 'roomType' })
   declare roomType?: RoomType;
 
-  @HasMany(() => BookingRoom, { foreignKey: 'roomId', as: 'bookingRooms' })
-  declare bookingRooms?: BookingRoom[];
+  @HasMany(() => RoomAssignment, { foreignKey: 'roomId', as: 'assignments' })
+  declare assignments?: RoomAssignment[];
 }

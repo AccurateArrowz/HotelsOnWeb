@@ -2,6 +2,8 @@ import { BookingRepository } from './booking.repository';
 import { HttpError } from '@/common/http-error';
 import Booking from '@/features/booking/models/Booking';
 import BookingRoom from '@/features/booking/models/BookingRoom';
+import RoomType from '@/features/roomType/models/RoomType';
+import { getSequelize } from '@/config/database';
 import type { Booking as BookingType, BOOKING_STATUS } from '@hotelsonweb/shared';
 
 /**
@@ -39,13 +41,54 @@ export class BookingService {
   /**
    * Create new booking
    */
-  async createBooking(data: any): Promise<BookingType> {
-    const booking = await this.bookingRepository.create({
-      ...data,
-      status: 'pending',
-    });
+  async createBooking(data: {
+    userId: number;
+    hotelId: number;
+    checkInDate: string;
+    checkOutDate: string;
+    specialRequests?: string;
+    roomSelections: Array<{ roomTypeId: number; quantity: number }>;
+  }): Promise<BookingType> {
+    return getSequelize().transaction(async (transaction) => {
+      const nights = this.getNights(data.checkInDate, data.checkOutDate);
+      const roomTypeIds = data.roomSelections.map(({ roomTypeId }) => roomTypeId);
+      const roomTypes = await RoomType.findAll({
+        where: { id: [...new Set(roomTypeIds)], hotelId: data.hotelId },
+        transaction,
+      });
+      const roomTypeById = new Map(roomTypes.map((roomType) => [roomType.id, roomType]));
 
-    return this.formatBookingResponse(booking);
+      if (roomTypeById.size !== new Set(roomTypeIds).size) {
+        throw HttpError.badRequest('One or more selected room types do not belong to this hotel');
+      }
+
+      const totalPrice = data.roomSelections.reduce((sum, selection) => {
+        return sum + Number(roomTypeById.get(selection.roomTypeId)!.basePrice) * selection.quantity * nights;
+      }, 0);
+
+      const booking = await Booking.create({
+        userId: data.userId,
+        hotelId: data.hotelId,
+        checkInDate: data.checkInDate,
+        checkOutDate: data.checkOutDate,
+        specialRequests: data.specialRequests ?? null,
+        totalPrice: Number(totalPrice.toFixed(2)),
+        status: 'pending',
+      }, { transaction });
+
+      await BookingRoom.bulkCreate(data.roomSelections.map((selection) => ({
+        bookingId: booking.id,
+        roomTypeId: selection.roomTypeId,
+        quantity: selection.quantity,
+        pricePerNight: String(roomTypeById.get(selection.roomTypeId)!.basePrice),
+      })), { transaction });
+
+      const created = await Booking.findByPk(booking.id, {
+        include: [{ association: 'bookingRooms', include: [{ association: 'assignments' }] }],
+        transaction,
+      });
+      return this.formatBookingResponse(created!);
+    });
   }
 
   /**
@@ -140,39 +183,27 @@ export class BookingService {
   /**
    * Add rooms to booking
    */
-  async addRoomsToBooking(bookingId: number, roomIds: number[]) {
-    const booking = await this.bookingRepository.findById(bookingId);
-
-    if (!booking) {
-      throw HttpError.notFound('Booking not found');
+  private getNights(checkInDate: string, checkOutDate: string): number {
+    const toDay = (value: string): number | null => {
+      const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+      if (!match) return null;
+      const year = Number(match[1]);
+      const month = Number(match[2]);
+      const day = Number(match[3]);
+      const leap = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+      const monthDays = [31, leap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+      if (year < 1 || day < 1 || day > (monthDays[month - 1] ?? 0)) return null;
+      const priorYear = year - 1;
+      return priorYear * 365 + Math.floor(priorYear / 4) - Math.floor(priorYear / 100) + Math.floor(priorYear / 400)
+        + monthDays.slice(0, month - 1).reduce((sum, value) => sum + value, 0) + day;
+    };
+    const checkIn = toDay(checkInDate);
+    const checkOut = toDay(checkOutDate);
+    const nights = checkIn === null || checkOut === null ? 0 : checkOut - checkIn;
+    if (nights <= 0) {
+      throw HttpError.badRequest('Check-out date must be after check-in date');
     }
-
-    // Create booking room entries
-    const bookingRooms = await Promise.all(
-      roomIds.map((roomId) =>
-        BookingRoom.create({
-          bookingId,
-          roomId,
-        })
-      )
-    );
-
-    return bookingRooms;
-  }
-
-  /**
-   * Remove room from booking
-   */
-  async removeRoomFromBooking(bookingId: number, roomId: number) {
-    const bookingRoom = await BookingRoom.findOne({
-      where: { bookingId, roomId },
-    });
-
-    if (!bookingRoom) {
-      throw HttpError.notFound('Booking room not found');
-    }
-
-    await bookingRoom.destroy();
+    return nights;
   }
 
   /**

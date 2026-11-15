@@ -55,7 +55,7 @@ export class BookingRepository extends BaseRepository<Booking> {
           ],
         },
       },
-      include: [{ association: 'bookingRooms' }],
+      include: [{ association: 'bookingRooms', include: [{ association: 'assignments' }] }],
     });
   }
 

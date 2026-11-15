@@ -18,9 +18,4 @@ export type { AuthenticatedRequest, PaginationOptions, PaginationMeta, QueryOpti
 // Middleware
 export { authenticateToken, optionalAuth, requireRole } from '../middleware/auth.middleware';
 export { errorMiddleware, asyncHandler } from '../middleware/error.middleware';
-export {
-  validateRequest,
-  validateBody,
-  validateParams,
-  validateQuery,
-} from '../middleware/validate.middleware';
+export { validate } from '../middleware/validate.middleware';

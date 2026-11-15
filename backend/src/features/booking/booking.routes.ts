@@ -61,16 +61,4 @@ router.post('/:id/confirm', authenticateToken, bookingController.confirmBooking)
  */
 router.post('/:id/complete', authenticateToken, bookingController.completeBooking);
 
-/**
- * POST /bookings/:id/rooms
- * Add rooms to booking
- */
-router.post('/:id/rooms', authenticateToken, bookingController.addRoomsToBooking);
-
-/**
- * DELETE /bookings/:id/rooms/:roomId
- * Remove room from booking
- */
-router.delete('/:id/rooms/:roomId', authenticateToken, bookingController.removeRoomFromBooking);
-
 export default router;

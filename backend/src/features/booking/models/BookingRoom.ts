@@ -8,15 +8,14 @@ import {
   AllowNull,
   ForeignKey,
   BelongsTo,
+  HasMany,
 } from 'sequelize-typescript';
 import Booking from './Booking';
-import Room from '@/features/room/models/Room';
 import RoomType from '@/features/roomType/models/RoomType';
+import RoomAssignment from './RoomAssignments';
 
-@Table({
-  tableName: 'BookingRooms',
-  timestamps: true,
-})
+// BookingRoom.ts — reservation line (type + count + price)
+@Table({ tableName: 'BookingRooms', timestamps: true })
 export default class BookingRoom extends Model {
   @PrimaryKey
   @AutoIncrement
@@ -29,29 +28,26 @@ export default class BookingRoom extends Model {
   declare bookingId: number;
 
   @AllowNull(false)
-  @ForeignKey(() => Room)
-  @Column(DataType.INTEGER)
-  declare roomId: number;
-
-  @AllowNull(false)
   @ForeignKey(() => RoomType)
   @Column(DataType.INTEGER)
   declare roomTypeId: number;
 
-  // @AllowNull(false)
-  // @Column(DataType.INTEGER)
-  // declare quantity: number;
+  @AllowNull(false)
+  @Column(DataType.INTEGER)
+  declare quantity: number;
 
   @AllowNull(false)
   @Column(DataType.DECIMAL(10, 2))
-  declare pricePerNight: number;
+  declare pricePerNight: string; // pg returns DECIMAL as string
 
   @BelongsTo(() => Booking, { foreignKey: 'bookingId', as: 'booking' })
   declare booking?: Booking;
 
-  @BelongsTo(() => Room, { foreignKey: 'roomId', as: 'room' })
-  declare room?: Room;
-
   @BelongsTo(() => RoomType, { foreignKey: 'roomTypeId', as: 'roomType' })
   declare roomType?: RoomType;
+
+  @HasMany(() => RoomAssignment, { foreignKey: 'bookingRoomId', as: 'assignments' })
+  declare assignments?: RoomAssignment[];
 }
+
+

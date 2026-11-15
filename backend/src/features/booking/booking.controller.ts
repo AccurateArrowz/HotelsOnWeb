@@ -52,24 +52,26 @@ export class BookingController {
       throw HttpError.unauthorized();
     }
 
-    const { hotelId, checkInDate, checkOutDate, totalPrice, roomIds } = req.body;
+    const { hotelId, checkInDate, checkOutDate, specialRequests, roomSelections } = req.body;
 
-    if (!hotelId || !checkInDate || !checkOutDate || !totalPrice) {
-      throw HttpError.badRequest('Hotel ID, check-in date, check-out date, and total price are required');
+    if (!Number.isInteger(hotelId) || !checkInDate || !checkOutDate || !Array.isArray(roomSelections) || roomSelections.length === 0) {
+      throw HttpError.badRequest('Hotel ID, valid dates, and at least one room selection are required');
     }
+
+    const selectionsValid = roomSelections.every((selection: any) =>
+      Number.isInteger(selection.roomTypeId) && selection.roomTypeId > 0
+      && Number.isInteger(selection.quantity) && selection.quantity > 0
+    );
+    if (!selectionsValid) throw HttpError.badRequest('Room selections must include a room type ID and positive quantity');
 
     const booking = await this.bookingService.createBooking({
       userId: req.userId,
       hotelId,
       checkInDate,
       checkOutDate,
-      totalPrice,
+      specialRequests,
+      roomSelections,
     });
-
-    // Add rooms to booking if provided
-    if (Array.isArray(roomIds) && roomIds.length > 0) {
-      await this.bookingService.addRoomsToBooking(booking.id, roomIds);
-    }
 
     return ApiResponseHandler.created(res, booking);
   });
@@ -170,49 +172,4 @@ export class BookingController {
     return ApiResponseHandler.success(res, bookings);
   });
 
-  /**
-   * POST /bookings/:id/rooms
-   * Add rooms to booking
-   */
-  addRoomsToBooking = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-    if (!req.userId) {
-      throw HttpError.unauthorized();
-    }
-
-    const bookingId = parseInt(req.params.id as string);
-    const { roomIds } = req.body;
-
-    if (!Number.isInteger(bookingId)) {
-      throw HttpError.badRequest('Booking ID must be a numeric value');
-    }
-
-    if (!Array.isArray(roomIds) || roomIds.length === 0) {
-      throw HttpError.badRequest('Room IDs array is required');
-    }
-
-    const bookingRooms = await this.bookingService.addRoomsToBooking(bookingId, roomIds);
-
-    return ApiResponseHandler.created(res, bookingRooms);
-  });
-
-  /**
-   * DELETE /bookings/:id/rooms/:roomId
-   * Remove room from booking
-   */
-  removeRoomFromBooking = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-    if (!req.userId) {
-      throw HttpError.unauthorized();
-    }
-
-    const bookingId = parseInt(req.params.id as string);
-    const roomId = parseInt(req.params.roomId as string);
-
-    if (!Number.isInteger(bookingId) || !Number.isInteger(roomId)) {
-      throw HttpError.badRequest('Booking ID and Room ID must be numeric values');
-    }
-
-    await this.bookingService.removeRoomFromBooking(bookingId, roomId);
-
-    return ApiResponseHandler.success(res, null, 'Room removed from booking');
-  });
 }
