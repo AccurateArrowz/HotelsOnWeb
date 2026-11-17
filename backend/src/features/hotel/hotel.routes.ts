@@ -44,12 +44,6 @@ router.get('/:id', hotelController.getHotelById);
  */
 
 /**
- * POST /hotels
- * Create new hotel (requires authentication)
- */
-router.post('/', authenticateToken, hotelController.createHotel);
-
-/**
  * PUT /hotels/:id
  * Update hotel (requires authentication)
  */

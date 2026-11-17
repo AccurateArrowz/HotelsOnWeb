@@ -81,6 +81,8 @@ app.initialize = async () => {
   // API routes - New TypeScript modules
   app.use('/api/auth', authRoutes);
   app.use('/api/hotels', hotelRoutes);
+
+  
   app.use('/api/hotels/:hotelId/rooms', roomRoutes);
   app.use('/api/hotels/:hotelId/room-types', roomTypeRoutes);
   app.use('/api/hotels/:hotelId/availability', availabilityRoutes);

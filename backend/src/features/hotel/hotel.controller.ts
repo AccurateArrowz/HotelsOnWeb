@@ -45,37 +45,6 @@ export class HotelController {
   });
 
   /**
-   * POST /hotels
-   * Create new hotel
-   */
-  createHotel = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-    if (!req.userId) {
-      throw HttpError.unauthorized();
-    }
-
-    const { name, description, city, street, country, amenities } = req.body;
-
-    // Validate required fields
-    if (!name || !city || !street || !country) {
-      throw HttpError.badRequest('Name, city, street, and country are required');
-    }
-
-    const hotel = await this.hotelService.createHotel(
-      {
-        name,
-        description,
-        city,
-        street,
-        country,
-        amenities,
-      },
-      req.userId
-    );
-
-    return ApiResponseHandler.created(res, hotel);
-  });
-
-  /**
    * PUT /hotels/:id
    * Update hotel
    */

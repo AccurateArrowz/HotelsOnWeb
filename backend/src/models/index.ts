@@ -22,6 +22,7 @@ export { default as RoomType } from '@/features/roomType/models/RoomType';
 // Booking models
 export { default as Booking } from '@/features/booking/models/Booking';
 export { default as BookingRoom } from '@/features/booking/models/BookingRoom';
+export { default as RoomAssignment } from '@/features/booking/models/RoomAssignments';
 
 // Hotel Request models
 export { default as HotelRequest } from '@/features/hotel-request/models/HotelRequest';
@@ -53,6 +54,7 @@ export const models = [
   // Booking
   require('@/features/booking/models/Booking').default,
   require('@/features/booking/models/BookingRoom').default,
+  require('@/features/booking/models/RoomAssignments').default,
   // Hotel Request
   require('@/features/hotel-request/models/HotelRequest').default,
   require('@/features/hotel-request/models/HotelRequestImage').default,
