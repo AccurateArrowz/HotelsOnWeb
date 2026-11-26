@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { RoomType } from '@hotelsonweb/shared';
 import { Loading, TryAgainButton } from '@shared/components';
 import Spinner from '@shared/components/Spinner';
+import { toast } from '@shared/utils/toast';
+import { getApiErrorMessage } from '@shared/utils/getApiErrorMessage';
 import {
   useGetRoomTypesByHotelQuery,
   useCreateRoomTypeMutation,
@@ -124,7 +126,7 @@ const RoomTypesManagement = ({ hotelId }: RoomTypesManagementProps) => {
       handleCloseModal();
     } catch (err: any) {
       console.error('Failed to save room type:', err);
-      setFormErrors({ submit: err.data?.message || 'Failed to save room type' });
+      setFormErrors({ submit: getApiErrorMessage(err, 'Failed to save room type') });
     }
   };
 
@@ -140,7 +142,8 @@ const RoomTypesManagement = ({ hotelId }: RoomTypesManagementProps) => {
       }).unwrap();
     } catch (err: any) {
       console.error('Failed to delete room type:', err);
-      alert(err.data?.message || 'Failed to delete room type');
+      const message = getApiErrorMessage(err, 'Failed to delete room type');
+      toast.error(message);
     }
   };
 
@@ -153,6 +156,7 @@ const RoomTypesManagement = ({ hotelId }: RoomTypesManagementProps) => {
       }).unwrap();
     } catch (err: any) {
       console.error('Failed to update room type status:', err);
+      toast.error(getApiErrorMessage(err, 'Failed to update room type status'));
     }
   };
 
@@ -168,7 +172,7 @@ const RoomTypesManagement = ({ hotelId }: RoomTypesManagementProps) => {
     return (
       <div className="room-types-management">
         <div className="error-state">
-          <p>Error loading room types: {(error as any).data?.message || 'Unknown error'}</p>
+          <p>Error loading room types: {getApiErrorMessage(error, 'Unknown error')}</p>
           <TryAgainButton onClick={refetch} size="sm" />
         </div>
       </div>

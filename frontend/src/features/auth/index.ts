@@ -1,6 +1,6 @@
 // Auth context and hook
 export { AuthProvider } from './context/AuthProvider';
-export { useAuth } from './context/useAuth';
+export { useAuth } from './hooks/useAuth';
 export { AuthContext, type AuthContextValue } from './context/AuthContext';
 
 // Auth components

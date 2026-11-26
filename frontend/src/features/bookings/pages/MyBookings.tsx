@@ -7,6 +7,7 @@ import {
   useProcessPaymentMutation,
 } from '@bookings/api';
 import { Loading, Modal, TryAgainButton } from '@shared/components';
+import { getApiErrorMessage } from '@shared/utils/getApiErrorMessage';
 
 const getStatusColor = (status: string): string => {
   switch (status) {
@@ -62,7 +63,7 @@ export default function MyBookings() {
       setSelectedBooking(null);
       refetch();
     } catch (err: any) {
-      setActionError(err?.data?.message || 'Failed to cancel booking');
+      setActionError(getApiErrorMessage(err, 'Failed to cancel booking'));
     }
   };
 
@@ -76,7 +77,7 @@ export default function MyBookings() {
       setSelectedBooking(null);
       refetch();
     } catch (err: any) {
-      setActionError(err?.data?.message || 'Failed to process payment');
+      setActionError(getApiErrorMessage(err, 'Failed to process payment'));
     }
   };
 
@@ -85,7 +86,7 @@ export default function MyBookings() {
   }
 
   if (error) {
-    const message = (error as any)?.data?.message || 'Failed to load bookings';
+    const message = getApiErrorMessage(error, 'Failed to load bookings');
     return (
       <div className="my-bookings-page">
         <div className="error">

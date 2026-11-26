@@ -2,6 +2,8 @@ import { useState, useMemo } from 'react';
 import { Room, RoomType } from '@hotelsonweb/shared';
 import { Loading, TryAgainButton } from '@shared/components';
 import Spinner from '@shared/components/Spinner';
+import { toast } from '@shared/utils/toast';
+import { getApiErrorMessage } from '@shared/utils/getApiErrorMessage';
 import {
   useGetRoomsByHotelQuery,
   useCreateRoomMutation,
@@ -169,7 +171,7 @@ const RoomManagement = ({ hotelId }: RoomManagementProps) => {
       }
       handleCloseModal();
     } catch (err: any) {
-      setFormErrors({ submit: err.data?.message || 'Failed to save room' });
+      setFormErrors({ submit: getApiErrorMessage(err, 'Failed to save room') });
     }
   };
 
@@ -184,7 +186,7 @@ const RoomManagement = ({ hotelId }: RoomManagementProps) => {
         roomId: room.id,
       }).unwrap();
     } catch (err: any) {
-      alert(err.data?.message || 'Failed to delete room');
+      toast.error(getApiErrorMessage(err, 'Failed to delete room'));
     }
   };
 
@@ -196,7 +198,7 @@ const RoomManagement = ({ hotelId }: RoomManagementProps) => {
         data: { status: newStatus },
       }).unwrap();
     } catch (err: any) {
-      alert(err.data?.message || 'Failed to update room status');
+      toast.error(getApiErrorMessage(err, 'Failed to update room status'));
     }
   };
 
@@ -212,7 +214,7 @@ const RoomManagement = ({ hotelId }: RoomManagementProps) => {
     return (
       <div className="room-management">
         <div className="error-state">
-          <p>Error loading rooms: {(error as any).data?.message || 'Unknown error'}</p>
+          <p>Error loading rooms: {getApiErrorMessage(error, 'Unknown error')}</p>
           <TryAgainButton onClick={refetch} size="sm" />
         </div>
       </div>

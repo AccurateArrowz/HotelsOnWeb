@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Invitation } from '@hotelsonweb/shared';
 import { Loading, TryAgainButton } from '@shared/components';
 import Spinner from '@shared/components/Spinner';
+import { toast } from '@shared/utils/toast';
+import { getApiErrorMessage } from '@shared/utils/getApiErrorMessage';
 import {
   useCreateStaffInvitationMutation,
   useGetPendingStaffInvitationsQuery,
@@ -101,7 +103,7 @@ const InviteStaff = ({ hotelId }: InviteStaffProps) => {
     } catch (err: any) {
       console.error('Failed to send invitation:', err);
       setFormErrors({
-        submit: err.data?.message || 'Failed to send invitation',
+        submit: getApiErrorMessage(err, 'Failed to send invitation'),
       });
     }
   };
@@ -109,10 +111,11 @@ const InviteStaff = ({ hotelId }: InviteStaffProps) => {
   const handleResend = async (invitationId: string | number) => {
     try {
       await resendInvitation({ hotelId, invitationId }).unwrap();
+      toast.success('Invitation resent successfully');
       refetch();
     } catch (err: any) {
       console.error('Failed to resend invitation:', err);
-      alert(err.data?.message || 'Failed to resend invitation');
+      toast.error(getApiErrorMessage(err, 'Failed to resend invitation'));
     }
   };
 
@@ -123,10 +126,11 @@ const InviteStaff = ({ hotelId }: InviteStaffProps) => {
 
     try {
       await cancelInvitation({ hotelId, invitationId }).unwrap();
+      toast.success('Invitation cancelled');
       refetch();
     } catch (err: any) {
       console.error('Failed to cancel invitation:', err);
-      alert(err.data?.message || 'Failed to cancel invitation');
+      toast.error(getApiErrorMessage(err, 'Failed to cancel invitation'));
     }
   };
 
@@ -142,7 +146,7 @@ const InviteStaff = ({ hotelId }: InviteStaffProps) => {
     return (
       <div className="space-y-6">
         <div>
-          <p>Error loading invitations: {(error as any).data?.message || 'Unknown error'}</p>
+          <p>Error loading invitations: {getApiErrorMessage(error, 'Unknown error')}</p>
           <TryAgainButton onClick={refetch} size="sm" />
         </div>
       </div>

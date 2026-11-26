@@ -20,7 +20,9 @@ export default function Modal({
 
   useEffect(() => {
     const dialog = dialogRef.current;
-    if (!dialog) return;
+    if (!dialog){
+      console.log('sry the dialog ref doesnot exist' )
+      return;}
 
     if (isOpen) {
       if (!dialog.open) {

@@ -1,6 +1,7 @@
 import { useState, ReactNode } from 'react';
 import { Hotel } from '@hotelsonweb/shared';
 import { Loading, TryAgainButton } from '@shared/components';
+import { getApiErrorMessage } from '@shared/utils/getApiErrorMessage';
 import {
   LayoutDashboard,
   CalendarDays,
@@ -244,7 +245,7 @@ const MyHotelPage = () => {
       <div className="my-hotel-page error">
         <div className="error-message">
           <h2>Failed to load hotel</h2>
-          <p>{(hotelsError as any).data?.message || 'An error occurred while fetching your hotel data.'}</p>
+          <p>{getApiErrorMessage(hotelsError, 'An error occurred while fetching your hotel data.')}</p>
           <TryAgainButton onClick={refetchHotels} size="md" />
         </div>
       </div>

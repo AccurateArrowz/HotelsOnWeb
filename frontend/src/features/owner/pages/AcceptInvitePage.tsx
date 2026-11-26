@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Invitation } from '@hotelsonweb/shared';
 import { Loading } from '@shared/components';
+import { getApiErrorMessage } from '@shared/utils/getApiErrorMessage';
 import {
   useGetStaffInvitationByTokenQuery,
   useAcceptStaffInvitationMutation,
@@ -99,7 +100,7 @@ const AcceptInvitePage = () => {
     } catch (err: any) {
       console.error('Failed to accept invitation:', err);
       setFormErrors({
-        submit: err.data?.message || 'Failed to accept invitation. Please try again.',
+        submit: getApiErrorMessage(err, 'Failed to accept invitation. Please try again.'),
       });
     }
   };
@@ -144,9 +145,9 @@ const AcceptInvitePage = () => {
         <div className="bg-white rounded-lg shadow-lg max-w-md w-full">
           <div className="text-center py-12 px-6">
             <AlertCircle size={48} className="mx-auto mb-4 text-red-500" />
-            <h2 className="text-xl font-bold text-slate-900 mb-2">Invitation Not Found</h2>
+            <h2 className="text-xl font-bold text-slate-900 mb-2">Invitation Error</h2>
             <p className="text-sm text-slate-600">
-              {(error as any).data?.message || 'This invitation is invalid, expired, or has already been used.'}
+              {getApiErrorMessage(error, 'This invitation is invalid, expired, or has already been used.')}
             </p>
           </div>
         </div>
